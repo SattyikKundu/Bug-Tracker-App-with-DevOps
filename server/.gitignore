@@ -1,0 +1,4 @@
+## Ignore /node_modules folder since it's too big for uploading to github
+## Also ignore .env file to hide credentials from Github
+node_modules
+.env

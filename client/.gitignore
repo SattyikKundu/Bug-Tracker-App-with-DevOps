@@ -1,0 +1,8 @@
+## Ignore /node_modules
+## folder since it's too big for 
+## uploading to github
+node_modules
+
+## Also ignore .env file (which stores variables)
+## which stores variable for stripe public key
+.env
