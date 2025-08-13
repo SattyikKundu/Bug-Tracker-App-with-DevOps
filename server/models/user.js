@@ -57,5 +57,5 @@ const UserSchema = new mongoose.Schema(                // Create a new schema fo
 //   }
 // });
 
-export default mongoose.model("Users", UserSchema);     // Export compiled Mongoose model
+export default mongoose.model("User", UserSchema, "users");     // Export compiled Mongoose model
 

@@ -1,6 +1,6 @@
 // server/models/authModel.js
 
-import User from "./user.js";
+import User from "./user.js"; // Contains 'users' schema. Imported here for 
 
 export const findUserByUsername = async (username) => { // return user via entered 'username;
   try {
