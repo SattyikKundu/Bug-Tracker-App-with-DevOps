@@ -1,7 +1,7 @@
 // server/middleware/issueLoader.js
-import mongoose from "mongoose";                 // For ObjectId check
-import Issue from "../models/issueModel.js";     // Issue model
-import Project from "../models/projectModel.js"; // Project model
+import mongoose from "mongoose";                 // import functionalities for interacting with MongoDB
+import Issue from "../models/issueModel.js";     // import Issue model
+import Project from "../models/projectModel.js"; // import Project model
 
 const isValidId = (id) => {  // Validate id helper function
     mongoose.Types.ObjectId.isValid(id); 
