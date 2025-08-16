@@ -53,12 +53,15 @@ export const requireRole = (roles) => async (req, res, next) => {  // Factory to
 
 export const loadProject = async (req, res, next) => {  // Middleware to load project by :id param
   try {                                                                                   
-    const { id } = req.params;  // grab project id from route parameter
+ 
+    const { id, pid } = req.params;        // support both :id and :pid
+    const projectId = id || pid;           // pick whichever is present
 
-    if (!isValidId(id)) {  // validate id's format
+    if(!isValidId(projectId)){  // validate id's format
       return res.status(400).json({ error: "Invalid project id." });  // Respond bad request
     }                                                                                       
-    const project = await Project.findById(id).lean(); // Load project doc
+
+    const project = await Project.findById(projectId).lean(); // Load project doc
 
     if (!project) { // If not found
       return res.status(404).json({ error: "Project not found." }); // Respond not found
@@ -72,7 +75,7 @@ export const loadProject = async (req, res, next) => {  // Middleware to load pr
   }                                                                                          
 };                                                                                           
 
-export const requireProjectMemberOrAdmin = (req, res, next) => {  // Gate: allow admin OR project member/lead
+export const requireProjectMemberOrAdmin = (req, res, next) => {  // Gate: allows admin OR project member/lead
 
   try { 
     const user = req.authUser;      // Read attached user in 'request'

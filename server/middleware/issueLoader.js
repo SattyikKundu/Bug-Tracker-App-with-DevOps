@@ -4,7 +4,7 @@ import Issue from "../models/issueModel.js";     // import Issue model
 import Project from "../models/projectModel.js"; // import Project model
 
 const isValidId = (id) => {  // Validate id helper function
-    mongoose.Types.ObjectId.isValid(id); 
+  return mongoose.Types.ObjectId.isValid(id); 
 }
 
 export const loadIssue = async (req,res,next)=>{ // Load issue by ':id' and its project

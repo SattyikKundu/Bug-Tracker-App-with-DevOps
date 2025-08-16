@@ -11,22 +11,22 @@ const SEVERITIES = ["minor","major","critical"];                         // Allo
 
 const AttachmentSchema = new Schema(  // File metadata subdoc
     { 
-        fileId:{  // Storage key/URL
+        fileId:{ // attachment storage key/URL
             type:String,
             required:true,
             trim:true
         },    
-        filename:{  // Original filename
+        filename:{ // attachment's original filename
             type:String,
             required:true,
             trim:true
         },  
-        size:{  // Size in bytes
+        size:{ // attachment size in bytes
             type:Number,
             required:true,
             min:0
         },          
-        contentType:{   // Optional MIME
+        contentType:{ // Optional MIME
             type:String,default:""
         }             
     },
@@ -45,7 +45,7 @@ const StatusHopSchema = new Schema( // Status audit entry
             enum:STATUSES,
             required:true
         },    
-        by:{ // Who changed the issue status
+        by:{ // which user changed the issue status
             type:Schema.Types.ObjectId,
             ref:"Users",
             required:true
@@ -54,7 +54,7 @@ const StatusHopSchema = new Schema( // Status audit entry
             type:Date,
             default:Date.now}                  
     },
-    {_id:false} // No subdoc _id
+    {_id:false} // No id for attachment sub-document
 );                                     
 
 const IssueSchema = new Schema(  // Main Issue schema
@@ -65,7 +65,7 @@ const IssueSchema = new Schema(  // Main Issue schema
             required:true,
             index:true
         }, 
-        key:{  // Human key e.g. BT-123
+        key:{ // Human key e.g. BT-123
             type:String,
             unique:true,
             index:true
@@ -79,7 +79,7 @@ const IssueSchema = new Schema(  // Main Issue schema
         description:{ // issue's description (Long text / markdown)
             type:String,default:""
         },            
-        type:{  // issue type
+        type:{ // issue type
             type:String,
             enum:TYPES,
             default:"bug",
@@ -107,43 +107,43 @@ const IssueSchema = new Schema(  // Main Issue schema
             required:true,
             index:true
         },   
-        assigneeId:{ // Issue assigner's Id
+        assigneeId:{ // issue assigner's Id
             type:Schema.Types.ObjectId,
             ref:"Users",
             default:null,
             index:true
         },     
-        labels:{ // Issue tags
+        labels:{ // issue tags
             type:[String],
             default:[],
             index:true
         },    
-        watchers:[{ // Users notified of issue
+        watchers:[{ // users notified of issue
             type:Schema.Types.ObjectId,
             ref:"Users",
             index:true
         }],                
-        attachments:{ // Attached files
+        attachments:{ // attached files
             type:[AttachmentSchema],
             default:[]
         },
-        statusHistory:{ // Tracks status history of issue for any audit trail
+        statusHistory:{ // tracks status history of issue for any audit trail
             type:[StatusHopSchema],
             default:[]
         }, 
-        commentCount:{ // Tracks comment 
+        commentCount:{ // tracks comment 
             type:Number,
             default:0,
             min:0
         },      
-        closedAt:{   // When issue is closed (optional)
+        closedAt:{ // when issue is closed (optional)
             type:Date
         }                            
     },
     {
-        timestamps:true, // createdAt/updatedAt time;
-        versionKey:false, // no version key; 
-        collection:"issues" //      collection='issues'
+        timestamps:true,    // createdAt/updatedAt time;
+        versionKey:false,   // no version key; 
+        collection:"issues" // collection='issues'
     }  
 ); 
 

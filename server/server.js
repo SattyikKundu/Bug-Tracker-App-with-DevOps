@@ -22,10 +22,11 @@ import connectDB  from "./database/database.js"; // default import from database
 import './auth/passportConfig.js'; // Side-effect that loads and registers passport strategies globally (MUST come before routes!)
 //import passport from 'passport';   // single passport import (Core authentication framework)
 
-import authRoutes from "./routes/authRoutes.js";    // Import auth routes
-import projectRoutes from "./routes/projectRoutes.js";            // Import project routes
+import authRoutes    from "./routes/authRoutes.js";    // Import auth routes
+import projectRoutes from "./routes/projectRoutes.js"; // Import project routes
+import issueRoutes   from "./routes/issueRoutes.js";   // Import issues routes
 
-import swaggerUi from "swagger-ui-express";     // Import Swagger UI middleware
+import swaggerUi   from "swagger-ui-express";   // Import Swagger UI middleware
 import swaggerSpec from "./swaggerConfig.js";
 
 // ===================================================================================================
@@ -96,6 +97,8 @@ app.use("/", authRoutes); /* Mount all routes for handling authentication-relate
                            */
 
 app.use("/", projectRoutes); // Mount at root; paths start with /projects
+
+app.use("/", issueRoutes);   // Mount issues endpoints
 
 // ==============================================================================
 // Start Server
