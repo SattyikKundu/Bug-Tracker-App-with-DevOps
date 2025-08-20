@@ -34,7 +34,7 @@ export const loadComment = async (req,res,next) => { // Load comment + its issue
         return res.status(404).json({error:"Project not found for comment."}); 
     }
 
-    req.comment = comment;  // attach 'comment', 'issue', and 'project' normal objects as part of Express request
+    req.comment = comment;  // attach 'comment', 'issue', and 'project' normal objects as part of downstream request
     req.issue   = issue; 
     req.project = project; 
     return next(); 

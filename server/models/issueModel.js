@@ -83,7 +83,8 @@ const IssueSchema = new Schema(  // Main Issue schema
             type:String,
             enum:TYPES,
             default:"bug",
-            index:true},   
+            index:true
+        },   
         status:{ // issue workflow status
             type:String,
             enum:STATUSES,
