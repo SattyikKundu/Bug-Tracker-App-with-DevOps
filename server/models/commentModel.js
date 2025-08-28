@@ -15,11 +15,14 @@ const CommentSchema = new Schema( // Comment document schema
         ref:"Users",                // foreign key that refers to 'users' collection
         required:true,              // required field
         index:true                  // index required
-    }, // who wrote it
+    }, 
     body:{                          // comment text body 
         type:String,                // string field type
         required:true,              // required field
         trim:true,                  // trim and remove white space
+        required:function(){        // only require 'body' if this comment is NOT deleted (see boolean 'deleted' field at bottom)
+            return !this.deleted; 
+        },        
         maxlength:5000              // max comment text length
     }, 
     parentId:{                      // immediate parent comment's id (NULL if no parent and comment is at top-level)

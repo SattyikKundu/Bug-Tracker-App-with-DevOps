@@ -113,19 +113,47 @@ export const listIssueComments = async (req,res,next) => { // GET /issues/:id/co
       return res.status(404).json({error:"Issue not found."}); 
     }
 
+    /* Example of how limit/skip is used:
+     *
+     * Tiny example (comments sorted oldest → newest)
+     * Comments: [C1, C2, C3, C4, C5, C6, C7, C8]
+     * limit=3, skip=0 → returns [C1, C2, C3] (first page)
+     * limit=3, skip=3 → returns [C4, C5, C6] (second page)
+     * limit=3, skip=6 → returns [C7, C8] (third page)
+     */
+
     const limit = Math.min(parseInt(req.query.limit || "20", 10), 100); // page size (default 20, number base 10, max 100) 
     const skip  = Math.max(parseInt(req.query.skip  || "0",  10), 0);   // how many to skip from start (default 0)
 
-    const topLevel = await Comment
-      .find({issueId:issue._id,parentId:null,deleted:false}) // only thread starters (not replies)
+
+    const hideDeleted = req.query.hideDeleted === "true";  // url flag from query string (?hideDeleted=true)
+
+    const query = {       // MongoDB query
+      issueId: issue._id, // only comments for this issue (matched by issue id) 
+      parentId: null      // only top-level comments (which have no parent)
+    };  
+    
+    if (hideDeleted) { query.deleted = false; } // exclude soft-deleted comments
+
+    const topLevel = await Comment.find(query)
       .sort({createdAt:1, _id: 1})             // oldest → newest (stable with _id tiebreaker)
       .skip(skip)                              // pagination offset
       .limit(limit)                            // each page size
       .lean();                                 // return plain object
 
-    return res.json({       // sent results
-      comments: topLevel,   // top-level comments
-      page: { skip, limit } // page echo
+
+
+    // turn hard-deleted bodies into a clear placeholder (tombstone)
+    const normalized = topLevel.map(comment =>
+      comment.deleted && (!comment.body || !comment.body.trim())
+        ? { ...comment, body: "[deleted]" }
+        : comment
+    );
+
+    return res.json({               // sent results
+      comments: normalized,         // normalized version of top-level comments
+      page: { skip, limit },        // page echo
+      includeDeleted: !hideDeleted  // toggle if deleted is included or not.
     }); 
 
   }
@@ -152,14 +180,36 @@ export const listReplies = async (req,res,next)=>{ // GET /comments/:id/replies 
     const limit = Math.min(parseInt(req.query.limit||"50",10),200); // page size (default 50, number base 10, max 100) 
     const skip  = Math.max(parseInt(req.query.skip||"0",10),0);     // how many to skip from start (default 0)
 
-    const replies = await Comment
-      .find({issueId:parent.issueId,parentId:parent._id,deleted:false})  // find only direct children of this parent
+
+
+    const hideDeleted = req.query.hideDeleted === "true";  // url flag from query string (?hideDeleted=true)
+
+    const query = {            // MongoDB query
+      issueId: parent.issueId, // only comments for this issue (matched by issue id) 
+      parentId: parent._id     // only direct reply comments to this parent
+    };  
+    
+    if (hideDeleted) { query.deleted = false; } // exclude soft-deleted comments
+
+    const replies = await Comment.find(query)  // find only direct children of this parent
       .sort({createdAt:1, _id: 1})             // oldest → newest (stable with _id tiebreaker)
       .skip(skip)                              // pagination offset
       .limit(limit)                            // each page size
       .lean();                                 // return plain object
 
-    return res.json({replies}); // return replies
+
+    const normalized = replies.map(comment =>                    //
+      comment.deleted && (!comment.body || !comment.body.trim()) //
+        ? { ...comment, body: "[deleted]" }
+        : comment
+    );
+
+    return res.json({ 
+      replies: normalized, 
+      page: { skip, limit },
+      includeDeleted: !hideDeleted 
+    });
+    
   }
   catch(err){  // handle errors
     next(err); 
@@ -228,10 +278,10 @@ export const deleteComment = async (req,res,next)=>{ // DELETE /comments/:id (so
     }
 
     commentDoc.deleted = true; // set comment as deleted 
-    commentDoc.body = "";      // empty out comment body
+    // commentDoc.body = "";      // empty out comment body (do this in front-end)
+    await commentDoc.save(); // save and persist 'deleted' tag change 
+                             // for document in MongoDB database
 
-    await commentDoc.save(); // save and persist document in MongoDB database
-    
     await Issue.updateOne(   // reduce comment count by 1 after deleting 
       {_id:issue._id},
       { $inc:{ commentCount:-1 } }
