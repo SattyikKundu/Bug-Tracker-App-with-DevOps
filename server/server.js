@@ -18,7 +18,7 @@ import dotenv from "dotenv"; // loads .env variables into process.env
                              // so they can be accessed anywhere in server code
 dotenv.config();
 
-import connectDB  from "./database/database.js"; // default import from database.js
+import connectDB from "./database/database.js"; // default import from database.js
 import './auth/passportConfig.js'; // Side-effect that loads and registers passport strategies globally (MUST come before routes!)
 //import passport from 'passport';   // single passport import (Core authentication framework)
 
