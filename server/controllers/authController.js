@@ -1,7 +1,7 @@
 // server/controller/authController.js
 
-import jwt from "jsonwebtoken"; // Used for creating signed JWTs
-import bcrypt from "bcryptjs";  // For hashing/comparing passwords
+import jwt from "jsonwebtoken";                            // Used for creating signed JWTs
+import bcrypt from "bcryptjs";                             // For hashing/comparing passwords
 import { setAuthCookie } from "../utils/setAuthCookie.js"; // Helper to set JWT cookie
 
 import { createUser, findUserByUsername, findUserByEmail } from "../models/authModel.js"; // Model helpers (Mongoose-backed)
@@ -17,7 +17,7 @@ export const loginUser = async (req, res, next) => { // Local login controller
     const user = await findUserByUsername(username); // attempt to find user with matching username
 
     if (!user) {  // If user is not found for username, return error message
-        return res.status(401).json({ error: "Invalid username." });
+        return res.status(401).json({ error: "Invalid username. Also, username is case-sensitive!" });
     }
 
     if (!user.passwordHash) {
@@ -29,7 +29,7 @@ export const loginUser = async (req, res, next) => { // Local login controller
     const isMatch = await bcrypt.compare(password, user.passwordHash); // checks if entered password's hash matches stored hash
 
     if (!isMatch) { // Return invalid error message if password doesn't match 
-        return res.status(401).json({ error: "Invalid password." });
+        return res.status(401).json({ error: "Invalid password. Also, password is case-sensitive!" });
     }
      
     const token = jwt.sign( // Otherwise, if login is successful, create JWT payload with user info (customizable)
@@ -64,9 +64,9 @@ export const logoutUser = (req, res) => {  // Logout controller
   const isProduction = process.env.NODE_ENV === "production"; // Detect environment mode
   res.clearCookie("token", {
     httpOnly: true,                          // MUST match how it was originally set
-    secure: isProduction,                    // set to true if using HTTPS in production
+    secure:   isProduction,                  // set to true if using HTTPS in production
     sameSite: isProduction ? "none" : "lax", // 'none' ensures that cookies aren't blocked on cross-site requests
-    path: "/"                                // MUST match path also set in setAuthCookie
+    path:     "/"                            // MUST match path also set in setAuthCookie
   });
 
   return res.status(200).json({ success: true, message: "Logged out successfully!" });
@@ -74,12 +74,33 @@ export const logoutUser = (req, res) => {  // Logout controller
 
 export const registerUser = async (req, res, next) => { // Registers a new user via username/email/password (local signup)
   try {
-    const { username, email, password } = req.body; // extracts username, email, password from request body
+    const {
+      firstName,
+      lastName,
+      username,
+      email,
+      password
+    } = req.body || {}; // extracts firstName, lastName, username, email, password from request body
 
-    if (!username?.trim() || !email?.trim() || !password?.trim()) { // Check for empty/missing fields 
-                                                                    // (trim to handle whitespace-only cases)
-      return res.status(400).json({ error: "One or more fields are empty." });
+
+    if ( // ensure that all 5 fields are required
+      typeof firstName !== "string" ||
+      typeof lastName !== "string" ||
+      typeof username !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string" ||
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !username.trim() ||
+      !email.trim() ||
+      !password.trim()
+    ) {
+      return res.status(400).json({
+        error:
+          "firstName, lastName, username, email, and password are required."
+      });
     }
+
 
     const existingUser = await findUserByUsername(username); // Check if username already exists in database
     if (existingUser) {
@@ -93,9 +114,17 @@ export const registerUser = async (req, res, next) => { // Registers a new user 
 
     const passwordHash = await bcrypt.hash(password, 10); // Securely hash the password with salt rounds = 10
 
-    const newUser = await createUser({ username, email, passwordHash }); // Create ad insert new user into database
 
-    res.status(201).json({  // Upon successful registration, return new user on login
+    const newUser = await createUser({     // Create ad insert new user into database
+      firstName,
+      lastName,
+      username,
+      email,
+      passwordHash
+    });
+        
+
+    return res.status(201).json({  // Upon successful registration, return new user on login
       message: "Registration successful",
       user: { id: newUser.id, username: newUser.username }
     });

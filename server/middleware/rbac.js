@@ -21,8 +21,9 @@ export const loadCurrentUser = async (req, res, next) => {      // Middleware to
 
     const user = await User.findById(userId).lean(); // Load user document from DB
 
-    if (!user || !user.isActive) {  // If user not found or deactivated..
-      return res.status(403).json({ error: "User not active or not found." }); // Respond as "forbidden"
+
+    if (!user) {  // If user not found
+      return res.status(403).json({ error: "User not found." }); // Respond as "forbidden"
     }                                                                                       
 
     req.authUser = user; // Attach user doc for downstream checks
@@ -85,9 +86,10 @@ export const requireProjectMemberOrAdmin = (req, res, next) => {  // Gate: allow
       return res.status(500).json({ error: "Auth or project context missing." }); // Respond with server error
     }                                      
 
+    // Valid roles
     const isAdmin = user.role === "admin";                          // User role: Admin flag
     const isLead = String(project.leadUserId) === String(user._id); // User role: Lead flag
-    const isMember = project.members.some((m) => String(m) === String(user._id)); // User role: project member flag
+    const isMember = project.members.some((memberId) => String(memberId) === String(user._id)); // User role: project member flag
 
     if (!(isAdmin || isLead || isMember)) {            // If user is none of these roles..                                           
       return res.status(403).json({ error: "Project access denied." });    // block access
@@ -110,8 +112,8 @@ export const requireProjectLeadOrAdmin = (req, res, next) => {   // Gate: allow 
       return res.status(500).json({ error: "Auth or project context missing." });  // Respond with server error
     }                                                                                   
 
-    const isAdmin = user.role === "admin";                          // User role: admin flag
-    const isLead = String(project.leadUserId) === String(user._id); // User role: lead flag
+    const isAdmin = user.role === "admin";                           // User role: admin flag
+    const isLead  = String(project.leadUserId) === String(user._id); // User role: lead flag
 
     if (!(isAdmin || isLead)) {   // If user is neither admin or lead....
       return res.status(403).json({ error: "Lead or admin role required." }); // Return "forbidden" error

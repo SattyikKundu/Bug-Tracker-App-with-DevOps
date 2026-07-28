@@ -6,6 +6,20 @@ import mongoose from "mongoose"; // Import Mongoose to define schemas/models
 
 const UserSchema = new mongoose.Schema(                // Create a new schema for the users collection
   {
+    firstName: {                                      // First name field
+      type: String,                                   // Store as string
+      required: true,                                 // Must be present                  
+      trim: true,                                     // Trim whitespace
+      minlength: 1,                                   // enforce mix/max length of string
+      maxlength: 50
+    },
+    lastName: {                                       // First name field
+      type: String,                                   // Store as string
+      required: true,                                 // Must be present                  
+      trim: true,                                     // Trim whitespace
+      minlength: 1,                                   // enforce mix/max length of string
+      maxlength: 50
+    },
     email: {                                           // Email field
       type: String,                                    // Store as string
       required: true,                                  // Must be present
@@ -35,27 +49,13 @@ const UserSchema = new mongoose.Schema(                // Create a new schema fo
     },
     role: {                                            // Global authorization role
       type: String,                                    // Stored as string
-      enum: ["admin", "manager", "developer"],         // Allowed values only
-      default: "developer"                             // Default role for new accounts
-    },
-    isActive: {                                        // Soft-disable account flag
-      type: Boolean,                                   // Boolean value
-      default: true                                    // Enabled by default
+      enum: ["admin", "user"],                         // Allowed values only
+      default: "user"                                  // Default role for new accounts
     }
   },
   { timestamps: true }                                 // Auto-add createdAt/updatedAt
 );
 
-//UserSchema.index({ email: 1 }, { unique: true });      // Unique index on email
-//UserSchema.index({ username: 1 }, { unique: true });   // Unique index on username
-//UserSchema.index({ googleId: 1 }, { sparse: true });   // Index googleId when present
-
-// UserSchema.set("toJSON", { // Ensure sensitive field isn't serialized
-//   transform: (_doc, ret) => {
-//     delete ret.passwordHash;
-//     return ret;
-//   }
-// });
 
 export default mongoose.model("User", UserSchema, "users");     // Export compiled Mongoose model
 

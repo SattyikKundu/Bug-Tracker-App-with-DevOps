@@ -1,66 +1,90 @@
 // server/controllers/projectController.js                        
-import mongoose from "mongoose";                  // Import Mongoose for ObjectId checks
-import { ObjectId } from "mongodb";               // needed for ObjectId() in updateMembers function 
-
-import Project from "../models/projectModel.js";  // Import Project model
-import User from "../models/user.js";             // Import User model to validate IDs
+import   mongoose   from "mongoose";                  // Import Mongoose for ObjectId checks
+import { ObjectId } from "mongodb";                   // needed for ObjectId() in updateMembers function 
+import   Project    from "../models/projectModel.js"; // Import Project model
+import   User       from "../models/user.js";         // Import User model to validate IDs
 
 const isValidId = (id) => { // Helper to validate ObjectId strings
     return mongoose.Types.ObjectId.isValid(id);  
 } 
 
+const populateProjectUsers = (query) => { // Helper function to get members' info for a project
+  return query
+    .populate({
+      path: "leadUserId",
+      select: "_id firstName lastName username"
+    })
+    .populate({
+      path: "members",
+      select: "_id firstName lastName username"
+    });
+};
+
+const populateProjectLead = (query) => {
+  return query.populate({
+    path: "leadUserId",
+    select: "_id firstName lastName username"
+  });
+};
+
+
 export const createProject = async (req, res, next) => {  // Controller: create a new project
-  
-  try {             
-                                                                           
-    const { key, name, description = "", leadUserId, members = [] } = req.body || {};  // Destructure inputs with defaults
+  try {                                                                                        
+   const { key, name, description = "" } = req.body || {}; // Destructure inputs with defaults
+    if (
+      typeof key !== "string" ||
+      typeof name !== "string" ||
+      !key.trim() ||
+      !name.trim()
+    ) {
+      return res.status(400).json({ // checks for null, undefined and empty strings
+        error: "key and name are required and must be strings."
+      });
+    }
 
-    if (!key?.trim() || !name?.trim() || !leadUserId?.trim()) {   // Checks if required fields are missing
-      return res.status(400).json({ error: "key, name, and leadUserId are required." });  // Respond with bad request
-    }                                                                                        
 
-    if (!/^[A-Z0-9]{2,10}$/.test(key)) {    // Validate key format (project 'key' id)
-      return res.status(400).json({ error: "key must be 2-10 chars (A-Z, 0-9)." });  // Respond with bad request
-    }                                                                                      
+    
+    const normalizedKey = key.trim().toUpperCase(); // Normalize and validate the key
 
-    if (!isValidId(leadUserId)) {                                       // Validate lead id format
-      return res.status(400).json({ error: "Invalid leadUserId." });    // Respond with bad request
-    }                                                                                     
+    if (!/^[A-Z][A-Z0-9]{1,9}$/.test(normalizedKey)) { // Validate key format (project 'key' id)
+      return res.status(400).json({  // Respond with bad request
+        error:
+          "Project key must be 2-10 characters, start with a letter, and contain only A-Z and 0-9."
+      });
+    }
 
-    const uniqueUserIds = Array.from(new Set([leadUserId, ...members]));  // Ensures lead is included and de-duplicate members
 
-    for (const uid of uniqueUserIds) {  // Loop to validate each id
 
-      if (!isValidId(uid)) {  // If userID invalid...
-        return res.status(400).json({ error: `Invalid user id in members: ${uid}` }); // Respond with "bad" request
-      }                                                                                     
-    }                                                                                     
-
-    // Count how many of the provided user IDs (_id = primary key) actually exist in the users collection
-    const usersCount = await User.countDocuments({ _id: { $in: uniqueUserIds } });  
-
-    if (usersCount !== uniqueUserIds.length) { // If any IDs missing (proven by count mismatch)...
-      return res.status(400).json({ error: "One or more member ids do not exist." });  // Respond with "bad" request
-    }                                                                                        
-
-    const exists = await Project.exists({ key });  // Check for duplicate key (if project key already exists)
-
+    const exists = await Project.exists({ key: normalizedKey });  // Check for duplicate key (if project key already exists)
     if (exists) {   // If project key already exists...
       return res.status(409).json({ error: "Project key already exists." });  // Respond conflict
     }                                                                                   
 
-    const project = await Project.create({   // Create project document
-      key,                       // Save key (schema uppercases)
-      name,                      // Save name
-      description,               // Save description
-      leadUserId,                // Save lead
-      members: uniqueUserIds,    // Save deduped members
-      nextIssueSeq: 1,           // Initialize counter
-    });                                                                                     
+    const creatorId = req.authUser._id; // get id of the user who creates the project
+                                                                          
+
+    const project = await Project.create({      // Create project document
+      key: normalizedKey,                       // Save key (schema uppercases)
+      name: name.trim(),                        // Save name
+      description: String(description).trim(),  // Save description
+      leadUserId: creatorId,                    // Save creator as project lead
+      members: [creatorId],                     // Make creator a member
+      nextIssueSeq: 1                           // Initialize coutner
+    });
 
     return res.status(201).json({ project });  // Respond with created resource
   } 
   catch (err) { // Catch errors
+
+    if (
+      err?.code === 11000 &&
+      err?.keyPattern?.key
+    ) {
+      return res.status(409).json({ // error id project key already exists
+        error: "Project key already exists."
+      });
+    }
+
     next(err);  // Delegate to error handler
   }                                                                                          
 };                                                                                           
@@ -71,21 +95,24 @@ export const listProjects = async (req, res, next) => {   // Controller: list pr
 
     const user = req.authUser;    // Read current user from 'req'
     
-    if (user.role === "admin") {  // If user's role is admin...
-      const projects = await Project.find().sort({ createdAt: -1 }).lean();  // Fetch all projects
-      return res.json({ projects });                                         // Respond with list
+    if (user.role === "admin") {                // If user's role is admin...
+      const projects = await populateProjectLead(
+        Project.find().sort({ createdAt: -1 })  // Fetch all projects
+      ).lean(); 
+      return res.json({ projects });            // Respond with list
     }                                                                               
 
     const uid = user._id; // Current user's id
     
-    const projects = await Project.find({   // Find projects accessible by user
-      $or: [                       // Match any of these:
-        { leadUserId: uid },          // Lead
-        { members: uid },             // Member
-      ],                           // End OR list
-    })                             // End find
-      .sort({ createdAt: -1 })     // Sort newest first
-      .lean();                     // Return plain objects
+    const projects = await populateProjectLead(
+        Project.find({   // Find projects accessible by user
+          $or: [                   // Match any of these:
+            { leadUserId: uid },          // Lead
+            { members: uid },             // Member
+          ],                           // End OR list
+        })                             // End find
+        .sort({ createdAt: -1 })  // Sort newest first
+    ).lean();                     // Return plain objects
 
     return res.json({ projects }); // Respond with list
   } 
@@ -94,9 +121,30 @@ export const listProjects = async (req, res, next) => {   // Controller: list pr
   }                                                                                          
 };                                                                                          
 
-export const getProject = async (req, res) => {   // Controller: get single project (project already loaded)
-  return res.json({ project: req.project });      // Respond with attached project
-};                                                                                           
+
+// export const getProject = async (req, res) => {   // Controller: get single project (project already loaded)
+//   return res.json({ project: req.project });      // Respond with attached project
+// };                                                                                           
+
+export const getProject = async (req, res, next) => { // Controller: get single project (project already loaded)
+  try {                                               // Respond with attached project (with populated users)
+    const project = await populateProjectUsers(
+      Project.findById(req.project._id)
+    ).lean();
+
+    if (!project) {
+      return res.status(404).json({
+        error: "Project not found."
+      });
+    }
+
+    return res.json({
+      project
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 
 export const updateProject = async (req, res, next) => {  // Controller: update basic project fields
@@ -106,45 +154,104 @@ export const updateProject = async (req, res, next) => {  // Controller: update 
     const { name, description, leadUserId } = req.body || {};  // Extract updatable fields
     const updates = {};                                        // Prepare updates object
     
-    if (name !== undefined) {  // If name provided
-      if (!name?.trim()) {
-        return res.status(400).json({ error: "name cannot be empty." });    // Validate 'not blank'
-      } 
-      updates.name = name;   // update project name
-    }                                                                                       
     
-    if (description !== undefined) {              // If description provided
-      updates.description = String(description);  // Set description to string and set
-    }                                                                                      
+    if (name !== undefined) { // If name provided
+      if (
+        typeof name !== "string" ||
+        !name.trim()
+      ) {
+        return res.status(400).json({
+          error: "name must be a non-empty string." // Validate 'not blank'
+        });
+      }
+
+      updates.name = name.trim(); // update project name
+    }
+
     
-    if (leadUserId !== undefined) {   // If lead change requested
+  
+    if (description !== undefined) {    // If description provided, but not a string, return error
+      if (typeof description !== "string") {
+        return res.status(400).json({
+          error: "description must be a string."
+        });
+      }
 
-      if (!isValidId(leadUserId)) { // Validate id
-        return res.status(400).json({ error: "Invalid leadUserId." }); // Respond bad request
-      } 
+      updates.description = description.trim(); // Set description to string and set
+    }
     
-      const exists = await User.exists({ _id: leadUserId });  // Ensure user exists
+    
 
-      if (!exists) { // Respond with 'bad' request if lead doesn't exist
-        return res.status(400).json({ error: "Lead user does not exist." }); 
-      }    
-      updates.leadUserId = leadUserId;  // Otheriwse, update lead user Id
-    }                                                                                        
+    if (leadUserId !== undefined) {     // If lead change requested
 
-    const updated = await Project.findByIdAndUpdate(  // Apply updates
-      req.project._id,                                // Target id
-      { $set: updates },                              // Fields to set
-      { new: true, runValidators: true }              // Return updated doc; validate
-    ).lean();                                         // As plain object
+      if (!isValidId(leadUserId)) {     // Validate id
+        return res.status(400).json({   // Respond bad request
+          error: "Invalid leadUserId."
+        });
+      }
 
-    // Ensures lead is a member if lead is changed                                               
-    if (leadUserId !== undefined) {// After lead changed...
-      await Project.updateOne(                 // Update membership if needed
-        { _id: req.project._id },              // Target project
-        { $addToSet: { members: leadUserId } } // Ensure lead is in project's members
-      );                                                                                     
-    }                                                                                        
+      // Otherwise, get old and new project lead
+      const currentLeadId = String(req.project.leadUserId);
+      const newLeadId     = String(leadUserId);
 
+      if (newLeadId === currentLeadId) { // Error if new lead is same as old lead
+        return res.status(400).json({
+          error: "This user is already the project lead."
+        });
+      }
+
+      const isExistingMember = req.project.members.some( // Checks if new lead is amongst existing members
+        (memberId) => String(memberId) === newLeadId
+      );
+
+      if (!isExistingMember) { // Error if new lead is NOT in project's members list.
+        return res.status(400).json({
+          error:
+            "Project leadership can only be transferred to an existing project member."
+        });
+      }
+
+      // Check if new lead user id is different, now check if he exists AND is active
+      const exists = await User.exists({ 
+        _id: leadUserId,
+      });
+
+      if (!exists) { // Error if selected member doesn't exist.
+        return res.status(400).json({
+          error: "The selected member does not exist."
+        });
+      }
+
+      updates.leadUserId = leadUserId; // update new lead user
+    }
+    
+
+    if (Object.keys(updates).length === 0) { // reject empty-field updates 
+      return res.status(400).json({
+        error: "Provide at least one project field to update."
+      });
+    }
+
+    // const updated = await Project.findByIdAndUpdate(  // Apply updates
+    //   req.project._id,                                // Target id
+    //   { $set: updates },                              // Fields to set
+    //   { new: true, runValidators: true }              // Return updated doc; validate
+    // ).lean();                                         // As plain object
+
+    const updated = await populateProjectUsers(  // Apply updates WITHIN 'populateProjectUsers' to get project members info
+      Project.findByIdAndUpdate(
+        req.project._id,                         // Target id
+        { $set: updates },                       // Fields to set
+        { new: true, runValidators: true }       // Return updated doc; validate 
+      )
+    ).lean();                                    // As plain object
+
+
+    if (!updated) { // Error if project not found
+      return res.status(404).json({
+        error: "Project not found."
+      });
+    }
 
 
     return res.json({ project: updated }); // Respond with updated project
@@ -159,58 +266,153 @@ export const updateMembers = async (req, res, next) => {   // Controller: add/re
   try {         
     
     // Normalize inputs to arrays (ignore null/undefined)
-    const addRaw = Array.isArray(req.body?.add) ? req.body.add : [];
+    const addRaw    = Array.isArray(req.body?.add)    ? req.body.add    : [];
     const removeRaw = Array.isArray(req.body?.remove) ? req.body.remove : [];
 
     // Then normalize to string IDs & drop falsy values (defends against "", null)
-    const addIds = addRaw.filter(Boolean).map(String);
+    const addIds    = addRaw.filter(Boolean).map(String);
     const removeIds = removeRaw.filter(Boolean).map(String);
+
+    // Checks if Ids list is empty
+    if (addIds.length === 0 && removeIds.length === 0) {
+      return res.status(400).json({
+        error: "Provide at least one user id to add or remove."
+      });
+    }
+
+
+    // Prevents same user from being added & removed in one request.
+    const conflictingId = addIds.find((id) => removeIds.includes(id));
+    if (conflictingId) {
+      return res.status(400).json({
+        error:
+          "The same user cannot be added and removed in one request."
+      });
+    }
 
 
     for (const uid of [...addIds, ...removeIds]) {  // Validate all ids
-
-      if (!isValidId(uid)) {   // If an Id is invalid
-        return res.status(400).json({ error: `Invalid user id: ${uid}` });  // Respond with 'bad' request
+      if (!isValidId(uid)) {                        // If an Id is invalid
+        return res.status(400).json({               // Respond with 'bad' request
+          error: `Invalid user id: ${uid}` 
+        });  
       }
     }                                                                                      
 
-    const allIds = [...new Set([...addIds, ...removeIds].map(String))]; // 1st: [...] merges all elements/arrays into one 
-                                                                        // 2nd: .map() converts all elements into String
-                                                                        // 3rd: "...new Set()" removes all duplicates as property of Set
-    
-    // Unique set of ids to verify existence
-    const count = await User.countDocuments({ _id: { $in: allIds } }); // .countDocuments() built into 'mongoose'
-                                                                       // count each "_id" in($in) "allIds".
 
-    if (count !== allIds.length) {  // If any IDs missing
-      return res.status(400).json({ error: "One or more user ids do not exist." }); // Respond as "bad" request
+
+    // Only users being added to project must exist.
+    const uniqueAddIds = [...new Set(addIds)];
+
+    if (uniqueAddIds.length > 0) {
+      const existingUsersCount = await User.countDocuments({
+        _id: { $in: uniqueAddIds }
+      });
+
+      if (existingUsersCount !== uniqueAddIds.length) {
+        return res.status(400).json({
+          error:
+            "One or more users being added do not exist."
+        });
+      }
     }
 
+    
     // Convert the project's lead ObjectId to a string that can safely be compared with                                              
     const leadIdStr = String(req.project.leadUserId);  
 
+
     // If any of the requested removals equals the lead's id, block the request
-    if (removeIds.some((id) => String(id) === leadIdStr)) { // condition removeIds.some() returns boolean
-      return res.status(400).json({ error: "Cannot remove the project lead from members." }); 
-    }                                                                                   
+    if (removeIds.includes(leadIdStr)) {
+      return res.status(400).json({
+        error:
+          "The project lead cannot be removed. Transfer project leadership first!" 
+      }); 
+    }     
+    
+    
+    // Gets all current project members
+    const currentMemberIds = new Set(
+      req.project.members.map((memberId) =>
+        String(memberId)
+      )
+    );
 
-    // Cast ids to ObjectId for reliable array ops (avoids casting quirks)
-    const addObjIds = addIds.map((id) => ObjectId.createFromHexString(id));
-    const removeObjIds = removeIds.map((id) => ObjectId.createFromHexString(id));
 
-    // Apply atomic updates                                                                   
-    await Project.updateOne(     // update project's membership
-      { _id: req.project._id },  // target project via project Id
-      {                                                         
-        ...(addIds.length ? { $addToSet: { members: { $each: addObjIds } } } : {}), // Add new members (de-duplicated); $addToSet adds 
-                                                                                    // new members/values to array if NOT already present 
-        ...(removeIds.length ? { $pull: { members: { $in: removeObjIds } } } : {}), // Remove old members ($pull removes 
-                                                                                    // any element in($in) 'removeIds')
-      }                                                                                      
-    );                                                                                       
+    // Prevent adding users who are already project members
+    const alreadyMember = addIds.find(
+      (userId) => currentMemberIds.has(userId)
+    );
+
+    if (alreadyMember) {
+      return res.status(409).json({
+        error: "One or more users being added are already project members."
+      });
+    }
+
+
+    // Check if the user is NOT part of the project members list
+    const nonMemberRemoval = removeIds.find(
+      (userId) => !currentMemberIds.has(userId)
+    );
+
+    if (nonMemberRemoval) { // Otherwise, notify that the member isn't in the 
+      return res.status(400).json({
+        error:
+          "One or more users being removed are not project members."
+      });
+    }
+
+
+    // Resulting set of project member AFTER removing someone
+    const resultingMemberIds = new Set(
+      currentMemberIds
+    );
+
+
+    for (const userId of addIds) {  // Adds a new project member(s)
+      resultingMemberIds.add(userId);
+    }
+
+    for (const userId of removeIds) { // Remove a project member(s) — separate operation from adding members!
+      resultingMemberIds.delete(userId);
+    }
+
+
+    if (resultingMemberIds.size < 1) { // Add/Remove project members doesn't work 
+      return res.status(400).json({
+        error: "A project must have at least ONE member."
+      });
+    }
+
+    if (!resultingMemberIds.has(leadIdStr)) { // Verifies that project leader is counted as a team member
+      return res.status(400).json({
+        error: "The project lead MUST remain a project member."
+      });
+    }
+
+         
+
+    // final members list after the adding/subtracing of members to members list
+    const finalMemberIds = [ ...resultingMemberIds].map((id) => ObjectId.createFromHexString(id));
+
+
+    await Project.updateOne( // update project's membership
+      { _id: req.project._id },
+      {
+        $set: {
+          members: finalMemberIds
+        }
+      },
+      {
+        runValidators: true
+      }
+    );
+
 
     const refreshed = await Project.findById(req.project._id).lean();    // Reload updated project, as plain object
     return res.json({ project: refreshed });                        // Respond with updated project
+
   } 
   catch (err) { // Catch and handle any errors
     next(err);                                                                               

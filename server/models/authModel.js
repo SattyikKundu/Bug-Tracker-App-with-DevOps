@@ -37,16 +37,32 @@ export const findUserByGoogleId = async (googleId) => { // find and return user 
 // NOTE: depending on login/register method, passwordHash OR googleId can have default null value
 
 export const createUser = async ({ // Create a new user
+    firstName,            // User's first name
+    lastName,             // Last name
     username,             // Username to create
     email,                // Email address
     passwordHash = null,  // Optional password hash (null when using Google OAuth)
     googleId = null       // Optional googleId (null when using local login)
   }) => {
   const doc = await User.create({ // create a 'document' for newly created user 
+    firstName: formatString(firstName),// Save first name
+    lastName:  formatString(lastName), // Save last name
     username,                          // Save username
     email: email.toLowerCase(),        // Save normalized email
     passwordHash,                      // Save hash if provided
     googleId                           // Save googleId if provided
   });
   return doc; // return newly created user document for query execution
+}
+
+function formatString(text) { // formats word/string to "sentence case": only 1st letters is caps
+  //return text.charAt(0) + text.slice(1).toLowerCase();
+
+  const trimmedText = text.trim();
+
+  return (
+    trimmedText.charAt(0).toUpperCase() +
+    trimmedText.slice(1).toLowerCase()
+  );
+
 }

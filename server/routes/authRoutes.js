@@ -37,8 +37,12 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required: [username, email, password]
+ *             required: [firstName, lastName, username, email, password]
  *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
  *               username:
  *                 type: string
  *               email:

@@ -32,36 +32,38 @@ const router = express.Router();  // Create an isolated router instance
  * /projects:
  *   post:
  *     summary: Create a project
+ *     description: Any authenticated user may create a project. The creator automatically becomes the project lead and first member.
  *     tags: [Projects]
- *     security: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required: [key, name, leadUserId]
+ *             required: [key, name]
  *             properties:
- *               key: { type: string, example: "BT" }
- *               name: { type: string, example: "Bug Tracker" }
- *               description: { type: string, example: "Internal tool" }
- *               leadUserId: { type: string, example: "64f1a2b3c4d5e6f7a8b9c0d1" }
- *               members:
- *                 type: array
- *                 items: { type: string }
+ *               key:
+ *                 type: string
+ *                 example: "BTA"
+ *                 description: Unique 2-10 character project key beginning with a letter.
+ *               name:
+ *                 type: string
+ *                 example: "Bug Tracker Application"
+ *               description:
+ *                 type: string
+ *                 example: "A bug-tracking application with DevOps integration."
  *     responses:
  *       201: { description: Project created }
  *       400: { description: Invalid input }
  *       401: { description: Unauthorized }
  *       403: { description: Forbidden }
- *       409: { description: Duplicate key }
+ *       409: { description: Duplicate project key }
  */
 router.post(       // Define POST /projects
   "/projects",     // Route path
   verifyJWT,       // Require a valid JWT (can't use route IF NOT logged in)
   loadCurrentUser, // Load current user document
-  requireRole(["admin", "manager"]),  // Only admin/manager can create new product
-  createProject                       // projectController function
+  createProject    // projectController function
 );                                                                                         
 
 // List projects current user can access
@@ -114,29 +116,65 @@ router.get(                    // Define GET /projects/:id
  * @swagger
  * /projects/{id}:
  *   patch:
- *     summary: Update project name/description/lead
+ *     summary: Update project details or transfer project leadership
+ *     description: >
+ *       This is a partial update. Only include fields that should be changed.
+ *       The new project lead must already be a project member.
  *     tags: [Projects]
  *     parameters:
  *       - in: path
  *         name: id
- *         schema: { type: string }
+ *         schema:
+ *           type: string
  *         required: true
+ *         description: MongoDB ObjectId of the project
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             minProperties: 1
  *             properties:
- *               name: { type: string }
- *               description: { type: string }
- *               leadUserId: { type: string }
+ *               name:
+ *                 type: string
+ *                 minLength: 1
+ *                 description: New project name. Omit when not changing it.
+ *               description:
+ *                 type: string
+ *                 description: New project description. Omit when not changing it.
+ *               leadUserId:
+ *                 type: string
+ *                 description: MongoDB ObjectId of an existing project member.
+ *           examples:
+ *             transferLeadership:
+ *               summary: Transfer project leadership only
+ *               value:
+ *                 leadUserId: "6a66a6f9bce099059cddc1c4"
+ *             updateProjectDetails:
+ *               summary: Update name and description
+ *               value:
+ *                 name: "Updated Bug Tracker Application"
+ *                 description: "Updated project description."
+ *             updateNameOnly:
+ *               summary: Update project name only
+ *               value:
+ *                 name: "New Project Name"
+ *             clearDescription:
+ *               summary: Clear the optional description
+ *               value:
+ *                 description: ""
  *     responses:
- *       200: { description: Updated project }
- *       400: { description: Invalid input }
- *       401: { description: Unauthorized }
- *       403: { description: Forbidden }
- *       404: { description: Not found }
+ *       200:
+ *         description: Project updated successfully
+ *       400:
+ *         description: Invalid input or no valid update fields provided
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Project lead or administrator access required
+ *       404:
+ *         description: Project or selected user not found
  */
 router.patch(         // Define PATCH /projects/:id
   "/projects/:id",    // Route with :id param

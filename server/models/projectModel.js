@@ -19,7 +19,7 @@ const ProjectSchema = new Schema( // Define the Project schema
       unique: true,         // Enforce uniqueness across projects
       minlength: 2,         // Minimum length
       maxlength: 10,        // Maximum length
-      match: /^[A-Z0-9]+$/, // Only A–Z and digits
+      match: /^[A-Z][A-Z0-9]{1,9}$/, // Only A–Z and digit (starts with capital letter)
     },
     name: {             // Human-friendly project name
       type: String,     // String type
@@ -54,8 +54,5 @@ const ProjectSchema = new Schema( // Define the Project schema
   { timestamps: true, versionKey: false }// Add createdAt/updatedAt timestamps; hide version key
 );// End schema
 
-//ProjectSchema.index({ key: 1 }, { unique: true });// Explicit unique index for safety
-//ProjectSchema.index({ leadUserId: 1 });           // Index for lead-based queries
-//ProjectSchema.index({ members: 1 });              // Index for membership queries
 
 export default mongoose.model("Project", ProjectSchema, "projects");// Compile and export the Project model
