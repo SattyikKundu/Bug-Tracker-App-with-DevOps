@@ -89,42 +89,107 @@ export const createProject = async (req, res, next) => {  // Controller: create 
   }                                                                                          
 };                                                                                           
 
-export const listProjects = async (req, res, next) => {   // Controller: list projects for current user
+   
 
-  try { 
+/* Returns the projects available to the logged-in user.
+ *
+ * A global admin can view every project.
+ *
+ * A non-admin can view projects where they are:
+ * - the project lead, or
+ * - an existing project member.
+ *
+ * Each returned project also contains currentUserProjectRole so the
+ * frontend can display a Lead, Member, or Admin Access tag.
+ */
+export const listProjects = async (req, res, next) => {
+  try {
 
-    const user = req.authUser;    // Read current user from 'req'
-    
-    if (user.role === "admin") {                // If user's role is admin...
-      const projects = await populateProjectLead(
-        Project.find().sort({ createdAt: -1 })  // Fetch all projects
-      ).lean(); 
-      return res.json({ projects });            // Respond with list
-    }                                                                               
+    const currentUser = req.authUser; // The full logged-in user document should already 
+                                      // have been attached by loadCurrentUser middleware.
 
-    const uid = user._id; // Current user's id
-    
-    const projects = await populateProjectLead(
-        Project.find({   // Find projects accessible by user
-          $or: [                   // Match any of these:
-            { leadUserId: uid },          // Lead
-            { members: uid },             // Member
-          ],                           // End OR list
-        })                             // End find
-        .sort({ createdAt: -1 })  // Sort newest first
-    ).lean();                     // Return plain objects
+    if (!currentUser) {
+      return res.status(401).json({
+        error: "Authenticated user context is missing."
+      });
+    }
 
-    return res.json({ projects }); // Respond with list
+    // Convert user's ObjectId to string for comparing with project ObjectIds.
+    const currentUserId = String(currentUser._id);
+
+
+    const isGlobalAdmin = currentUser.role === "admin"; // A global admin can retrieve every project.
+
+    /* Global admins receive every project.
+     *
+     * Other users receive only projects where:
+     * - they are the lead, or
+     * - their user ID appears in members array.
+     */
+    const projectFilter = isGlobalAdmin  // filter to determine if current user is admin, or a regular user (lead or member) 
+      ? {}
+      : { $or: [ { leadUserId: currentUser._id }, { members: currentUser._id } ] };
+
+
+    // Filter available projects based on if user is admin OR not
+    const projects = await Project.find(projectFilter).sort({ createdAt: -1 }).lean();
+
+
+    // Add a calculated role to every returned project.
+    //
+    // This value is not saved in MongoDB because it depends
+    // on which user is currently making the request.
+    const projectsWithCurrentUserRole = projects.map((project) => {
+
+      // The project lead is also normally included in members, 
+      // so lead check must happen BEFORE member check.
+      const isProjectLead =
+        String(project.leadUserId) === currentUserId;
+
+      const isProjectMember =
+        project.members?.some((memberId) => {
+          return String(memberId) === currentUserId;
+        }) ?? false;
+
+      let currentUserProjectRole = null;
+
+      if (isProjectLead) { // Logged-in user leads project.
+        currentUserProjectRole = "lead";
+      } 
+      else if (isProjectMember) { // Logged-in user belongs to project but isn't its lead.
+        currentUserProjectRole = "member";
+      } 
+      else if (isGlobalAdmin) {
+        // A global admin can see every project even when 
+        // they're not personally assigned to that project.
+        currentUserProjectRole = "admin_access";
+      }
+
+      return {
+        ...project,
+
+        /* Possible values:
+         * "lead"
+         * "member"
+         * "admin_access"
+         *
+         * A non-admin should NEVER receive null because database
+         * filter only returns projects they lead or belong to.
+         */
+        currentUserProjectRole
+      };
+    });
+
+    return res.status(200).json({
+      projects: projectsWithCurrentUserRole
+    });
   } 
-  catch (err) { 
+  catch (err) {
     next(err);
-  }                                                                                          
-};                                                                                          
+  }
+};
 
 
-// export const getProject = async (req, res) => {   // Controller: get single project (project already loaded)
-//   return res.json({ project: req.project });      // Respond with attached project
-// };                                                                                           
 
 export const getProject = async (req, res, next) => { // Controller: get single project (project already loaded)
   try {                                               // Respond with attached project (with populated users)
@@ -419,10 +484,10 @@ export const updateMembers = async (req, res, next) => {   // Controller: add/re
   }                                                                                           
 };                                                                                            
 
+
+
 export const deleteProject = async (req, res, next) => {// Controller: delete a project (admin only)
-
   try {                                                                                   
-
     await Project.deleteOne({ _id: req.project._id });      // Remove project, based on its Id, from DB
     // NOTE: Consider later handling soft-delete or cascade 
     //       behavior when Issues are implemented           

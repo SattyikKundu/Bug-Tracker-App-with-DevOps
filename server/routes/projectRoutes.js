@@ -75,7 +75,7 @@ router.post(       // Define POST /projects
  *     tags: [Projects]
  *     responses:
  *       200: { description: List of projects }
- *       401: { description: Unauthorized }
+ *       401: { description: Unauthorized     }
  */
 router.get(     // Define GET /projects
   "/projects",  // Route path to get all projects for current user
@@ -190,7 +190,7 @@ router.patch(         // Define PATCH /projects/:id
  * @swagger
  * /projects/{id}/members:
  *   post:
- *     summary: Add or remove project members
+ *     summary: Add or remove project members (admin/lead only)
  *     tags: [Projects]
  *     parameters:
  *       - in: path
@@ -231,7 +231,7 @@ router.post(               // Define POST /projects/:id/members
  * @swagger
  * /projects/{id}:
  *   delete:
- *     summary: Delete a project (admin only)
+ *     summary: Delete a project (admin/lead only)
  *     tags: [Projects]
  *     parameters:
  *       - in: path

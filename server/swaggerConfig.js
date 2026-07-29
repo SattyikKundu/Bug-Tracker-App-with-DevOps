@@ -27,6 +27,85 @@ const options = { // Define Swagger configuration options
           scheme: 'bearer',   // Defines it as a Bearer Token (used for JWTs)
           bearerFormat: 'JWT' // Optional — helps Swagger indicate this is a JWT, not a random token
         }
+      },
+
+      // Reusable schemas referenced by route documentation.
+      schemas: {
+        ProjectUserSearchResult: { // Sets up sceheme/format for searching for registered users
+          type: "object",
+
+          properties: {
+            _id: {  // user's account id
+              type:        "string",
+              description: "MongoDB ObjectId of the registered user",
+              example:      "6a10f576236zc8h38bhf3cd6"
+            },
+
+            firstName: {  // account user's first name
+              type:        "string",
+              description: "Registered user's first name",
+              example:     "Philly"
+            },
+
+            lastName: { // account user's last name
+              type:        "string",
+              description: "Registered user's last name",
+              example:     "Boyle"
+            },
+
+            username: { // account user's username
+              type:        "string",
+              description: "Registered user's username",
+              example:     "PhiliBoy"
+            },
+
+            isProjectMember: {  // checks if searched user is already a project member
+              type:        "boolean",
+              description: "Whether the user is already the project lead or a project member",
+              example:     true
+            },
+
+            projectRole: {  // IF user is project member, it shows role (user/lead), or null
+              type:        "string",
+              nullable:    true,
+              description: "The user's project role, or null when the user is not part of the project",
+              enum:        ["lead", "member"],
+              example:     "member"
+            }
+          }
+        },
+
+        
+        SearchPagination: { // Pagination rules WHEN project lead returns user search results
+          type: "object",
+
+          properties: {
+            page: {    // defines minimum results per page      
+              type:    "integer",
+              minimum: 1,
+              example: 1
+            },
+
+            limit: {  // maximum returned search results per page
+              type: "integer",
+              minimum: 1,
+              maximum: 25,
+              example: 3
+            },
+
+            hasMore: { // checks if there's more in search results not being shown
+              type: "boolean",
+              example: false
+            },
+
+            nextPage: { // toggles button/link for next page for additional search results
+              type: "integer",
+              nullable: true,
+              minimum: 1,
+              example: null
+            }
+          }
+        }
       }
     },
   },
