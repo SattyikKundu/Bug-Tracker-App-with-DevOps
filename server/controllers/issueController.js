@@ -1,25 +1,49 @@
 // server/controllers/issueController.js
 
-import mongoose from "mongoose";      // For importing functionalities for interacting with MongoDB
+import mongoose   from "mongoose";      // For importing functionalities for interacting with MongoDB
 
 import Issue, 
     { STATUSES, 
       TYPES, 
       PRIORITIES, 
-      SEVERITIES } from "../models/issueModel.js"; // imports Issue model + created enums
+      SEVERITIES } from "../models/issueModel.js";    // imports Issue model + created enums
 
-import Project from "../models/projectModel.js";  // imports Project model
-import User from "../models/user.js";             // imports User model
+import Project    from "../models/projectModel.js";   // imports Project model
+import User       from "../models/user.js";          // imports User model
   
+
 const isValidId = (id) => { // validate id helper function
   return mongoose.Types.ObjectId.isValid(String(id));
 }
+
+const normalizeLabel = (label) => { // Normalize one issue label
+  if (typeof label !== "string") {   // Reject non-string values
+    return "";
+  }
+  return label.trim().toLowerCase(); // Trim spaces and store lowercase
+};
+
+
+const normalizeLabels = (labels) => { // Normalize and de-duplicate an array of labels
+  if (!Array.isArray(labels)) {
+    return [];
+  }
+  return [
+    ...new Set(
+      labels
+        .map(normalizeLabel) // Normalize every label
+        .filter(Boolean)     // Remove empty labels
+    )
+  ];
+};
+
 
 const userCanEditIssue = (user, project, issue)=>{ // Checks if user is allowed to edit issue for project
 
   if (!user || !project || !issue) { // end function if any inputs missing
     return false;
-  }              
+  }
+
   if(user.role==="admin") { // If user is Admin, grant full access
     return true;                   
   }
@@ -29,10 +53,29 @@ const userCanEditIssue = (user, project, issue)=>{ // Checks if user is allowed 
   const isLead   = String(project.leadUserId)===uid;         // Check's if user is project lead
   const isMember = project.members.some(m=>String(m)===uid); // Check is user is a project team member
 
+
   // Check is user is a Reporter (One who reports the issue) OR assignee (one who fixes the issue).
   const isReporterOrAssignee = String(issue.reporterId)===uid ||(issue.assigneeId && String(issue.assigneeId)===uid); 
   return isLead || (isMember && isReporterOrAssignee);   // Allowed if user is a lead OR a (member + reporter/assignee)
+
 };
+
+
+// Only the project lead or global admin may change an assignee after an issue has been created.
+const userCanManageAssignee = (user, project) => {
+
+  if (!user || !project) { // false IF not neither user nor project matches
+    return false;
+  }
+
+  if (user.role === "admin") {
+    return true;
+  }
+
+  return String(project.leadUserId) === String(user._id);
+};
+
+
 
 // POST /projects/:pid/issues  (project must be loaded & membership checked in routes)
 export const createIssue = async (req,res,next)=>{
@@ -60,8 +103,7 @@ export const createIssue = async (req,res,next)=>{
       priority="medium", 
       severity="major",
       assigneeId=null, 
-      labels=[], 
-      watchers=[]
+      labels=[]
     } = req.body||{};  // Destructure values from request body (which also has default values if not provided)
 
     if(!title?.trim()) { // return error if title is missing
@@ -79,58 +121,93 @@ export const createIssue = async (req,res,next)=>{
         return res.status(400).json({error:"Invalid severity."});
     }
 
+
+   /* Labels are optional during issue creation.
+    *
+    * Every label must be a string. Labels are:
+    * + trimmed;
+    * + converted to lowercase;
+    * + protected from duplicates;
+    * + excluded when empty.
+    */
+    if (!Array.isArray(labels)) {
+      return res.status(400).json({
+        error: "labels must be an array."
+      });
+    }
+
+    if (labels.some((label) => typeof label !== "string")) {
+      return res.status(400).json({
+        error: "Every label must be a string."
+      });
+    }
+
+    const normalizedLabels = normalizeLabels(labels);
+
+
     // Membership gate already done in routes; reporter is current user
     const reporterId = req.authUser._id;    // Reporter = current user
 
-    // Validate/verify assignee + watchers (if provided)
-    const people = [                        // create array of assignee + watchers
-      ...(assigneeId ? [assigneeId] : []),  // include assigneeId if present
-      ...watchers                           // include all watchers' ids
-    ].filter(Boolean)                       // Drop falsy values (null, "", undefined)
-    .map(String);                           // Normalize all ids to strings
 
-    for(const id of people){  // validate each users' id in people array
-        if(!isValidId(id)) {
-            return res.status(400).json({error:`Invalid user id: ${id}`}); 
-        }
-    } 
 
-    if(people.length){ // Check if 1 or more user ids is missing via checking user id count match
-      const found = await User.countDocuments({_id:{ $in: people }}); // get user Id count from database
-      if(found!==people.length){ // compare count
-        return res.status(400).json({error:"One or more user ids do not exist."});
+
+   /* During creation, any project member may select an assignee.
+    *
+    * The chosen assignee may be:
+    * + the reporter;
+    * + another project member;
+    * + the project lead; or
+    * + unassigned when assigneeId is null or omitted.
+    *
+    * When an assignee is selected, they must:
+    * + have a valid user ID; and
+    * + already belong to this project.
+    */
+    if (assigneeId !== undefined && assigneeId !== null) {
+      if (!isValidId(assigneeId)) {
+        return res.status(400).json({ error: "Invalid assigneeId." });
+      }
+
+      // Only the project lead or an existing project member can be assigned.
+      const allowedAssigneeIds = new Set([
+        String(project.leadUserId),
+        ...(project.members ?? []).map((memberId) => String(memberId))
+      ]);
+
+      if (!allowedAssigneeIds.has(String(assigneeId))) {
+        return res.status(400).json({ error: "Assignee must be the project lead or an existing project member." });
       }
     }
 
-    // If an assignee is provided, require they are a project member or the lead
-    if (assigneeId) {
-      const allowed = new Set([ String(project.leadUserId), ...project.members.map(m => String(m)) ]);
-      if (!allowed.has(String(assigneeId))) {
-        return res.status(400).json({ error: "Assignee must be a project member or the project lead." });
-      }
-    }
 
-    // Build watchers: watchers ∪ {reporter} ∪ {assignee?}, then restrict to project membership
-    const baseWatchers = new Set([
-      ...watchers.map(String),
-      String(reporterId),
-      assigneeId ? String(assigneeId) : null
-    ].filter(Boolean));
-    const allowedWatch = new Set([ String(project.leadUserId), ...project.members.map(m => String(m)) ]);
-    const finalWatchers = [...baseWatchers].filter(id => allowedWatch.has(id));
+   /* Automatically add the reporter as a watcher.
+    *
+    * When the issue has an initial assignee, automatically add that
+    * assignee as well. Set prevents duplicates when the reporter
+    * assigns the issue to themselves.
+    */
+    const automaticWatcherIds = new Set([
+      String(reporterId)
+    ]);
+
+    if (assigneeId !== undefined && assigneeId !== null) {
+      automaticWatcherIds.add(String(assigneeId));
+    }    
+
+
 
     // Create 'issue' to pass on (key generated by pre('validate') hook)
     const issue = await Issue.create({
       projectId: pid, // parent project where issue lies
-      title, 
-      description, 
+      title:  title.trim(), 
+      description: String(description).trim(), 
       type, 
       priority, 
       severity,
       reporterId, // current user Id (one who reported)
-      assigneeId: assigneeId || null, // Null = unassigned (triage-first)
-      labels,
-      watchers: finalWatchers                       // Deduped & membership-restricted
+      assigneeId: assigneeId ?? null, // Null = unassigned (triage-first)
+      labels: normalizedLabels,
+      watchers: [...automaticWatcherIds]            // Deduped & membership-restricted
                                                     // Mongoose will cast to ObjectId
     });
 
@@ -213,9 +290,9 @@ export const updateIssue = async (req,res,next)=>{
         type, 
         priority,
         severity, 
-        assigneeId, 
-        labels, 
-        watchers 
+        assigneeId//, 
+        // labels, 
+        // watchers 
     } = req.body||{}; // Destructure inputs from request body
 
     if(title!==undefined){  // Checks if title is valid
@@ -249,78 +326,58 @@ export const updateIssue = async (req,res,next)=>{
         issue.severity = severity; 
     }
     
-    if(labels!==undefined){ // checks if labels is valid
-        if(!Array.isArray(labels)){
-            return res.status(400).json({error:"labels must be array."}); 
-        } 
-        issue.labels = labels; 
-    }
 
-    if(watchers!==undefined){  // validate watchers if provided
-      if(!Array.isArray(watchers)){
-         return res.status(400).json({error:"watchers must be array."});
+    
+    // Changing assigneeId after creation is a management action.
+    //
+    // Only:
+    // + the project lead; or
+    // + a global admin
+    //
+    // may assign, reassign, or unassign an existing issue.
+    if (assigneeId !== undefined) {
+      if (!userCanManageAssignee(user, project)) {
+        return res.status(403).json({
+          error: "Only the project lead or a global admin may change the issue assignee."
+        });
       }
 
-      const ws = [...new Set(watchers // put watchers into an array of unique ids
-        .filter(Boolean)   // 1) remove falsy entries: undefined, null, '', 0, false, NaN
-        .map(String)       // 2) normalize every id to a string (e.g., ObjectId -> '64f...abc')
-      )];                  // 3) wrap in Set to drop duplicates, then spread back to a plain array
-
-      for(const id of ws){ // checks is each id is valid
-        if(!isValidId(id)){ 
-            return res.status(400).json({error:`Invalid watcher id: ${id}`}); 
-        }
-      }
-       
-      if(ws.length){ // checks if one or more watcher ids don't exists via comparing counts
-        const n = await User.countDocuments({_id:{ $in: ws }}); // counts each id in 'ws'
-        if(n!==ws.length){  // compares with length of 'ws'
-            return res.status(400).json({error:"One or more watcher ids do not exist."});
-        } 
-      }
-      
-      //issue.watchers = ws.map(id=>ObjectId.createFromHexString(id)); // Store as ObjectId[]
-      issue.watchers = ws; // Let Mongoose cast strings -> ObjectId on save
-    }
-
-    if (assigneeId !== undefined) { // Validate assignee if provided
-
-      if (assigneeId !== null && !isValidId(assigneeId)) { // If assignee Id invalid...
-        return res.status(400).json({error:"Invalid assigneeId."});
-      }
-
-      if (assigneeId) { // If assignee Id valid...
-        const exists = await User.exists({ _id:assigneeId }); 
-        if(!exists){
-             return res.status(400).json({ error:"Assignee does not exist." }); 
+      // null means the lead/admin is intentionally making the issue unassigned.
+      if (assigneeId !== null) {
+        if (!isValidId(assigneeId)) {
+          return res.status(400).json({ error: "Invalid assigneeId." });
         }
 
-        const allowedAssign = new Set([ // Must also be project member or lead
-          String(project.leadUserId), 
-          ...project.members.map(member => String(member)) 
+        // The new assignee must already be part of the project.
+        const allowedAssigneeIds = new Set([
+          String(project.leadUserId),
+          ...project.members.map((memberId) => String(memberId))
         ]);
 
-        if (!allowedAssign.has(String(assigneeId))) { // Checks if provided assigneeId is allowed to be assigned issue
-          return res.status(400).json({ error: "Assignee must be a project member or the project lead." });
+        if (!allowedAssigneeIds.has(String(assigneeId))) {
+          return res.status(400).json({ error: "Assignee must be an existing project member." });
         }
 
+
+        
+        // Confirm that the selected project participant still exists.
+        const existingAssignee = await User.exists({
+          _id: assigneeId
+        });
+
+        if (!existingAssignee) {
+          return res.status(400).json({
+            error: "Assignee must be a registered user."
+          });
+        }
       }
 
-      // attach assignedId to issue (triage can set null)
-      issue.assigneeId = assigneeId ? String(assigneeId) : null; // Mongoose will cast
+      // null = Unassigned. Otherwise, Mongoose casts the string ID to ObjectId.
+      issue.assigneeId = assigneeId === null
+        ? null
+        : String(assigneeId);
     }
 
-    // Ensure watchers include reporter & (new) assignee, and stay within project membership
-    const allowed = new Set([ String(project.leadUserId), ...project.members.map(member => String(member)) ]);
-    const current = (issue.watchers || []).map(String);
-
-    const enriched = new Set([
-       ...current,
-       String(issue.reporterId),
-       issue.assigneeId ? String(issue.assigneeId) : null
-    ].filter(Boolean));
-
-    issue.watchers = [...enriched].filter(id => allowed.has(id)); // casted on save
 
     const saved = await issue.save();          // Saves created 'issue' to MongoDB database to 'issues' collection 
     return res.json({issue:saved.toObject()}); // Return updated object sent to database
@@ -329,6 +386,141 @@ export const updateIssue = async (req,res,next)=>{
     next(err); 
   }
 };
+
+
+
+// POST /issues/:id/labels
+export const addIssueLabel = async (req, res, next) => {
+  try {
+    const label = normalizeLabel(req.body?.label);
+
+    if (!label) {
+      return res.status(400).json({
+        error: "label is required and must be a non-empty string."
+      });
+    }
+
+    const updatedIssue = await Issue.findByIdAndUpdate(
+      req.issue._id,
+      {
+        $addToSet: {
+          labels: label
+        }
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    ).lean();
+
+    return res.status(200).json({
+      issue: updatedIssue
+    });
+  }
+  catch (err) {
+    next(err);
+  }
+};
+
+
+// DELETE /issues/:id/labels/:label
+export const deleteIssueLabel = async (req, res, next) => {
+  try {
+    const label = normalizeLabel(req.params.label);
+
+    if (!label) {
+      return res.status(400).json({
+        error: "A valid label is required."
+      });
+    }
+
+    const labelExists = (req.issue.labels ?? []).some(
+      (existingLabel) => normalizeLabel(existingLabel) === label
+    );
+
+    if (!labelExists) {
+      return res.status(404).json({
+        error: "Label not found on this issue."
+      });
+    }
+
+    const updatedIssue = await Issue.findByIdAndUpdate(
+      req.issue._id,
+      {
+        $pull: {
+          labels: label
+        }
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    ).lean();
+
+    return res.status(200).json({
+      issue: updatedIssue
+    });
+  }
+  catch (err) {
+    next(err);
+  }
+};
+
+
+// POST /issues/:id/watch
+export const watchIssue = async (req, res, next) => {
+  try {
+    const updatedIssue = await Issue.findByIdAndUpdate(
+      req.issue._id,
+      {
+        $addToSet: {
+          watchers: req.authUser._id
+        }
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    ).lean();
+
+    return res.status(200).json({
+      message: "You are now watching this issue.",
+      issue: updatedIssue
+    });
+  }
+  catch (err) {
+    next(err);
+  }
+};
+
+
+// DELETE /issues/:id/watch
+export const unwatchIssue = async (req, res, next) => {
+  try {
+    const updatedIssue = await Issue.findByIdAndUpdate(
+      req.issue._id,
+      {
+        $pull: {
+          watchers: req.authUser._id
+        }
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    ).lean();
+
+    return res.status(200).json({
+      message: "You are no longer watching this issue.",
+      issue: updatedIssue
+    });
+  }
+  catch (err) {
+    next(err);
+  }
+};
+
+
 
 // POST /issues/:id/transition (loader + membership checked first, then editing permission policy enforced)
 export const transitionStatus = async (req,res,next)=>{

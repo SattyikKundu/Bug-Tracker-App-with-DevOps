@@ -4,10 +4,10 @@ import mongoose from "mongoose";         // Mongoose for MongoDB schema/model
 import Project from "./projectModel.js"; // import Project model
 const { Schema } = mongoose;             // Extract Schema helper
 
-const TYPES      = ["bug","task","story"];                               // Allowed issues' types
-const STATUSES   = ["open","in_progress","blocked","resolved","closed"]; // Allowed issues' statuses
-const PRIORITIES = ["low","medium","high","critical"];                   // Allowed issues' priority level
-const SEVERITIES = ["minor","major","critical"];                         // Allowed issues' severity-level
+const TYPES      = ["bug"  ,"task"       ,"story"                         ]; // Allowed issues' types
+const STATUSES   = ["open" ,"in_progress","blocked", "resolved",  "closed"]; // Allowed issues' statuses
+const PRIORITIES = ["low"  ,"medium"     ,"high",    "critical"           ]; // Allowed issues' priority level
+const SEVERITIES = ["minor","major"      ,"critical"                      ]; // Allowed issues' severity-level
 
 const AttachmentSchema = new Schema(  // File metadata subdoc
     { 
@@ -108,22 +108,33 @@ const IssueSchema = new Schema(  // Main Issue schema
             required:true,
             index:true
         },   
-        assigneeId:{ // issue assigner's Id
+        assigneeId:{ // ID of the project member currently responsible for the issue
             type:Schema.Types.ObjectId,
             ref:"Users",
             default:null,
             index:true
         },     
-        labels:{ // issue tags
-            type:[String],
-            default:[],
-            index:true
+        labels:{ // normalized issue tags
+            type: [
+                {
+                    type: String,
+                    trim: true,
+                    lowercase: true
+                }
+            ],
+            default: [],
+            index: true
         },    
-        watchers:[{ // users notified of issue
-            type:Schema.Types.ObjectId,
-            ref:"Users",
-            index:true
-        }],                
+        watchers:{ // users watching and receiving issue notifications
+            type: [
+                {
+                    type: Schema.Types.ObjectId,
+                    ref: "Users"
+                }
+            ],
+            default: [],
+            index: true
+        },                
         attachments:{ // attached files
             type:[AttachmentSchema],
             default:[]

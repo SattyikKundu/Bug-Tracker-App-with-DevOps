@@ -12,10 +12,14 @@ import {
 import { loadIssue } from "../middleware/issueLoader.js";// Issue loader helper method
 
 import { 
-    createIssue,   // create issue for a project
-    listIssues,    // lists existing issues for a project
-    getIssue,      // fetch issue for a parent project
-    updateIssue,   // update an existing project's issue
+    createIssue,      // create issue for a project
+    listIssues,       // lists existing issues for a project
+    getIssue,         // fetch issue for a parent project
+    updateIssue,      // update an existing project's issue
+    addIssueLabel,    // adding label to an issue
+    deleteIssueLabel, // deleting an issue label
+    watchIssue,       // assign someone/self to watch an issue
+    unwatchIssue,     // remove watcher from an issue
     transitionStatus  // checks transition status of an issue (for logging purposes)
     } from "../controllers/issueController.js"; // issue Controller methods
 
@@ -53,9 +57,23 @@ const router = express.Router(); // New express router
  *               type: { type: string, example: "bug" }
  *               priority: { type: string, example: "high" }
  *               severity: { type: string, example: "major" }
- *               assigneeId: { type: string }
- *               labels: { type: array, items: { type: string } }
- *               watchers: { type: array, items: { type: string } }
+ *               assigneeId:
+ *                  type: string
+ *                  nullable: true
+ *                  description: >
+ *                      Optional ID of the project lead or an existing project member.
+ *                      Send null or omit this field to leave the issue unassigned.
+ *                  example: "507f1f77bcf86cd799439011"
+ *               labels:   
+ *                  type: array
+ *                  description: >
+ *                      Optional issue labels. Labels are trimmed, converted to lowercase,
+ *                      and de-duplicated.
+ *                  items:
+ *                      type: string
+ *                  example:
+ *                      - frontend
+ *                      - login
  *     responses:
  *       201: { description: Issue created }
  *       400: { description: Invalid input }
@@ -63,12 +81,14 @@ const router = express.Router(); // New express router
  *       403: { description: Forbidden }
  *       404: { description: Not found }
  */
-router.post("/projects/:pid/issues", // POST method used to create issue in a project 
-            verifyJWT, 
-            loadCurrentUser, 
-            loadProject, 
-            requireProjectMemberOrAdmin, 
-            createIssue);
+router.post(
+    "/projects/:pid/issues", // POST method used to create issue in a project 
+    verifyJWT, 
+    loadCurrentUser, 
+    loadProject, 
+    requireProjectMemberOrAdmin, 
+    createIssue
+);
 
 // List issues in a project
 /**
@@ -102,7 +122,14 @@ router.post("/projects/:pid/issues", // POST method used to create issue in a pr
  */
 
 // Lists for a current project (via project Id)
-router.get("/projects/:pid/issues", verifyJWT, loadCurrentUser, loadProject, requireProjectMemberOrAdmin, listIssues);
+router.get(
+    "/projects/:pid/issues", 
+    verifyJWT, 
+    loadCurrentUser, 
+    loadProject, 
+    requireProjectMemberOrAdmin, 
+    listIssues
+);
 
 // Get a single issue
 /**
@@ -124,7 +151,14 @@ router.get("/projects/:pid/issues", verifyJWT, loadCurrentUser, loadProject, req
  */
 
 // Find specific issue via id
-router.get("/issues/:id", verifyJWT, loadCurrentUser, loadIssue, requireProjectMemberOrAdmin, getIssue);
+router.get(
+    "/issues/:id", 
+    verifyJWT, 
+    loadCurrentUser, 
+    loadIssue, 
+    requireProjectMemberOrAdmin, 
+    getIssue
+);
 
 // Update an issue
 /**
@@ -132,6 +166,11 @@ router.get("/issues/:id", verifyJWT, loadCurrentUser, loadIssue, requireProjectM
  * /issues/{id}:
  *   patch:
  *     summary: Update issue fields
+ *     description: >
+ *       Updates editable issue fields. Reporters and assignees may update an
+ *       issue when permitted by the controller policy, but only the project
+ *       lead or global admin may change assigneeId. reporterId cannot be
+ *       changed.
  *     tags: [Issues]
  *     parameters:
  *       - in: path
@@ -150,9 +189,14 @@ router.get("/issues/:id", verifyJWT, loadCurrentUser, loadIssue, requireProjectM
  *               type: { type: string }
  *               priority: { type: string }
  *               severity: { type: string }
- *               assigneeId: { type: string }
- *               labels: { type: array, items: { type: string } }
- *               watchers: { type: array, items: { type: string } }
+ *               assigneeId:
+ *                 type: string
+ *                 nullable: true
+ *                 description: >
+ *                   Changes the issue assignee after creation. Only the project lead or
+ *                   a global admin may update this field. Send null to make the issue
+ *                   unassigned.
+ *                   example: "507f1f77bcf86cd799439011"
  *     responses:
  *       200: { description: Updated issue }
  *       400: { description: Invalid input }
@@ -161,7 +205,58 @@ router.get("/issues/:id", verifyJWT, loadCurrentUser, loadIssue, requireProjectM
  *       404: { description: Not found }
  */
 // Update the data of an existing issue
-router.patch("/issues/:id", verifyJWT, loadCurrentUser, loadIssue, requireProjectMemberOrAdmin, updateIssue);
+router.patch(
+    "/issues/:id",
+    verifyJWT, 
+    loadCurrentUser, 
+    loadIssue, 
+    requireProjectMemberOrAdmin, 
+    updateIssue
+);
+
+
+// Add one normalized label to an issue
+router.post(
+  "/issues/:id/labels",
+  verifyJWT,
+  loadCurrentUser,
+  loadIssue,
+  requireProjectMemberOrAdmin,
+  addIssueLabel
+);
+
+// Delete one label from an issue
+router.delete(
+  "/issues/:id/labels/:label",
+  verifyJWT,
+  loadCurrentUser,
+  loadIssue,
+  requireProjectMemberOrAdmin,
+  deleteIssueLabel
+);
+
+
+// Add the logged-in user to the issue's watchers
+router.post(
+  "/issues/:id/watch",
+  verifyJWT,
+  loadCurrentUser,
+  loadIssue,
+  requireProjectMemberOrAdmin,
+  watchIssue
+);
+
+
+// Remove the logged-in user from the issue's watchers
+router.delete(
+  "/issues/:id/watch",
+  verifyJWT,
+  loadCurrentUser,
+  loadIssue,
+  requireProjectMemberOrAdmin,
+  unwatchIssue
+);
+
 
 // Transition status
 /**
@@ -192,6 +287,13 @@ router.patch("/issues/:id", verifyJWT, loadCurrentUser, loadIssue, requireProjec
  *       404: { description: Not found }
  */
 // Track transition of issue's status (for an audit trail)
-router.post("/issues/:id/transition", verifyJWT, loadCurrentUser, loadIssue, requireProjectMemberOrAdmin, transitionStatus);
+router.post(
+    "/issues/:id/transition", 
+    verifyJWT, 
+    loadCurrentUser, 
+    loadIssue, 
+    requireProjectMemberOrAdmin, 
+    transitionStatus
+);
 
-export default router;                                          // Export router
+export default router;  // Export router

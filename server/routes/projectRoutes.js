@@ -12,6 +12,7 @@ import { loadCurrentUser,
 import { createProject, 
          listProjects, 
          getProject, 
+         getAssignableProjectUsers,
          updateProject, 
          updateMembers, 
          deleteProject } from "../controllers/projectController.js"; // Import functions from project controller
@@ -110,6 +111,84 @@ router.get(                    // Define GET /projects/:id
   requireProjectMemberOrAdmin, // rbac.js (role-based-access-control) middleware: enforce access (member/lead/admin)
   getProject                   // projectController function: returns project
 );                                                                                       
+
+
+
+// Get users who CAN be assigned an issue in this project
+/**
+ * @swagger
+ * /projects/{id}/assignable-users:
+ *   get:
+ *     summary: List project users who can be assigned an issue
+ *     description: >
+ *       Returns only the selected project's current lead and existing
+ *       members. The response is intended for an issue-assignee dropdown.
+ *       It does not return unrelated registered users.
+ *     tags: [Projects]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: MongoDB ObjectId of the project
+ *         schema:
+ *           type: string
+ *           example: "6a66966b2356fadc7c37e0ec"
+ *     responses:
+ *       200:
+ *         description: Assignable project users returned successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 projectId:
+ *                   type: string
+ *                   example: "6a66966b2356fadc7c37e0ec"
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: "6a66f536236ec8c39baf3cd3"
+ *                       firstName:
+ *                         type: string
+ *                         example: "Johnny"
+ *                       lastName:
+ *                         type: string
+ *                         example: "Buckles"
+ *                       username:
+ *                         type: string
+ *                         example: "JDux"
+ *                       projectRole:
+ *                         type: string
+ *                         enum:
+ *                           - lead
+ *                           - member
+ *                         example: "member"
+ *       400:
+ *         description: Invalid project ID
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: User does not have access to this project
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Unexpected server error
+ */
+router.get(
+  "/projects/:id/assignable-users",
+  verifyJWT,
+  loadCurrentUser,
+  loadProject,
+  requireProjectMemberOrAdmin,
+  getAssignableProjectUsers
+);
+
+
+
 
 // Update basic project fields
 /**

@@ -212,6 +212,96 @@ export const getProject = async (req, res, next) => { // Controller: get single 
 };
 
 
+/* Return users who may be assigned an issue in the selected project.
+ *
+ * Assignable users are:
+ * - the current project lead; and
+ * - the project's existing members.
+ *
+ * This controller does not search unrelated(non-project members) registered users.
+ *
+ * Required middleware:
+ * - verifyJWT
+ * - loadCurrentUser
+ * - loadProject
+ * - requireProjectMemberOrAdmin
+ */
+export const getAssignableProjectUsers = async (req, res, next) => {
+  try {
+    const project = req.project;
+
+    if (!project) {
+      return res.status(500).json({
+        error: "Project context is missing."
+      });
+    }
+
+    /* Combine the lead and members into one unique list.
+     *
+     * Your project rules normally require the lead to also be present
+     * in members, but explicitly including leadUserId makes the intended
+     * behavior clear and protects against inconsistent older records.
+     */
+    const assignableUserIdSet = new Set([
+      String(project.leadUserId),
+
+      ...(project.members ?? []).map((memberId) => {
+        return String(memberId);
+      })
+    ]);
+
+    const assignableUserIds = [...assignableUserIdSet];
+
+    /* Retrieve only existing users whose IDs are already associated with this project.
+     *
+     * This does not search the entire users collection for unrelated
+     * users. MongoDB only returns users whose IDs are in the project's
+     * lead/member list.
+     */
+    const users = await User.find({
+      _id: {
+        $in: assignableUserIds
+      }
+    })
+      .select("_id firstName lastName username")
+      .sort({
+        firstName: 1,
+        lastName: 1,
+        username: 1
+      })
+      .lean();
+
+    const leadUserId = String(project.leadUserId);
+
+    
+    /* Add the user's project role for frontend display.
+     *
+     * Example dropdown:
+     *
+     * Alice Smith (@alice) — Lead
+     * Bob Jones (@bob) — Member
+     */
+    const assignableUsers = users.map((user) => {
+      return {
+        ...user,
+
+        projectRole:
+          String(user._id) === leadUserId
+            ? "lead"
+            : "member"
+      };
+    });
+
+    return res.status(200).json({
+      projectId: project._id,
+      users: assignableUsers
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 export const updateProject = async (req, res, next) => {  // Controller: update basic project fields
 
   try {                          
@@ -297,11 +387,6 @@ export const updateProject = async (req, res, next) => {  // Controller: update 
       });
     }
 
-    // const updated = await Project.findByIdAndUpdate(  // Apply updates
-    //   req.project._id,                                // Target id
-    //   { $set: updates },                              // Fields to set
-    //   { new: true, runValidators: true }              // Return updated doc; validate
-    // ).lean();                                         // As plain object
 
     const updated = await populateProjectUsers(  // Apply updates WITHIN 'populateProjectUsers' to get project members info
       Project.findByIdAndUpdate(
@@ -318,8 +403,8 @@ export const updateProject = async (req, res, next) => {  // Controller: update 
       });
     }
 
-
     return res.json({ project: updated }); // Respond with updated project
+
   } 
   catch (err) {                                                                           
     next(err);
@@ -457,7 +542,6 @@ export const updateMembers = async (req, res, next) => {   // Controller: add/re
     }
 
          
-
     // final members list after the adding/subtracing of members to members list
     const finalMemberIds = [ ...resultingMemberIds].map((id) => ObjectId.createFromHexString(id));
 
