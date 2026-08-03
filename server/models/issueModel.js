@@ -4,10 +4,11 @@ import mongoose from "mongoose";         // Mongoose for MongoDB schema/model
 import Project from "./projectModel.js"; // import Project model
 const { Schema } = mongoose;             // Extract Schema helper
 
-const TYPES      = ["bug"  ,"task"       ,"story"                         ]; // Allowed issues' types
-const STATUSES   = ["open" ,"in_progress","blocked", "resolved",  "closed"]; // Allowed issues' statuses
-const PRIORITIES = ["low"  ,"medium"     ,"high",    "critical"           ]; // Allowed issues' priority level
-const SEVERITIES = ["minor","major"      ,"critical"                      ]; // Allowed issues' severity-level
+const TYPES      = ["bug"  ,"task"        ,"story"                    ]; // Allowed issues' types
+//const STATUSES   = ["open" ,"in_progress","blocked", "resolved",  "closed"]; // Allowed issues' statuses
+const STATUSES = [ "open"  , "in_progress", "resolved",    "closed"   ]; // Allowed issues' statuses
+const PRIORITIES = ["low"  ,"medium"      ,"high     ",    "critical" ]; // Allowed issues' priority level
+const SEVERITIES = ["minor","major"       ,"critical"                 ]; // Allowed issues' severity-level
 
 const AttachmentSchema = new Schema(  // File metadata subdoc
     { 

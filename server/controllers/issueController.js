@@ -10,7 +10,15 @@ import Issue,
 
 import Project    from "../models/projectModel.js";   // imports Project model
 import User       from "../models/user.js";          // imports User model
-  
+
+
+const ALLOWED_TRANSITIONS = { // used when transitioning state of issues
+  open:        [ "in_progress"               ],
+  in_progress: [ "open"       ,   "resolved" ],
+  resolved:    [ "in_progress",   "closed"   ],
+  closed:      [ "open"                      ]
+};
+
 
 const isValidId = (id) => { // validate id helper function
   return mongoose.Types.ObjectId.isValid(String(id));
@@ -545,6 +553,13 @@ export const transitionStatus = async (req,res,next)=>{
     
     if(!nextStatus || !STATUSES.includes(nextStatus)){
         return res.status(400).json({error:"Invalid target status."});
+    }
+
+    // Checks if issue's next status is valid after transitioning from current status
+    const allowedNextStatuses = ALLOWED_TRANSITIONS[issue.status] ?? [];
+
+    if (!allowedNextStatuses.includes(nextStatus)) {
+      return res.status(400).json({ error: `Cannot transition issue from ${issue.status} to ${nextStatus}.` });
     }
     
     if(issue.status===nextStatus){ // No-op
