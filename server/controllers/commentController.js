@@ -8,25 +8,78 @@ const isValidId = (id) =>{ // id validator
   return mongoose.Types.ObjectId.isValid(String(id)); 
 }
 
-const canEditOrModerate = (user,project,comment)=>{ // Checks if user is author, lead, or admin. 
-                                                    // (they have comment editing permissions)
 
-  if(!user||!project||!comment) { // guard against missing inputs
-    return false;
-  }
+const MAX_COMMENT_DEPTH = 4; // Allow replies to be nested up to four levels
 
-  if(user.role==="admin") { // If admin, user has permission
-    return true;
-  }
-  
-  const uid=String(user._id); 
-  const isLead=String(project.leadUserId)===uid; 
-  if(isLead) { // If user is lead, permission granted
-    return true; 
-  }
-  
-  return String(comment.authorId)===uid; //return true if userId matches authorId
+
+const populateCommentUsers = (query) => { // Populate the comment author and the author of the parent comment.
+  return query
+    .populate({
+      path: "authorId",
+      select: "_id firstName lastName username"
+    })
+    .populate({
+      path: "parentId",
+      select: "_id body authorId deleted",
+      populate: {
+        path: "authorId",
+        select: "_id firstName lastName username"
+      }
+    });
 };
+
+
+const formatCommentResponse = (comment) => { // Format comments for the frontend thread display.
+  const depth = comment.ancestors?.length ?? 0;
+
+  return {
+    ...comment,
+
+    // Deleted comments appear as tombstones without exposing old text.
+    body: comment.deleted ? "[deleted]" : comment.body,
+
+    // The frontend can use this value to indent the reply.
+    depth,
+
+    // Visual indentation is capped at four levels.
+    displayDepth: Math.min(depth, MAX_COMMENT_DEPTH),
+
+    // Provides the parent author and comment reference for "Replying to..."
+    replyingTo: comment.parentId
+      ? {
+          commentId: comment.parentId._id,
+          author: comment.parentId.authorId,
+          bodyPreview: comment.parentId.deleted
+            ? "[deleted]"
+            : String(comment.parentId.body ?? "").slice(0, 120)
+        }
+      : null
+  };
+};
+
+
+const canEditComment = (user, comment) => { // Only the original author may rewrite a non-deleted comment.
+  if (!user || !comment) { return false; }
+  return String(comment.authorId) === String(user._id);
+};
+
+const canDeleteComment = (user, project, comment) => { // The author, project lead, or global admin may soft-delete a comment.
+
+  if (!user || !project || !comment) { return false; }
+  if (user.role === "admin") { return true; }
+
+  const userId = String(user._id);
+
+  const isLead =
+    String(project.leadUserId) === userId;
+
+  const isAuthor =
+    String(comment.authorId) === userId;
+
+  return isLead || isAuthor;
+};
+
+
 
 export const createComment = async (req,res,next)=>{ // POST /issues/:id/comments
 
@@ -66,31 +119,65 @@ export const createComment = async (req,res,next)=>{ // POST /issues/:id/comment
          return res.status(400).json({error:"Invalid parentId."}); 
       }
       
+
       parent = await Comment.findById(parentId).lean(); // get parent Id from comment as normalized object
 
-      if(!parent){
-         return res.status(404).json({error:"Parent comment not found."}); // load parent
-      }
-      if(String(parent.issueId)!==String(issue._id)){
-         return res.status(400).json({error:"Parent belongs to a different issue."}); // same issue
+      if (!parent) {
+        return res.status(404).json({
+          error: "Parent comment not found."
+        });
       }
 
-      ancestors=[...(parent.ancestors||[]), parent._id]; // build ancestors chain
+      if (String(parent.issueId) !== String(issue._id)) {
+        return res.status(400).json({
+          error: "Parent belongs to a different issue."
+        });
+      }
+
+      // Existing replies remain visible, but deleted comments cannot receive new replies.
+      if (parent.deleted) {
+        return res.status(409).json({
+          error: "Cannot reply to a deleted comment."
+        });
+      }
+
+      const replyDepth = (parent.ancestors?.length ?? 0) + 1; // depth of reply
+
+      // Top-level comments use depth 0; nested replies may reach depth 4.
+      if (replyDepth > MAX_COMMENT_DEPTH) {
+        return res.status(400).json({
+          error: `Comments cannot be nested deeper than ${MAX_COMMENT_DEPTH} reply levels.`
+        });
+      }
+
+      ancestors = [
+        ...(parent.ancestors ?? []),
+        parent._id
+      ];
+
     }
 
-    const comment = await Comment.create({  // create comment object
-      issueId:issue._id, 
-      authorId:user._id, body, 
-      parentId:parentId||null, 
-      ancestors 
-    }); 
+    const comment = await Comment.create({ // create comment object
+      issueId: issue._id,
+      authorId: user._id,
+      body: body.trim(),
+      parentId: parent?._id ?? null,
+      ancestors
+    });
     
     await Issue.updateOne( // increase comment count for issue by 1
       {_id:issue._id},
       { $inc:{ commentCount:1 } }
     ); 
     
-    return res.status(201).json({comment}); // return new comment
+    // Populate the comment author and the author of the parent comment.
+    const populatedComment = await populateCommentUsers( 
+      Comment.findById(comment._id)
+    ).lean();
+
+    return res.status(201).json({ // return new comment
+      comment: formatCommentResponse(populatedComment)
+    });
   
   }
   catch(err){ // catch and handle error
@@ -135,20 +222,16 @@ export const listIssueComments = async (req,res,next) => { // GET /issues/:id/co
     
     if (hideDeleted) { query.deleted = false; } // exclude soft-deleted comments
 
-    const topLevel = await Comment.find(query)
-      .sort({createdAt:1, _id: 1})             // oldest → newest (stable with _id tiebreaker)
-      .skip(skip)                              // pagination offset
-      .limit(limit)                            // each page size
-      .lean();                                 // return plain object
+
+    const topLevel = await populateCommentUsers(Comment.find(query))
+      .sort({ createdAt: 1, _id: 1 })  // oldest → newest (stable with _id tiebreaker)
+      .skip(skip)                      // pagination offset
+      .limit(limit)                    // each page size
+      .lean();                         // return plain object
 
 
-
-    // turn hard-deleted bodies into a clear placeholder (tombstone)
-    const normalized = topLevel.map(comment =>
-      comment.deleted && (!comment.body || !comment.body.trim())
-        ? { ...comment, body: "[deleted]" }
-        : comment
-    );
+    // turn hard-deleted bodies into a clear placeholder (tombstone) using 'formatCommentResponse' method
+    const normalized = topLevel.map(formatCommentResponse);
 
     return res.json({               // sent results
       comments: normalized,         // normalized version of top-level comments
@@ -181,7 +264,6 @@ export const listReplies = async (req,res,next)=>{ // GET /comments/:id/replies 
     const skip  = Math.max(parseInt(req.query.skip||"0",10),0);     // how many to skip from start (default 0)
 
 
-
     const hideDeleted = req.query.hideDeleted === "true";  // url flag from query string (?hideDeleted=true)
 
     const query = {            // MongoDB query
@@ -191,18 +273,16 @@ export const listReplies = async (req,res,next)=>{ // GET /comments/:id/replies 
     
     if (hideDeleted) { query.deleted = false; } // exclude soft-deleted comments
 
-    const replies = await Comment.find(query)  // find only direct children of this parent
-      .sort({createdAt:1, _id: 1})             // oldest → newest (stable with _id tiebreaker)
-      .skip(skip)                              // pagination offset
-      .limit(limit)                            // each page size
-      .lean();                                 // return plain object
+
+    const replies = await populateCommentUsers(Comment.find(query)) // find only direct children of this parent
+      .sort({ createdAt: 1, _id: 1 })                               // oldest → newest (stable with _id tiebreaker)
+      .skip(skip)                                                   // pagination offset
+      .limit(limit)                                                 // each page size
+      .lean();                                                      // return plain object
 
 
-    const normalized = replies.map(comment =>                    //
-      comment.deleted && (!comment.body || !comment.body.trim()) //
-        ? { ...comment, body: "[deleted]" }
-        : comment
-    );
+    // With this, deleted comments return "[deleted]", even if old text remains in an older database record.
+    const normalized = replies.map(formatCommentResponse);
 
     return res.json({ 
       replies: normalized, 
@@ -231,8 +311,16 @@ export const updateComment = async (req,res,next)=>{ // PATCH /comments/:id
     const project = req.project;  
     const user    = req.authUser; 
 
-    if(!canEditOrModerate(user,project,commentDoc)){ // Validates if user has permission to edit/moderate comment...
-      return res.status(403).json({error:"Not allowed to edit this comment."}); 
+    if (!canEditComment(user, commentDoc)) { // Validates if user has permission to edit/moderate comment...
+      return res.status(403).json({
+        error: "Only the comment author may edit this comment."
+      });
+    }
+
+    if (commentDoc.deleted) { // Validates that a deleted comment can't be edited...
+      return res.status(409).json({
+        error: "Deleted comments cannot be edited."
+      });
     }
 
     const { body } = req.body || {}; // retrieve comment body text from request
@@ -244,11 +332,20 @@ export const updateComment = async (req,res,next)=>{ // PATCH /comments/:id
        return res.status(400).json({error:"body cannot be empty."}); 
     }
 
-    commentDoc.body = body;   // set comment's body content
-    commentDoc.edited = true; // set 'edited' flag as true
+    commentDoc.body = body.trim(); // set comment's body content
+    commentDoc.edited = true;      // set 'edited' flag as true
 
-    const saved = await commentDoc.save();       // save/persist commentDoc to MongoDB database
-    return res.json({comment:saved.toObject()}); // return comment object
+
+    await commentDoc.save(); // save/persist commentDoc to MongoDB database
+
+    const populatedComment = await populateCommentUsers(
+      Comment.findById(commentDoc._id)
+    ).lean();
+
+    return res.json({ // return populated comment object
+      comment: formatCommentResponse(populatedComment)
+    });
+
   }
   catch(err){ 
     next(err); 
@@ -269,16 +366,20 @@ export const deleteComment = async (req,res,next)=>{ // DELETE /comments/:id (so
     const project = req.project; 
     const user    = req.authUser; 
 
-    if(!canEditOrModerate(user,project,commentDoc)){ // validate is user has editing permissions
-       return res.status(403).json({error:"Not allowed to delete this comment."}); 
+    if (!canDeleteComment(user, project, commentDoc)) { // validate is user has editing permissions
+      return res.status(403).json({
+        error: "Not allowed to delete this comment."
+      });
     }
 
     if(commentDoc.deleted){ // If already deleted → no-op
        return res.status(204).send(); 
     }
 
-    commentDoc.deleted = true; // set comment as deleted 
-    // commentDoc.body = "";      // empty out comment body (do this in front-end)
+    commentDoc.deleted = true; // set comment as [deleted] to preserve document so its replies remain connected
+    commentDoc.body = "";     // empty out comment body (do this in front-end) to hide deleted comment's original content
+
+    
     await commentDoc.save(); // save and persist 'deleted' tag change 
                              // for document in MongoDB database
 

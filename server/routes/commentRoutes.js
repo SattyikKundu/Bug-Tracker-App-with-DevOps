@@ -50,13 +50,20 @@ const router = express.Router(); // New router for Express app
  *             required: [body]
  *             properties:
  *               body: { type: string, example: "I can reproduce this on Chrome 126." }
- *               parentId: { type: string, nullable: true, example: "64f1a2b3c4d5e6f7a8b9c0d2" }
+ *               parentId:
+ *                 type: string
+ *                 nullable: true
+ *                 description: >
+ *                   ID of the comment being replied to. Omit or send null for a
+ *                   top-level comment. Replies may be nested up to four levels.
+ *                 example: "64f1a2b3c4d5e6f7a8b9c0d2"
  *     responses:
  *       201: { description: Comment created }
  *       400: { description: Invalid input }
  *       401: { description: Unauthorized }
  *       403: { description: Forbidden }
  *       404: { description: Not found }
+ *       409: { description: The target comment has been deleted }
  */
 router.post(
   "/issues/:id/comments",
@@ -138,7 +145,9 @@ router.get(
  * @swagger
  * /comments/{id}:
  *   patch:
- *     summary: Edit a comment's body (author, lead, or admin)
+ *   summary: Edit the authenticated user's own comment
+ *   description: >
+ *     Only the original author may edit a non-deleted comment.
  *     tags: [Comments]
  *     parameters:
  *       - in: path
@@ -175,7 +184,11 @@ router.patch(
  * @swagger
  * /comments/{id}:
  *   delete:
- *     summary: Soft-delete a comment (author, lead, or admin)
+ *   summary: Soft-delete a comment
+ *     description: >
+ *       The comment author, project lead, or global admin may soft-delete
+ *       the comment. Deleted text is replaced by a placeholder while replies
+ *       remain connected to the thread.
  *     tags: [Comments]
  *     parameters:
  *       - in: path

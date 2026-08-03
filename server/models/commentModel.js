@@ -18,7 +18,6 @@ const CommentSchema = new Schema( // Comment document schema
     }, 
     body:{                          // comment text body 
         type:String,                // string field type
-        required:true,              // required field
         trim:true,                  // trim and remove white space
         required:function(){        // only require 'body' if this comment is NOT deleted (see boolean 'deleted' field at bottom)
             return !this.deleted; 
