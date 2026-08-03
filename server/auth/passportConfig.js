@@ -43,9 +43,6 @@ passport.use(
             return done(null, false, { message: "Incorrect password." });
         }
 
-        if (!user.isActive){ // If user is inactive
-            return done(null, false, { message: "User is deactivated." });
-        }  
 
         return done(null, user); // When both matches are successful, pass user to req.user
       } 
@@ -73,12 +70,42 @@ passport.use(
             return done(null, user); 
         } 
 
-        // Get 'username' and 'email' from profile
-        const username = profile.displayName?.replace(/\s+/g, ""); // || `user${profile.id.slice(-6)}`;
-        const email = profile.emails?.[0]?.value?.toLowerCase();   // || `${username}@example.com`;
+
+        // Read from the logging/registering user's Google profile fields needed by the User schema.
+        const firstName =
+          profile.name?.givenName?.trim() ||
+          "Google";
+
+        const lastName =
+          profile.name?.familyName?.trim() ||
+          "User";
+
+        const email =
+          profile.emails?.[0]?.value?.trim().toLowerCase();
+
+        if (!email) {
+          return done(
+            null,
+            false,
+            { message: "Google account did not provide an email address." }
+          );
+        }
+
+        // Create a username candidate from the Google display name.
+        const usernameBase =
+          profile.displayName
+            ?.replace(/[^a-zA-Z0-9]/g, "")
+            .slice(0, 24) ||
+          `google${profile.id.slice(-6)}`;
+
+        // Add part of the Google ID to reduce duplicate-username conflicts.
+        const username =
+          `${usernameBase}${profile.id.slice(-4)}`;
 
         user = await User.create({ // create a user 'document' to be passed into 'User' collection in MongoDB
           googleId: profile.id,
+          firstName,
+          lastName,
           username,
           email
         });
