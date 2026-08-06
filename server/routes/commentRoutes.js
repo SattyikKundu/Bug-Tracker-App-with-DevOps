@@ -184,7 +184,7 @@ router.patch(
  * @swagger
  * /comments/{id}:
  *   delete:
- *   summary: Soft-delete a comment
+ *     summary: Soft-delete a comment
  *     description: >
  *       The comment author, project lead, or global admin may soft-delete
  *       the comment. Deleted text is replaced by a placeholder while replies
@@ -193,13 +193,21 @@ router.patch(
  *     parameters:
  *       - in: path
  *         name: id
- *         schema: { type: string }
  *         required: true
+ *         description: MongoDB ObjectId of the comment
+ *         schema:
+ *           type: string
  *     responses:
- *       204: { description: Deleted }
- *       401: { description: Unauthorized }
- *       403: { description: Forbidden }
- *       404: { description: Not found }
+ *       204:
+ *         description: Comment deleted successfully
+ *       400:
+ *         description: Invalid comment ID
+ *       401:
+ *         description: Authentication required
+ *       403:
+ *         description: Comment deletion is not permitted
+ *       404:
+ *         description: Comment not found
  */
 router.delete(
   "/comments/:id",
