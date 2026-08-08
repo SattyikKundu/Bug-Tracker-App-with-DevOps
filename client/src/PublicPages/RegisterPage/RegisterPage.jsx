@@ -67,7 +67,7 @@ const RegisterPage = () => {
   };
 
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event) => { // for passing submitted registration form data
     event.preventDefault();
 
     const {
@@ -80,7 +80,7 @@ const RegisterPage = () => {
     } = formData;
 
 
-    if (
+    if ( // validates that all registration form fields are filled
       !firstName.trim() ||
       !lastName.trim() ||
       !username.trim() ||

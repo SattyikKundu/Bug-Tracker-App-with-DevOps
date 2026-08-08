@@ -27,7 +27,6 @@ const PublicPageLayout = () => {
   const { authStatus, isAuthenticated } = useSelector((state) => state.auth); // subscribes component to changes & forces re-render
                                                                               // if that specific slice's data fields updates.
 
-
   useEffect(() => {   // Checks whether a valid login cookie already exists.
     if (authStatus === "idle") {
       dispatch(checkAuth()); // dispatch checkAuth method from authSlice

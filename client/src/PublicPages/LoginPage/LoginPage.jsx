@@ -104,17 +104,11 @@ const LoginPage = () => {
     <main className="login-page">
       {successToast && (
         // successToast message WHEN user logs in
-        <div
-          className="login-success-toast" //
-          role="status"                   //
-          aria-live="polite"              //
-        >
+        <div className="login-success-toast" role="status" aria-live="polite">
           <span className="login-success-icon">
             ✓
           </span>
-
           <span>{successToast}</span>
-
           <button
             type="button"
             aria-label="Close registration message"
@@ -127,27 +121,14 @@ const LoginPage = () => {
 
 
       <section className="login-brand-panel">
-        <Link
-          className="login-brand"
-          to="/login"
-        >
-          <span className="login-brand-mark">
-            BT
-          </span>
-
+        <Link className="login-brand" to="/login">
+          <span className="login-brand-mark">BT</span>
           <span>BugTrack Workspace</span>
         </Link>
 
-
         <div className="login-brand-content">
-          <p className="login-eyebrow">
-            Project issue tracking
-          </p>
-
-          <h1>
-            Keep every issue visible and every project moving.
-          </h1>
-
+          <p className="login-eyebrow">Project issue tracking</p>
+          <h1>Keep every issue visible and every project moving.</h1>
           <p>
             A focused workspace for project members to report,
             assign, discuss, and resolve work.
@@ -155,27 +136,16 @@ const LoginPage = () => {
         </div>
       </section>
 
-
       <section className="login-form-panel">
         <div className="login-card">
           <header className="login-card-header">
             <h2>Log in</h2>
-
-            <p>
-              Continue to your project workspace.
-            </p>
+            <p>Continue to your project workspace.</p>
           </header>
 
-
-          <form
-            className="login-form"
-            onSubmit={handleSubmit}
-          >
+          <form className="login-form" onSubmit={handleSubmit}>
             <div className="login-field">
-              <label htmlFor="username">
-                Username
-              </label>
-
+              <label htmlFor="username">Username</label>
               <input
                 id="username"
                 name="username"
@@ -186,13 +156,8 @@ const LoginPage = () => {
                 required
               />
             </div>
-
-
             <div className="login-field">
-              <label htmlFor="password">
-                Password
-              </label>
-
+              <label htmlFor="password">Password</label>
               <input
                 id="password"
                 name="password"
@@ -204,25 +169,12 @@ const LoginPage = () => {
               />
             </div>
 
-
             {error && (
-              <div
-                className="login-error"
-                role="alert"
-              >
-                {error}
-              </div>
+              <div className="login-error" role="alert">{error}</div>
             )}
 
-
-            <button
-              className="login-submit-button"
-              type="submit"
-              disabled={loginStatus === "loading"}
-            >
-              {loginStatus === "loading"
-                ? "Logging in..."
-                : "Log in"}
+            <button className="login-submit-button" type="submit" disabled={loginStatus === "loading"}>
+              {loginStatus === "loading" ? "Logging in..." : "Log in"}
             </button>
           </form>
 
@@ -230,7 +182,6 @@ const LoginPage = () => {
           <div className="login-divider">
             <span>or</span>
           </div>
-
 
           <button
             className="google-login-button"
@@ -240,7 +191,6 @@ const LoginPage = () => {
             <span className="google-letter">
               G
             </span>
-
             Continue with Google
           </button>
 
