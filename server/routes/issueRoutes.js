@@ -6,7 +6,8 @@ import verifyJWT from "../middleware/verifyJWT.js";  // middleware for verifying
 import { 
     loadCurrentUser,                // Attaches current user's doc to req.authUser
     loadProject,                    // Middleware to load project by :id param
-    requireProjectMemberOrAdmin     // Checks if user is member of project
+    requireProjectMemberOrAdmin,    // Checks if user is member of project
+    requireProjectActive            // Checks if project is active (= is NOT archived)
     } from "../middleware/rbac.js"; // Role-base-access-controller helper methods
 
 import { loadIssue } from "../middleware/issueLoader.js";// Issue loader helper method
@@ -87,6 +88,7 @@ router.post(
     loadCurrentUser, 
     loadProject, 
     requireProjectMemberOrAdmin, 
+    requireProjectActive, // rbac.js: requires project to be active (NOT archived) in order to create an issue
     createIssue
 );
 
@@ -104,7 +106,14 @@ router.post(
  *         required: true
  *       - in: query
  *         name: status
- *         schema: { type: string }
+ *         description: Filter issues by workflow status
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - open
+ *             - in_progress
+ *             - ready_for_review
+ *             - closed
  *       - in: query
  *         name: priority
  *         schema: { type: string }
@@ -211,6 +220,7 @@ router.patch(
     loadCurrentUser, 
     loadIssue, 
     requireProjectMemberOrAdmin, 
+    requireProjectActive, // rbac.js: requires project to be active (NOT archived) in order to update an issue
     updateIssue
 );
 
@@ -222,6 +232,7 @@ router.post(
   loadCurrentUser,
   loadIssue,
   requireProjectMemberOrAdmin,
+  requireProjectActive, // rbac.js: requires project to be active (NOT archived) in order to add label to an issue
   addIssueLabel
 );
 
@@ -232,6 +243,7 @@ router.delete(
   loadCurrentUser,
   loadIssue,
   requireProjectMemberOrAdmin,
+  requireProjectActive, // rbac.js: requires project to be active (NOT archived) in order to delete a label from an issue
   deleteIssueLabel
 );
 
@@ -243,6 +255,7 @@ router.post(
   loadCurrentUser,
   loadIssue,
   requireProjectMemberOrAdmin,
+  requireProjectActive, // rbac.js: requires project to be active (NOT archived) in order to watch an issue
   watchIssue
 );
 
@@ -254,6 +267,7 @@ router.delete(
   loadCurrentUser,
   loadIssue,
   requireProjectMemberOrAdmin,
+  requireProjectActive, // rbac.js: requires project to be active (NOT archived) in order to un-watch an issue
   unwatchIssue
 );
 
@@ -278,7 +292,14 @@ router.delete(
  *             type: object
  *             required: [to]
  *             properties:
- *               to: { type: string, example: "in_progress" }
+ *               to:
+ *                 type: string
+ *                 enum:
+ *                   - open
+ *                   - in_progress
+ *                   - ready_for_review
+ *                   - closed
+ *                 example: "ready_for_review"
  *     responses:
  *       200: { description: Updated issue }
  *       400: { description: Invalid input }
@@ -293,6 +314,7 @@ router.post(
     loadCurrentUser, 
     loadIssue, 
     requireProjectMemberOrAdmin, 
+    requireProjectActive, // rbac.js: requires project to be active (NOT archived) in order allow transition status for an issue
     transitionStatus
 );
 

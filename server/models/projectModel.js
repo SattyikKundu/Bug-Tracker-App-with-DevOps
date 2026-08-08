@@ -50,6 +50,15 @@ const ProjectSchema = new Schema( // Define the Project schema
       default: 1,                   // Start at 1
       min: 1,                       // Safety floor
     },
+    archived: {                     // Indicates whether the project is currently archived
+      type: Boolean,                // Archived, or NOT archived
+      default: false,               // Project is by default NOT archived
+      index: true                   // archieved projects are indexed
+    },
+    archivedAt: {                   // Records when the project was archived
+      type: Date,                   // data type is 'date'
+      default: null                 // Default value is null ("empty")
+    }
   },
   { timestamps: true, versionKey: false }// Add createdAt/updatedAt timestamps; hide version key
 );// End schema

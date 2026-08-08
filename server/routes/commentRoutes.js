@@ -5,7 +5,8 @@ import verifyJWT from "../middleware/verifyJWT.js"; // middleware for verifying 
 
 import { 
   loadCurrentUser,              // Attaches full user doc to req.authUser
-  requireProjectMemberOrAdmin   // Checks if user is project-member/lead/admin and has access rights to project
+  requireProjectMemberOrAdmin,  // Checks if user is project-member/lead/admin and has access rights to project
+  requireProjectActive          // Checks if project is active (to ensure that project isn't archived)
 } from "../middleware/rbac.js"; // Role-based-access-control helper methods
 
 import { loadIssue }   from "../middleware/issueLoader.js";   // Loads issue by project id → stores issue in 'req.issue'
@@ -71,6 +72,7 @@ router.post(
   loadCurrentUser,             // attach req.authUser
   loadIssue,                   // attach req.issue & req.project
   requireProjectMemberOrAdmin, // must belong to the project (or admin)
+  requireProjectActive,        // project must be active (NOT archived) to allow comment creation    
   createComment                // controller
 );
 
@@ -176,6 +178,7 @@ router.patch(
   loadCurrentUser,
   loadComment,
   requireProjectMemberOrAdmin, // controller enforces author/lead/admin
+  requireProjectActive,        // project must be active (NOT archived) to allow comment updating    
   updateComment
 );
 
@@ -215,6 +218,7 @@ router.delete(
   loadCurrentUser,
   loadComment,
   requireProjectMemberOrAdmin, // controller enforces author/lead/admin
+  requireProjectActive,        // project must be active (NOT archived) to allow comment soft-deletion    
   deleteComment
 );
 

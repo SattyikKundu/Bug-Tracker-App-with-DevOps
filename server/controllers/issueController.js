@@ -12,13 +12,12 @@ import Project    from "../models/projectModel.js";   // imports Project model
 import User       from "../models/user.js";          // imports User model
 
 
-const ALLOWED_TRANSITIONS = { // used when transitioning state of issues
-  open:        [ "in_progress"               ],
-  in_progress: [ "open"       ,   "resolved" ],
-  resolved:    [ "in_progress",   "closed"   ],
-  closed:      [ "open"                      ]
-};
-
+const ALLOWED_TRANSITIONS = { // defines which issue-status transitions are permitted
+  open:             [ "in_progress"                     ],
+  in_progress:      [ "open"       , "ready_for_review" ],
+  ready_for_review: [ "in_progress", "closed"           ],
+  closed:           [ "open"                            ]
+}; 
 
 const isValidId = (id) => { // validate id helper function
   return mongoose.Types.ObjectId.isValid(String(id));

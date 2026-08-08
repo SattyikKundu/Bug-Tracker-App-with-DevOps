@@ -6,7 +6,8 @@ import verifyJWT from "../middleware/verifyJWT.js";  // Import existing JWT midd
 import {
   loadCurrentUser,
   loadProject,
-  requireProjectLeadOrAdmin
+  requireProjectLeadOrAdmin,
+  requireProjectActive
 } from "../middleware/rbac.js"; // Import middleware that loads authorization context.
 
 import { searchProjectMembers } from "../controllers/userSearchController.js"; // Import the user-search controller.
@@ -100,6 +101,7 @@ router.get(
   loadCurrentUser,               // Load  authenticated user's complete database record.
   loadProject,                   // Load project identified by id route parameter.
   requireProjectLeadOrAdmin,     // Allow only project lead or global admin.
+  requireProjectActive,          // Archived projects cannot manage/search new members
   searchProjectMembers           // Run validated project-user search.
 );
 

@@ -569,6 +569,92 @@ export const updateMembers = async (req, res, next) => {   // Controller: add/re
 };                                                                                            
 
 
+//Archives a project without deleting its members, issues, or comments.
+//Project's route middleware ensures ONLY the project's lead can call this function.
+export const archiveProject = async (req, res, next) => {
+
+  try {
+
+    if (req.project.archived === true) { // Error IF project is already archived...
+      return res.status(409).json({
+        error: "Project is already archived."
+      });
+    }
+
+    const archivedProject =  // Archives selected project
+      await Project.findByIdAndUpdate(
+        req.project._id,
+        {
+          $set: {
+            archived: true,
+            archivedAt: new Date()
+          }
+        },
+        {
+          new: true,
+          runValidators: true
+        }
+      ).lean();
+
+    if (!archivedProject) {   // error IF archived project NOT found.
+      return res.status(404).json({
+        error: "Project not found."
+      });
+    }
+
+    return res.status(200).json({ // Success message when project successfully archived.
+      message: "Project archived successfully.",
+      project: archivedProject
+    });
+  }
+  catch (err) { // If error caught..
+    next(err);
+  }
+};
+
+// Restores an archived project:
+// Existing members and the original stored lead automatically regain
+// their normal project permissions because those relationships were preserved.
+export const restoreProject = async (req, res, next) => {
+
+  try {
+    if (req.project.archived !== true) { // Error if "de-archiving" project that wasn't archived
+      return res.status(409).json({
+        error: "Project is not archived."
+      });
+    }
+
+    const restoredProject =  // restoring the archived project
+      await Project.findByIdAndUpdate(
+        req.project._id,
+        {
+          $set: {
+            archived: false,
+            archivedAt: null
+          }
+        },
+        {
+          new: true,
+          runValidators: true
+        }
+      ).lean();
+
+    if (!restoredProject) { // Error if project from archives not found
+      return res.status(404).json({
+        error: "Project not found."
+      });
+    }
+
+    return res.status(200).json({ // Success message when project is successfully restored
+      message: "Project restored successfully.",
+      project: restoredProject
+    });
+  }
+  catch (err) {
+    next(err);
+  }
+};
+
 
 export const deleteProject = async (req, res, next) => {// Controller: delete a project (admin only)
   try {                                                                                   

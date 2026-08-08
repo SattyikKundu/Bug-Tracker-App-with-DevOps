@@ -7,7 +7,9 @@ import { loadCurrentUser,
          loadProject, 
          requireRole,                                          
          requireProjectMemberOrAdmin, 
-         requireProjectLeadOrAdmin } from "../middleware/rbac.js"; // RBAC helpers for role & project checks
+         requireProjectLeadOrAdmin,
+         requireProjectLead,
+         requireProjectActive } from "../middleware/rbac.js"; // RBAC helpers for role & project checks
 
 import { createProject, 
          listProjects, 
@@ -15,6 +17,8 @@ import { createProject,
          getAssignableProjectUsers,
          updateProject, 
          updateMembers, 
+         archiveProject,
+         restoreProject,
          deleteProject } from "../controllers/projectController.js"; // Import functions from project controller
 
 
@@ -184,10 +188,9 @@ router.get(
   loadCurrentUser,
   loadProject,
   requireProjectMemberOrAdmin,
+  requireProjectActive, // rbac.js (role-based-access-control) middleware: Ensures user can't be assiged to an archived project
   getAssignableProjectUsers
 );
-
-
 
 
 // Update basic project fields
@@ -255,13 +258,14 @@ router.get(
  *       404:
  *         description: Project or selected user not found
  */
-router.patch(         // Define PATCH /projects/:id
-  "/projects/:id",    // Route with :id param
-  verifyJWT,          // Require JWT so route can only be used via logged-in users
-  loadCurrentUser,    // rbac.js (role-based-access-control) middleware: Load current user
-  loadProject,        // rbac.js (role-based-access-control) middleware: Load project
-  requireProjectLeadOrAdmin, // rbac.js (role-based-access-control) middleware: only lead/admin can update
-  updateProject              // projectController: applies updates
+router.patch(                 // Define PATCH /projects/:id
+  "/projects/:id",            // Route with :id param
+  verifyJWT,                  // Require JWT so route can only be used via logged-in users
+  loadCurrentUser,            // rbac.js (role-based-access-control) middleware: Load current user
+  loadProject,                // rbac.js (role-based-access-control) middleware: Load project
+  requireProjectLeadOrAdmin,  // rbac.js (role-based-access-control) middleware: only lead/admin can update
+  requireProjectActive,       // rbac.js (role-based-access-control) middleware: Ensures archived projects can't be edited
+  updateProject               // projectController: applies updates
 );                                                                                           
 
 // Add/remove members
@@ -296,14 +300,82 @@ router.patch(         // Define PATCH /projects/:id
  *       403: { description: Forbidden }
  *       404: { description: Not found }
  */
-router.post(               // Define POST /projects/:id/members
-  "/projects/:id/members", // Route path (with member 'id' param)
-  verifyJWT,               // Require JWT to verfiy logged-in user
-  loadCurrentUser,         // rbac.js (role-based-access-control) middleware: Load current user
-  loadProject,             // rbac.js (role-based-access-control) middleware: Load project
+router.post(                 // Define POST /projects/:id/members
+  "/projects/:id/members",   // Route path (with member 'id' param)
+  verifyJWT,                 // Require JWT to verfiy logged-in user
+  loadCurrentUser,           // rbac.js (role-based-access-control) middleware: Load current user
+  loadProject,               // rbac.js (role-based-access-control) middleware: Load project
   requireProjectLeadOrAdmin, // rbac.js (role-based-access-control) middleware: only lead/admin can update
+  requireProjectActive,      // rbac.js (role-based-access-control) middleware: Ensures members can't be changed for archived project
   updateMembers              // projectController function: add/remove users
 );                                                                                          
+
+
+// Archive an active project (making it "inactive")
+/**
+ * @swagger
+ * /projects/{id}/archive:
+ *   post:
+ *     summary: Archive a project
+ *     description: >
+ *       Archives the project and makes it read-only while preserving
+ *       the project lead, members, issues, comments, and history.
+ *       Only the project's current lead may archive it.
+ *     tags: [Projects]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200: { description: Project archived successfully }
+ *       401: { description: Unauthorized }
+ *       403: { description: Only the project lead may archive }
+ *       404: { description: Project not found }
+ *       409: { description: Project is already archived }
+ */
+router.post(
+  "/projects/:id/archive",
+  verifyJWT,          // Require JWT to verfiy logged-in user
+  loadCurrentUser,    // rbac.js (role-based-access-control) middleware: Load current user
+  loadProject,        // rbac.js (role-based-access-control) middleware: Load project
+  requireProjectLead, // rbac.js (role-based-access-control) middleware: ONLY lead can update
+  archiveProject      // projectController function: archives an active project (so it becomes "read-only")
+);
+
+
+/**
+ * @swagger
+ * /projects/{id}/restore:
+ *   post:
+ *     summary: Restore an archived project
+ *     description: >
+ *       Restores an archived project. Existing membership and leadership
+ *       relationships remain unchanged. Only the stored project lead may restore it.
+ *     tags: [Projects]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200: { description: Project restored successfully }
+ *       401: { description: Unauthorized }
+ *       403: { description: Only the project lead may restore }
+ *       404: { description: Project not found }
+ *       409: { description: Project is not archived }
+ */
+router.post(
+  "/projects/:id/restore",
+  verifyJWT,          // Require JWT to verfiy logged-in user
+  loadCurrentUser,    // rbac.js (role-based-access-control) middleware: Load current user
+  loadProject,        // rbac.js (role-based-access-control) middleware: Load project
+  requireProjectLead, // rbac.js (role-based-access-control) middleware: ONLY lead can update
+  restoreProject      // projectController function: restores an archived project
+);
+
 
 // Delete project
 /**

@@ -102,7 +102,7 @@ export const requireProjectMemberOrAdmin = (req, res, next) => {  // Gate: allow
   }                                                                                          
 };                                                                                           
 
-export const requireProjectLeadOrAdmin = (req, res, next) => {   // Gate: allow admin OR the project lead
+export const requireProjectLeadOrAdmin = (req, res, next) => { // "verification" function: allow admin OR the project lead
     
   try {                                                                                     
     const user = req.authUser;   // Read user from 'req'
@@ -124,4 +124,65 @@ export const requireProjectLeadOrAdmin = (req, res, next) => {   // Gate: allow 
   catch (err) {                                                                         
     next(err);                                                                              
   }                                                                                        
-};                                                                                         
+};      
+
+
+
+// Below function only verfies the project's actual stored lead.
+// Unlike requireProjectLeadOrAdmin(), a global administrator does not
+// automatically qualify. This function is used for project archive/restore actions.
+export const requireProjectLead = (req, res, next) => { 
+  try {
+
+    const user    = req.authUser; // gets current (logged-in) user
+    const project = req.project;  // gets user's current project
+
+    if (!user || !project) { // returns error if user or project missing...
+      return res.status(500).json({
+        error: "Auth or project context missing."
+      });
+    }
+
+    const isLead =
+      String(project.leadUserId) === String(user._id);
+
+    if (!isLead) { // after user and project is verfied, check IF user is project lead..
+      return res.status(403).json({
+        error: "Only the project lead may perform this action."
+      });
+    }
+
+    next();
+  }
+  catch (err) {
+    next(err);
+  }
+};
+
+// BLOCKS modifications to archived projects.
+// Read-only routes should NOT use this below middleware 
+// so archived projects, issues, and comments can still be viewed by existing members.
+export const requireProjectActive = (req, res, next) => {
+  try {
+
+    const project = req.project; // gets project
+
+    if (!project) { // error if not project
+      return res.status(500).json({
+        error: "Project context missing."
+      });
+    }
+
+    if (project.archived === true) { // Return error IF project is currently archived
+      return res.status(409).json({
+        error:
+          "This project is archived and is currently read-only."
+      });
+    }
+
+    next();
+  }
+  catch (err) {
+    next(err);
+  }
+};
