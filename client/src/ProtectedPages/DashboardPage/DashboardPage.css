@@ -81,7 +81,7 @@
 }
 
 .dashboard-heading {
-  max-width: 720px; /* Prevents introductory text from becoming too wide. */
+  max-width: 760px; /* Prevents introductory text from becoming too wide. */
 }
 
 .dashboard-eyebrow {
@@ -107,43 +107,124 @@
   line-height: 1.65;        /* Improves readability across multiple lines. */
 }
 
-.dashboard-project-count {
-  display: grid;            /* Places the number above its explanation. */
-  min-width: 150px;         /* Prevents the count area from becoming cramped. */
-  justify-items: end;       /* Aligns count content to the right on desktop. */
-  padding-bottom: 5px;      /* Visually aligns it with the heading. */
+
+
+/* Container holding both project tabs and project sort dropdown. */
+.dashboard-project-controls {
+  display: flex;                      /* Places tabs and sorting on one row. */
+  align-items: flex-end;              /* Aligns control bottoms. */
+  justify-content: space-between;     /* Sends sort control to the right. */
+  gap: 24px;                          /* Prevents tabs and sort dropdown from colliding. */
+  margin-top: 42px;                   /* Separates controls from heading. */
+  padding-bottom: 12px;               /* Adds spacing above dashboard content. */
+  border-bottom: 1px solid #dfe3e8; /* Creates navigation-divider effect. */
 }
 
-.dashboard-project-count strong {
-  color: #172b4d;       /* Uses strong contrast for the project count. */
-  font-size: 2rem;        /* Makes the total easy to scan. */
-  line-height: 1;         /* Prevents unnecessary vertical space. */
+/* Active/Archived tab group. */
+.dashboard-project-tabs {
+  display: flex;        /* Places the two tabs side-by-side. */
+  align-items: center;  /* Vertically aligns them. */
+  gap: 6px;             /* Adds small separation. */
 }
 
-.dashboard-project-count span {
-  margin-top: 6px;      /* Separates the label from the number. */
-  color: #6b778c;     /* Keeps supporting count text subtle. */
-  font-size: 0.82rem;   /* Keeps it secondary to the number. */
+/* Individual projects tab */
+.dashboard-tab {
+  display: inline-flex;     /* Allows text and project count to align. */
+  min-height: 40px;         /* Creates comfortable tab click target. */
+  align-items: center;      /* Vertically centers content. */
+  gap: 8px;                 /* Separates tab label from count. */
+  padding: 7px 13px;        /* Adds internal tab spacing. */
+  border: 0;                /* Removes default browser border. */
+  border-bottom: 3px solid transparent; /* Reserves active-indicator space. */
+  background: transparent;  /* Keeps tabs visually integrated into dashboard. */
+  color: #5e6c84;         /* Uses secondary text for inactive tabs. */
+  font-size: 0.9rem;        /* Keeps tabs compact. */
+  font-weight: 750;         /* Makes tab names easy to scan. */
+  cursor: pointer;          /* Indicates interactivity. */
 }
 
+.dashboard-tab:hover {
+  color: #174d7a;         /* Gives hover feedback. */
+  background: #f0f4f8;    /* Adds subtle hover background. */
+}
+
+.dashboard-tab--active {
+  border-bottom-color: #2368a2; /* Shows currently selected tab. */
+  color: #174d7a;               /* Gives active tab stronger visual emphasis. */
+}
+
+.dashboard-tab span {
+  display: inline-grid;   /* Makes count easy to center. */
+  min-width: 24px;        /* Keeps one/two-digit counts similarly sized. */
+  min-height: 24px;       /* Creates circular-ish count badge. */
+  place-items: center;    /* Centers number. */
+  padding: 2px 6px;       /* Supports larger numbers. */
+  border-radius: 999px;   /* Creates pill/circle badge. */
+  background: #e8eef5;  /* Gives count a subtle background. */
+  color: #42526e;       /* Uses readable muted text. */
+  font-size: 0.72rem;     /* Keeps count secondary. */
+}
+
+
+
+/* Project sort dropdown group classes. */
+.dashboard-sort-control {
+  display: flex;        /* Places label and select beside each other. */
+  align-items: center;  /* Vertically centers sort controls. */
+  gap: 9px;             /* Adds space between label and select. */
+}
+
+.dashboard-sort-control label {
+  color: #5e6c84;   /* Keeps label visually secondary. */
+  font-size: 0.82rem; /* Uses compact control-label typography. */
+  font-weight: 700;   /* Makes label readable. */
+}
+
+.dashboard-sort-control select {
+  min-height: 38px; /* Creates accessible dropdown height. */
+  padding: 7px 34px 7px 11px; /* Adds internal spacing around option text. */
+  border: 1px solid #b7c0cd; /* Defines select boundary. */
+  border-radius: 7px; /* Matches existing application controls. */
+  outline: none; /* Removes browser outline in favor of custom focus. */
+  background: #ffffff; /* Keeps dropdown easy to read. */
+  color: #253858; /* Uses primary control text colour. */
+  font-size: 0.85rem; /* Keeps option text compact. */
+  font-weight: 650; /* Improves readability. */
+  cursor: pointer; /* Communicates dropdown interactivity. */
+}
+
+.dashboard-sort-control select:focus {
+  border-color: #2368a2; /* Highlights keyboard/focus interaction. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.14); /* Accessible focus ring. */
+}
+
+
+/* Grid for cards under either Active or Archived tab. */
 .project-card-grid {
   display: grid;        /* Creates a responsive project-card layout. */
   grid-template-columns: repeat(3, minmax(0, 1fr)); /* Shows three equal columns. */
   gap: 20px;            /* Adds consistent spacing between cards. */
-  margin-top: 40px;     /* Separates projects from the page introduction. */
+  margin-top: 30px;     /* Separates projects from the page introduction. */
 }
 
+
+/* Shared dashboard loading/error/empty-state container. */
 .dashboard-state-card {
-  display: grid;            /* Stacks icon, heading, text, and optional button. */
-  width: min(100%, 680px);  /* Prevents state messages from becoming too wide. */
-  justify-items: center;    /* Horizontally centers state content. */
-  margin: 44px auto 0;      /* Centers the card beneath the heading. */
-  padding: 48px 28px;       /* Gives the message generous internal space. */
-  border: 1px solid #dfe3e8; /* Defines the message area. */
-  border-radius: 13px;      /* Matches project-card styling. */
-  background: #ffffff;    /* Separates the state from the page background. */
+  display: grid;                /* Stacks icon, heading, text, and optional button. */
+  width: min(100%, 680px);      /* Prevents state messages from becoming too wide. */
+  justify-items: center;        /* Horizontally centers state content. */
+  margin: 44px auto 0;          /* Centers the card beneath the heading. */
+  padding: 48px 28px;           /* Gives the message generous internal space. */
+  border: 1px solid #dfe3e8;  /* Defines the message area. */
+  border-radius: 13px;          /* Matches project-card styling. */
+  background: #ffffff;        /* Separates the state from the page background. */
   box-shadow: 0 8px 22px rgba(9, 30, 66, 0.05); /* Adds subtle depth. */
-  text-align: center;       /* Centers message text beneath the icon. */
+  text-align: center;           /* Centers message text beneath the icon. */
+}
+
+.dashboard-empty-projects {
+  min-height: 260px;      /* Gives empty state meaningful vertical presence. */
+  align-content: center;  /* Centers content within larger empty area. */
 }
 
 .dashboard-state-card h2 {
@@ -182,6 +263,17 @@
 .dashboard-empty-icon {
   color: #7a869a;  /* Keeps the empty-state symbol intentionally subtle. */
   font-size: 2.1rem; /* Makes the symbol visible without becoming dominant. */
+}
+
+/* Error produced specifically by the restore endpoint. */
+.dashboard-restore-error {
+  margin-top: 18px;             /* Separates error from controls. */
+  padding: 11px 13px;           /* Adds internal message spacing. */
+  border: 1px solid #ffbdad;  /* Gives restore error clear boundary. */
+  border-radius: 7px;           /* Matches other alerts. */
+  background: #ffebe6;        /* Uses soft red error background. */
+  color: #ae2a19;             /* Uses readable error text. */
+  font-size: 0.88rem;           /* Keeps message compact. */
 }
 
 .dashboard-loading-indicator {
@@ -224,13 +316,18 @@
     gap: 7px;                 /* Reduces space between stacked account controls. */
   }
 
-  .dashboard-heading-row {
-    align-items: flex-start;  /* Aligns stacked heading content to the top. */
-    flex-direction: column;   /* Places the count beneath the introduction. */
+  .dashboard-project-controls {
+    align-items: stretch;     /* Allows controls to use available width. */
+    flex-direction: column;   /* Stacks tabs above sorting. */
   }
 
-  .dashboard-project-count {
-    justify-items: start;     /* Left-aligns the count on narrow screens. */
+  .dashboard-sort-control {
+    justify-content: space-between; /* Separates sort label from dropdown. */
+  }
+
+  .dashboard-sort-control select {
+    flex: 1;                  /* Allows select to expand on smaller screens. */
+    max-width: 280px;         /* Prevents excessive width. */
   }
 
   .project-card-grid {
@@ -240,7 +337,7 @@
 
 @media (max-width: 480px) {
   .dashboard-brand > span:last-child {
-    display: none; /* Keeps only the compact BT mark on very small screens. */
+    display: none;           /* Keeps only the compact BT mark on very small screens. */
   }
 
   .dashboard-username {
@@ -253,5 +350,24 @@
   .dashboard-content {
     width: min(100% - 24px, 1220px); /* Reduces side margins on phones. */
     padding-top: 42px;               /* Uses less top space on small displays. */
+  }
+
+  .dashboard-project-tabs {
+    width: 100%;                  /* Makes tab group span phone width. */
+  }
+
+  .dashboard-tab {
+    flex: 1;                  /* Gives Active and Archived equal mobile width. */
+    justify-content: center;  /* Centers tab labels and counts. */
+  }
+
+  .dashboard-sort-control {
+    align-items: stretch;     /* Makes mobile sort controls align cleanly. */
+    flex-direction: column;   /* Places label above dropdown. */
+  }
+
+  .dashboard-sort-control select {
+    width: 100%;        /* Makes dropdown comfortable on phones. */
+    max-width: none;    /* Removes tablet width restriction. */
   }
 }

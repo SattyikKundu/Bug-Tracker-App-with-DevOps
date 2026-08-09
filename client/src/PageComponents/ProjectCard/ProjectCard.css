@@ -2,35 +2,48 @@
 
 /* Parent class for the project-card */
 .project-card {
-  display: flex;                /* Places project sections in a vertical flex layout. */
-  min-height: 240px;            /* Keeps cards visually consistent when descriptions differ. */
-  flex-direction: column;       /* Stacks the header, content, and footer. */
-  padding: 22px;                /* Creates space between content and card edges. */
-  border: 1px solid #d9dee7;  /* Adds a subtle issue-tracker-style border. */
-  border-radius: 12px;          /* Softens the card without making it overly rounded. */
-  outline: none;                /* Replaces the default outline with a custom focus style. */
-  background: #ffffff;        /* Separates cards from the grey dashboard background. */
-  box-shadow: 0 3px 10px rgba(9, 30, 66, 0.05); /* Adds light depth. */
-  cursor: pointer;              /* Shows that the entire card is interactive. */
+  display: flex;                /* Creates a vertical flex layout for each project card. */
+  min-height: 250px;            /* Keeps cards similarly sized despite different descriptions. */
+  flex-direction: column;       /* Stacks badges, content, and footer vertically. */
+  padding: 22px;                /* Creates breathing room inside each card. */
+  border: 1px solid #d9dee7;  /* Defines the card against the dashboard background. */
+  border-radius: 12px;          /* Adds a controlled modern corner radius. */
+  outline: none;                /* Removes browser outline because focus-visible is styled below. */
+  background: #ffffff;        /* Active projects use a clean white surface. */
+  box-shadow: 0 3px 10px rgba(9, 30, 66, 0.05); /* Adds subtle depth. */
+  cursor: pointer;              /* Communicates that the card can be opened. */
   transition:
-    border-color 150ms ease,    /* Smoothly changes the border on hover. */
-    box-shadow 150ms ease,      /* Smoothly increases card depth. */
-    transform 150ms ease;       /* Smoothly lifts the card. */
+    border-color 150ms ease,    /* Smooth border transition on interaction. */
+    box-shadow 150ms ease,      /* Smooth depth transition. */
+    transform 150ms ease;       /* Smooth card lift on hover. */
 }
 
 
 /* When hovering cursor over project card */
 .project-card:hover {
-  border-color: #8ba8c7;     /* Adds emphasis without using an intense blue. */
-  box-shadow: 0 12px 26px rgba(9, 30, 66, 0.11); /* Raises the hovered card. */
-  transform: translateY(-3px); /* Creates a subtle upward interaction. */
+  border-color: #8ba8c7;                         /* Highlights the hovered card. */
+  box-shadow: 0 12px 26px rgba(9, 30, 66, 0.11); /* Raises the card visually. */
+  transform: translateY(-3px);                     /* Gives a subtle interactive lift. */
 }
 
 /* When focusing/clicking on a specific project card */
 .project-card:focus-visible {
-  border-color: #2368a2;        /* Makes keyboard focus clearly visible. */
+  border-color: #2368a2;                         /* Makes keyboard focus clearly visible. */
   box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.2); /* Accessible focus ring. */
 }
+
+/* Archived projects intentionally look muted so users can immediately distinguish from active projects. */
+.project-card--archived {
+  border-color: #c8ccd2;  /* Uses a more neutral archived border. */
+  background: #f8f9fa;    /* Slightly mutes archived project cards. */
+  box-shadow: none;         /* Archived cards appear less active/urgent. */
+}
+
+.project-card--archived:hover {
+  border-color: #9aa2ad;                        /* Still provides hover feedback. */
+  box-shadow: 0 8px 18px rgba(9, 30, 66, 0.07); /* Uses lighter depth than active cards. */
+}
+
 
 
 /* Inside project card, this container holds both project key AND user's role in project */
@@ -39,6 +52,14 @@
   align-items: center;              /* Vertically aligns the two labels. */
   justify-content: space-between;   /* Pushes the role badge to the right. */
   gap: 12px;                        /* Gap prevents overlap on narrow cards. */
+}
+
+/* For Badge groupings */
+.project-card-badge-group {
+  display: flex;        /* Keeps the project key and Archived badge beside each other. */
+  flex-wrap: wrap;      /* Allows badges to wrap on narrow cards. */
+  align-items: center;  /* Vertically aligns badges. */
+  gap: 8px;             /* Adds consistent separation between badges. */
 }
 
 
@@ -55,6 +76,21 @@
   font-weight: 800;         /* Makes abbreviated project keys easy to scan. */
   letter-spacing: 0.07em;   /* Separates compact uppercase characters. */
 }
+
+/* Styling for project records stored in archived state. */
+.project-archive-badge {
+  display: inline-flex;       /* Sizes the badge around its content. */
+  min-height: 28px;           /* Matches the project-key badge height. */
+  align-items: center;        /* Vertically centers text. */
+  padding: 4px 9px;           /* Creates compact internal spacing. */
+  border-radius: 6px;         /* Uses modest rectangular rounding. */
+  background: #ebecf0;      /* Uses neutral grey for archived state. */
+  color: #505f79;           /* Keeps archived text readable but subdued. */
+  font-size: 0.73rem;         /* Makes state secondary to project title. */
+  font-weight: 800;           /* Keeps the state easy to identify. */
+  text-transform: uppercase;  /* Makes Archived visually distinct. */
+}
+
 
 /* Styling for user role badge in project */
 .project-role-badge {
@@ -83,10 +119,12 @@
 /**************************************************************************************************/
 /********** Below is styling for all project cards' inner content *********************************/
 /**************************************************************************************************/
+
 .project-card-content {
   flex: 1;            /* Pushes the footer toward the bottom of the card. */
-  padding-top: 24px; /* Separates the heading from the badges. */
+  padding-top: 24px;  /* Separates the heading from the badges. */
 }
+
 .project-card-content h2 {
   margin: 0;                /* Removes the browser's default heading margin. */
   color: #172b4d;         /* Uses a standard issue-tracker navy text color. */
@@ -94,6 +132,7 @@
   line-height: 1.3;         /* Keeps multi-line names readable. */
   letter-spacing: -0.015em; /* Slightly tightens larger heading text. */
 }
+
 .project-card-content p {
   display: -webkit-box; /* Enables multi-line truncation in supported browsers. */
   margin: 12px 0 0;     /* Separates the description from the title. */
@@ -104,21 +143,73 @@
   -webkit-box-orient: vertical; /* Defines the truncation direction. */
   -webkit-line-clamp: 3; /* Limits card descriptions to three lines. */
 }
+
+.project-archived-date {
+  margin: 14px 0 0;     /* Adds spacing above archive metadata. */
+  color: #7a869a;     /* Keeps archive date subtle. */
+  font-size: 0.78rem;   /* Makes archive metadata tertiary information. */
+}
+
 .project-card-footer {
   display: flex;        /* Places the link text and arrow on one row. */
   align-items: center;  /* Vertically aligns footer contents. */
   justify-content: space-between; /* Pushes the arrow to the card's right. */
-  margin-top: 24px;     /* Separates the footer from the description. */
+  gap: 14px;            /* Prevents action overlap. */
+  margin-top: 22px;     /* Separates the footer from the description. */
   padding-top: 17px;    /* Creates spacing above the divider. */
   border-top: 1px solid #ebedf0; /* Visually separates the action area. */
   color: #2368a2;     /* Identifies this row as an action. */
   font-size: 0.88rem;   /* Keeps the action visually controlled. */
   font-weight: 750;     /* Makes the action easy to find. */
 }
+
+.project-card-footer-actions {
+  display: flex;        /* Places Restore button and arrow beside each other. */
+  align-items: center;  /* Vertically aligns actions. */
+  gap: 12px;            /* Adds space between Restore and navigation arrow. */
+}
+
+.project-restore-button {
+  min-height: 34px;       /* Provides an accessible click target. */
+  padding: 6px 11px;      /* Adds compact button spacing. */
+  border: 1px solid #579dff; /* Gives Restore a clear blue outline. */
+  border-radius: 6px;     /* Matches the application's compact controls. */
+  background: #ffffff;  /* Keeps Restore less prominent than destructive actions. */
+  color: #0c66e4;       /* Uses a familiar blue action colour. */
+  font-size: 0.78rem;     /* Fits comfortably inside project cards. */
+  font-weight: 750;       /* Makes Restore clearly actionable. */
+  cursor: pointer;        /* Indicates clickable control. */
+}
+
+.project-restore-button:hover:not(:disabled) {
+  background: #e9f2ff; /* Adds clear hover feedback. */
+}
+
+.project-restore-button:disabled {
+  cursor: not-allowed;  /* Communicates temporary unavailable state. */
+  opacity: 0.58;        /* Visually indicates restoration is processing. */
+}
+
+
 .project-card-arrow {
   font-size: 1.15rem;               /* Makes the directional arrow visible. */
   transition: transform 150ms ease; /* Smooths the arrow movement. */
 }
+
 .project-card:hover .project-card-arrow {
   transform: translateX(4px); /* Reinforces that clicking opens the project. */
+}
+
+
+/* For Mobile Screen */
+@media (max-width: 560px) {
+  .project-card-footer {
+    align-items: flex-start; /* Makes stacked mobile actions easier to align. */
+    flex-direction: column; /* Prevents footer controls from becoming cramped. */
+  }
+
+  .project-card-footer-actions {
+    width: 100%; /* Allows actions to use the full mobile card width. */
+    justify-content: space-between; /* Separates Restore from navigation arrow. */
+  }
 }
