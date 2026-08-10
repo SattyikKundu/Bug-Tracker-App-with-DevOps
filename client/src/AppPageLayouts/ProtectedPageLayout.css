@@ -1,0 +1,18 @@
+/* src/AppPageLayouts/ProtectedPageLayout.css */
+
+.protected-app-shell {
+  min-height: 100vh;     /* Ensures authenticated app shell fills browser height. */
+  background: #f4f5f7; /* Uses neutral workspace background. */
+}
+
+.protected-app-content {
+  min-height: calc(100vh - 64px); /* Leaves room for fixed global header. */
+  margin-left: 245px;             /* Leaves room for persistent desktop sidebar. */
+  padding-top: 64px;              /* Prevents content from hiding behind fixed header. */
+}
+
+@media (max-width: 760px) {
+  .protected-app-content {
+    margin-left: 0; /* Sidebar becomes drawer and no longer reserves width. */
+  }
+}

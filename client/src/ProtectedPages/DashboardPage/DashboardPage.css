@@ -5,68 +5,6 @@
   background: #f4f5f7; /* Uses a neutral issue-tracker workspace background. */
 }
 
-
-.dashboard-header {
-  display: flex;                      /* Places branding and account actions on one row. */
-  min-height: 64px;                   /* Gives the protected header a consistent height. */
-  align-items: center;                /* Vertically centers all header contents. */
-  justify-content: space-between;     /* Separates branding from user actions. */
-  gap: 24px;                          /* Prevents collision on narrower screens. */
-  padding: 0 clamp(20px, 4vw, 54px);  /* Adapts horizontal spacing to screen size. */
-  border-bottom: 1px solid #dfe3e8; /* Separates navigation from page content. */
-  background: #ffffff;              /* Keeps navigation clearly distinguished. */
-}
-
-.dashboard-brand {
-  display: flex;        /* Places the logo mark and product name together. */
-  align-items: center;  /* Aligns the two brand elements vertically. */
-  gap: 11px;            /* Adds space between the mark and product name. */
-  color: #172b4d;     /* Uses a dark professional heading colour. */
-  font-weight: 760;     /* Gives the product name visual importance. */
-}
-
-.dashboard-brand-mark {
-  display: grid;          /* Enables simple centering with place-items. */
-  width: 35px;            /* Sets a compact logo width. */
-  height: 35px;           /* Matches the logo width. */
-  place-items: center;    /* Centers "BT" horizontally and vertically. */
-  border-radius: 9px;     /* Gives the logo a modest rounded shape. */
-  background: #2368a2;  /* Uses the application's main blue accent. */
-  color: #ffffff;       /* Provides readable contrast. */
-  font-size: 0.78rem;     /* Keeps initials proportional to the logo. */
-}
-
-.dashboard-user-actions {
-  display: flex;        /* Places username and logout button on one row. */
-  align-items: center;  /* Vertically aligns account controls. */
-  gap: 14px;            /* Adds room between the username and button. */
-}
-
-.dashboard-username {
-  color: #42526e;   /* Uses a softer dark colour for account information. */
-  font-size: 0.9rem;  /* Keeps the username secondary to page headings. */
-  font-weight: 650;   /* Improves username visibility. */
-}
-
-.dashboard-user-actions button {
-  min-height: 36px;             /* Creates a comfortable click target. */
-  padding: 7px 14px;            /* Adds internal button spacing. */
-  border: 1px solid #b7c0cd;  /* Gives the secondary button a clear boundary. */
-  border-radius: 7px;           /* Matches the application's form-button styling. */
-  background: #ffffff;        /* Keeps logout visually secondary. */
-  color: #253858;             /* Uses readable dark text. */
-  font-weight: 700;             /* Makes the button label easy to identify. */
-}
-
-.dashboard-user-actions button:hover:not(:disabled) {
-  background: #f1f2f4; /* Gives visual feedback without overpowering the UI. */
-}
-
-.dashboard-user-actions button:disabled {
-  cursor: not-allowed;  /* Communicates that logout is currently processing. */
-  opacity: 0.65;        /* Visually indicates the disabled state. */
-}
-
 .dashboard-content {
   width: min(1220px, calc(100% - 36px));  /* Constrains content on wide displays. */
   margin: 0 auto;                         /* Horizontally centers the dashboard. */
@@ -106,8 +44,6 @@
   font-size: 1.02rem;       /* Keeps the introduction comfortably readable. */
   line-height: 1.65;        /* Improves readability across multiple lines. */
 }
-
-
 
 /* Container holding both project tabs and project sort dropdown. */
 .dashboard-project-controls {
@@ -165,8 +101,6 @@
   font-size: 0.72rem;     /* Keeps count secondary. */
 }
 
-
-
 /* Project sort dropdown group classes. */
 .dashboard-sort-control {
   display: flex;        /* Places label and select beside each other. */
@@ -198,7 +132,6 @@
   box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.14); /* Accessible focus ring. */
 }
 
-
 /* Grid for cards under either Active or Archived tab. */
 .project-card-grid {
   display: grid;        /* Creates a responsive project-card layout. */
@@ -206,7 +139,6 @@
   gap: 20px;            /* Adds consistent spacing between cards. */
   margin-top: 30px;     /* Separates projects from the page introduction. */
 }
-
 
 /* Shared dashboard loading/error/empty-state container. */
 .dashboard-state-card {
@@ -291,10 +223,9 @@
   }
 }
 
-/*********************************************************************/
+
 /*********************************************************************/
 /**** Below are CSS modifications for laptop/mobile screen sizes *****/
-/*********************************************************************/
 /*********************************************************************/
 
 @media (max-width: 980px) {
@@ -304,17 +235,6 @@
 }
 
 @media (max-width: 700px) {
-  .dashboard-header {
-    align-items: flex-start; /* Makes stacked account actions easier to align. */
-    padding-top: 14px;       /* Adds vertical room when the header wraps. */
-    padding-bottom: 14px;    /* Balances the header's top spacing. */
-  }
-
-  .dashboard-user-actions {
-    align-items: flex-end;    /* Aligns the username and button to the right. */
-    flex-direction: column;   /* Stacks account controls on small screens. */
-    gap: 7px;                 /* Reduces space between stacked account controls. */
-  }
 
   .dashboard-project-controls {
     align-items: stretch;     /* Allows controls to use available width. */
@@ -336,9 +256,6 @@
 }
 
 @media (max-width: 480px) {
-  .dashboard-brand > span:last-child {
-    display: none;           /* Keeps only the compact BT mark on very small screens. */
-  }
 
   .dashboard-username {
     max-width: 130px;        /* Prevents long usernames from widening the header. */

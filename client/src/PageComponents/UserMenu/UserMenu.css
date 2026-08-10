@@ -1,0 +1,150 @@
+/* src/PageComponents/UserMenu/UserMenu.css */
+
+.user-menu {
+  position: relative;   /* Allows dropdown to position relative to this container. */
+}
+
+.user-menu-trigger {
+  display: flex;                    /* Places avatar, username, and arrow on one row. */
+  align-items: center;              /* Vertically centers trigger contents. */
+  gap: 9px;                         /* Adds spacing between account elements. */
+  min-height: 42px;                 /* Gives trigger a comfortable click target area. */
+  padding: 5px 9px;                 /* Adds internal spacing. */
+  border: 1px solid transparent;    /* Prevents layout shift when hover border appears. */
+  border-radius: 8px;               /* Gives the control modest rounded corners. */
+  background: transparent;          /* Keeps the account trigger integrated into header. */
+  color: #253858;                 /* Uses readable dark account text. */
+  cursor: pointer;                  /* Indicates the control can be opened. */
+}
+
+.user-menu-trigger:hover {
+  border-color: #dfe3e8;    /* Adds subtle hover boundary. */
+  background: #f4f5f7;      /* Highlights the account control on hover. */
+}
+
+.user-menu-avatar, .user-menu-large-avatar {
+  display: grid;            /* Makes initials easy to center. */
+  place-items: center;      /* Centers initials horizontally and vertically. */
+  border-radius: 50%;       /* Creates a circular avatar. */
+  background: #2368a2;    /* Uses the application's primary blue. */
+  color: #ffffff;         /* Provides readable contrast. */
+  font-weight: 800;         /* Makes initials clear. */
+}
+
+.user-menu-avatar {
+  width: 32px;        /* Compact avatar width for header. */
+  height: 32px;       /* Matches compact avatar height. */
+  font-size: 0.75rem; /* Keeps initials proportional. */
+}
+
+.user-menu-large-avatar {
+  width: 44px;          /* Larger avatar for dropdown summary. */
+  height: 44px;         /* Matches large avatar width. */
+  flex-shrink: 0;       /* Prevents avatar shrinking beside long user text. */
+  font-size: 0.9rem;    /* Makes initials easier to read. */
+}
+
+.user-menu-trigger-text {
+  font-size: 0.88rem; /* Keeps username compact in header. */
+  font-weight: 700;   /* Gives account identity readable emphasis. */
+}
+
+.user-menu-chevron {
+  color: #6b778c;   /* Keeps arrow visually secondary. */
+  font-size: 0.75rem; /* Keeps arrow unobtrusive. */
+}
+
+.user-menu-dropdown {
+  position: absolute;      /* Places dropdown independently below trigger. */
+  z-index: 100;            /* Keeps dropdown above dashboard content. */
+  top: calc(100% + 9px);   /* Adds a small gap below account trigger. */
+  right: 0;                /* Aligns dropdown to right edge of account trigger. */
+  width: 290px;            /* Gives profile information enough horizontal room. */
+  overflow: hidden;        /* Keeps child backgrounds inside rounded corners. */
+  border: 1px solid #dfe3e8; /* Defines dropdown boundary. */
+  border-radius: 10px;     /* Softens dropdown corners. */
+  background: #ffffff;   /* Uses clean menu surface. */
+  box-shadow: 0 14px 34px rgba(9, 30, 66, 0.18); /* Raises dropdown above page. */
+}
+
+.user-menu-profile-summary {
+  display: flex;    /* Places avatar beside account information. */
+  gap: 13px;        /* Adds space between avatar and text. */
+  padding: 18px;    /* Gives summary comfortable internal whitespace. */
+}
+
+.user-menu-profile-summary div {
+  display: grid;    /* Stacks name, username, and email vertically. */
+  gap: 3px;         /* Adds compact spacing between identity lines. */
+  min-width: 0;     /* Allows text truncation inside flex container. */
+}
+
+.user-menu-profile-summary strong {
+  overflow: hidden;        /* Hides text beyond available width. */
+  color: #172b4d;        /* Uses primary text colour. */
+  font-size: 0.9rem;       /* Keeps full name compact. */
+  text-overflow: ellipsis; /* Shows ... for long names. */
+  white-space: nowrap;     /* Prevents name wrapping. */
+}
+
+.user-menu-profile-summary span {
+  color: #42526e;      /* Uses secondary colour for username. */
+  font-size: 0.82rem;    /* Keeps username secondary to name. */
+}
+
+.user-menu-profile-summary small {
+  overflow: hidden;         /* Prevents long email from widening menu. */
+  color: #7a869a;         /* Makes email tertiary information. */
+  font-size: 0.75rem;       /* Keeps email visually subtle. */
+  text-overflow: ellipsis;  /* Shows ... when email is too long. */
+  white-space: nowrap;      /* Keeps email on one line. */
+}
+
+.user-menu-divider {
+  height: 1px;           /* Creates thin menu section divider. */
+  background: #ebecf0; /* Uses subtle neutral divider colour. */
+}
+
+.user-menu-link,
+.user-menu-logout {
+  display: block;           /* Makes menu actions use full width. */
+  width: 100%;              /* Gives each action a large click target. */
+  padding: 12px 17px;       /* Creates comfortable menu-item spacing. */
+  border: 0;                /* Removes default button border. */
+  background: transparent;  /* Keeps actions visually integrated. */
+  color: #253858;         /* Uses normal menu text colour. */
+  font-size: 0.85rem;       /* Keeps actions compact. */
+  text-align: left;         /* Aligns menu text consistently. */
+  text-decoration: none;    /* Removes Link underline. */
+  cursor: pointer;          /* Shows action is clickable. */
+}
+
+.user-menu-link:hover,
+.user-menu-logout:hover:not(:disabled) {
+  background: #f4f5f7; /* Highlights hovered menu action. */
+}
+
+.user-menu-logout {
+  color: #ae2a19; /* Gives Logout a controlled destructive colour. */
+  font-weight: 700; /* Makes logout clearly identifiable. */
+}
+
+.user-menu-logout:disabled {
+  cursor: not-allowed;  /* Shows action cannot be used while processing. */
+  opacity: 0.6;         /* Visually indicates disabled state. */
+}
+
+
+/*********************************************************/
+/*************** Mobile device stylings ******************/
+/*********************************************************/
+
+@media (max-width: 600px) {
+  .user-menu-trigger-text {
+    display: none; /* Shows only avatar/arrow when header space is limited. */
+  }
+
+  .user-menu-dropdown {
+    width: min(290px, calc(100vw - 30px)); /* Keeps dropdown inside phone viewport. */
+  }
+}

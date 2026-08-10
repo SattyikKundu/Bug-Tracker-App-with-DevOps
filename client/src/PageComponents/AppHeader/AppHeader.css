@@ -1,0 +1,91 @@
+/* src/PageComponents/AppHeader/AppHeader.css */
+
+.app-header {
+  position: fixed;                      /* Keeps global header visible while page content scrolls. */
+  z-index: 80;                          /* Places header above sidebar/page content. */
+  top: 0;                               /* Anchors header to top of viewport. */
+  right: 0;                             /* Stretches header to right edge. */
+  left: 0;                              /* Stretches header to left edge. */
+  display: flex;                        /* Places branding and account controls on one row. */
+  height: 64px;                         /* Establishes consistent global-header height. */
+  align-items: center;                  /* Vertically centers header contents. */
+  justify-content: space-between;       /* Separates left and right sections. */
+  padding: 0 22px;                      /* Adds horizontal breathing room. */
+  border-bottom: 1px solid #dfe3e8;   /* Separates header from app content. */
+  background: #ffffff;                /* Uses clean navigation surface. */
+}
+
+.app-header-left,
+.app-header-right {
+  display: flex;       /* Places child controls horizontally. */
+  align-items: center; /* Vertically aligns controls. */
+}
+
+.app-header-left {
+  gap: 12px; /* Adds space between hamburger and branding. */
+}
+
+.app-header-right {
+  gap: 12px; /* Adds space between notification and user menu. */
+}
+
+.app-header-brand {
+  display: flex;        /* Places logo mark beside product name. */
+  align-items: center;  /* Vertically centers branding. */
+  gap: 10px;            /* Adds spacing between mark and title. */
+  color: #172b4d;     /* Uses dark primary navigation text. */
+  font-weight: 800;     /* Gives product title emphasis. */
+}
+
+.app-header-brand-mark {
+  display: grid;         /* Makes logo initials easy to center. */
+  width: 35px;           /* Sets compact logo width. */
+  height: 35px;          /* Matches logo height. */
+  place-items: center;   /* Centers BT initials. */
+  border-radius: 9px;    /* Gives mark modest rounded shape. */
+  background: #2368a2; /* Uses application primary blue. */
+  color: #ffffff;      /* Provides strong contrast. */
+  font-size: 0.76rem;    /* Keeps initials proportional. */
+}
+
+.app-header-menu-button {
+  display: none;            /* Hidden on desktop because sidebar remains visible. */
+  width: 38px;              /* Creates compact mobile control width. */
+  height: 38px;             /* Matches control height. */
+  border: 0;                /* Removes browser default border. */
+  border-radius: 7px;       /* Matches navigation controls. */
+  background: transparent;  /* Keeps control subtle. */
+  color: #42526e;         /* Uses readable menu-icon colour. */
+  font-size: 1.25rem;       /* Makes hamburger icon visible. */
+  cursor: pointer;          /* Indicates menu control is interactive. */
+}
+
+.app-header-menu-button:hover {
+  background: #f1f2f4; /* Highlights hamburger on hover. */
+}
+
+.app-header-notification-placeholder {
+  display: grid;            /* Allows bell to be centered. */
+  width: 38px;              /* Sets compact control width. */
+  height: 38px;             /* Matches control height. */
+  place-items: center;      /* Centers bell icon. */
+  border: 0;                /* Removes browser border. */
+  border-radius: 50%;       /* Gives notification button circular shape. */
+  background: transparent;  /* Keeps placeholder understated. */
+  opacity: 0.45;            /* Communicates feature is not active yet. */
+}
+
+
+/*****************************************************/
+/************** Mobile design stylings ***************/
+/*****************************************************/
+@media (max-width: 760px) {
+  .app-header-menu-button {
+    display: grid;       /* Shows hamburger once sidebar becomes collapsible. */
+    place-items: center; /* Centers hamburger icon. */
+  }
+
+  .app-header-brand-name {
+    display: none; /* Saves header space on smaller screens. */
+  }
+}

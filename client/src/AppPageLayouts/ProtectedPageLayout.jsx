@@ -1,6 +1,14 @@
 // src/AppPageLayouts/ProtectedPageLayout.jsx
 
-import { useEffect } from "react"; // for triggering "side-effects" to trigger code outside standard function flow
+import { 
+  useEffect, // for triggering "side-effects" to trigger code outside standard function flow
+  useState   // Controls the responsive mobile sidebar drawer
+} from "react"; 
+
+
+// Imported navigation components
+import AppHeader from "../PageComponents/AppHeader/AppHeader.jsx";
+import AppSidebar from "../PageComponents/AppSidebar/AppSidebar.jsx";
 
 import {
   Navigate,    // Use for navigation (change Url location from current one)
@@ -16,6 +24,7 @@ import {
 
 import { checkAuth } from "../Store/authSlice"; // checkAuth async thunk function from authSlice.jsx 
 
+import "./ProtectedPageLayout.css";
 
 const ProtectedPageLayout = () => {
 
@@ -25,6 +34,7 @@ const ProtectedPageLayout = () => {
   const { authStatus, isAuthenticated } = useSelector((state) => state.auth); // tracks and responds to changes in these 
                                                                               // fields from the store state
 
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Tracks whether mobile navigation drawer is open
 
   useEffect(() => {   // Restore the authentication session after page refresh.
     if (authStatus === "idle") {
@@ -47,7 +57,15 @@ const ProtectedPageLayout = () => {
     );
   }
 
-  return <Outlet />;
+  return (
+  <div className="protected-app-shell">
+    <AppHeader onOpenSidebar={() => setSidebarOpen(true)}/>
+    <AppSidebar sidebarOpen={sidebarOpen} onCloseSidebar={() => setSidebarOpen(false)}/>
+    <div className="protected-app-content">
+      <Outlet />
+    </div>
+  </div>
+);
 };
 
 export default ProtectedPageLayout;

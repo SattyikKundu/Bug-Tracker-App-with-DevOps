@@ -14,15 +14,13 @@ import RegisterPage        from '../PublicPages/RegisterPage/RegisterPage.jsx'; 
 
 // All Private Pages
 import DashboardPage       from "../ProtectedPages/DashboardPage/DashboardPage.jsx"; // issues dashboard after logging in 
+import ProfilePage         from "../ProtectedPages/ProfilePage/ProfilePage.jsx";     // user account settings page
 
 const App = () => {
 
   return (
     <Router>
-
-
     <Routes>
-
       {/* Basepage layout that wraps ALL pages (both public and protected) except Checkout page. '/' is start (and index) of all routes */}
       <Route path='/'   element={<BasePageLayout/>} >
 
@@ -60,7 +58,9 @@ const App = () => {
         <Route element={<ProtectedPageLayout />}>
           {/* Page shows user's profile information AND allows user to edit his/her profile information */}
           {/* <Route path='/profile' element={<ProfilePage />} /> */}
+
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="profile"   element={<ProfilePage />}   />
         </Route>
 
       </Route>

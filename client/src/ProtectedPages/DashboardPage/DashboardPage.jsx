@@ -192,7 +192,7 @@ const DashboardPage = () => {
 
  return ( // Full dashboard component(s) page
     <main className="dashboard-page">
-      <header className="dashboard-header">
+      {/* <header className="dashboard-header">
         <div className="dashboard-brand">
           <span className="dashboard-brand-mark">BT</span>
           <span>BugTrack Workspace</span>
@@ -204,7 +204,7 @@ const DashboardPage = () => {
             {logoutStatus === "loading" ? "Logging out..." : "Log out"}
           </button>
         </div>
-      </header>
+      </header> */}
 
       <section className="dashboard-content">
         <div className="dashboard-heading-row">

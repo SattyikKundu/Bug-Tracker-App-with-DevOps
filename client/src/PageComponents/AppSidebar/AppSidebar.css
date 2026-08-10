@@ -1,0 +1,101 @@
+/* src/PageComponents/AppSidebar/AppSidebar.css */
+
+.app-sidebar {
+  position: fixed;                      /* Keeps navigation available while content scrolls. */
+  z-index: 70;                          /* Places sidebar below global header but above page content. */
+  top: 64px;                            /* Starts immediately beneath fixed header. */
+  bottom: 0;                            /* Extends sidebar to bottom of viewport. */
+  left: 0;                              /* Anchors sidebar to left edge. */
+  width: 245px;                         /* Gives navigation labels comfortable space. */
+  overflow-y: auto;                     /* Allows scrolling if navigation becomes taller later. */
+  border-right: 1px solid #dfe3e8;    /* Separates navigation from content. */
+  background: #ffffff;                /* Uses clean navigation surface. */
+}
+
+.app-sidebar-navigation {
+  display: grid;          /* Stacks navigation items vertically. */
+  gap: 4px;               /* Adds compact spacing between links. */
+  padding: 23px 14px;     /* Creates internal sidebar spacing. */
+}
+
+.app-sidebar-section-label {
+  margin: 13px 10px 6px;      /* Separates section labels from surrounding links. */
+  color: #7a869a;           /* Uses tertiary text for navigation grouping. */
+  font-size: 0.68rem;         /* Keeps section headings visually small. */
+  font-weight: 800;           /* Makes uppercase label readable. */
+  letter-spacing: 0.1em;      /* Adds spacing between uppercase letters. */
+  text-transform: uppercase;  /* Distinguishes labels from clickable items. */
+}
+
+.app-sidebar-link,
+.app-sidebar-disabled-action {
+  display: flex;            /* Places icon and navigation text on one row. */
+  min-height: 42px;         /* Creates comfortable navigation click targets. */
+  align-items: center;      /* Vertically aligns icon/text. */
+  gap: 11px;                /* Adds spacing between icon and label. */
+  padding: 9px 11px;        /* Adds internal navigation spacing. */
+  border: 0;                /* Removes default button border. */
+  border-radius: 7px;       /* Gives navigation selection modest rounding. */
+  background: transparent;  /* Keeps inactive items integrated with sidebar. */
+  color: #42526e;         /* Uses secondary navigation text colour. */
+  font-size: 0.88rem;       /* Keeps sidebar compact. */
+  font-weight: 650;         /* Improves navigation readability. */
+  text-align: left;         /* Keeps button/link labels consistently aligned. */
+  text-decoration: none;    /* Removes NavLink underline. */
+}
+
+.app-sidebar-link:hover {
+  background: #f1f2f4;  /* Adds hover feedback. */
+  color: #172b4d;       /* Strengthens hovered text. */
+}
+
+.app-sidebar-link--active {
+  background: #e8f1fa;  /* Highlights current location. */
+  color: #174d7a;       /* Uses blue text for active route. */
+  font-weight: 800;       /* Gives active navigation stronger emphasis. */
+}
+
+.app-sidebar-disabled-action {
+  cursor: not-allowed;  /* Communicates feature is not active yet. */
+  opacity: 0.45;        /* Visually distinguishes future functionality. */
+}
+
+.app-sidebar-divider {
+  height: 1px;              /* Creates thin navigation-group separator. */
+  margin: 13px 8px;         /* Adds spacing around divider. */
+  background: #ebecf0;    /* Uses subtle neutral divider colour. */
+}
+
+.app-sidebar-overlay {
+  display: none;    /* Overlay is unnecessary while desktop sidebar is fixed. */
+}
+
+
+/*****************************************************/
+/************** Mobile design stylings ***************/
+/*****************************************************/
+@media (max-width: 760px) {
+  .app-sidebar {
+    z-index: 95;                        /* Places mobile drawer above page and header content. */
+    top: 64px;                          /* Keeps drawer beneath fixed header. */
+    width: min(280px, 84vw);            /* Fits mobile screens without covering everything. */
+    transform: translateX(-100%);       /* Hides drawer off-screen by default. */
+    transition: transform 180ms ease;   /* Smoothly slides drawer open/closed. */
+  }
+
+  .app-sidebar--open {
+    transform: translateX(0); /* Moves sidebar into view. */
+  }
+
+  .app-sidebar-overlay {
+    position: fixed;                    /* Covers remainder of viewport behind drawer. */
+    z-index: 90;                        /* Sits below sidebar but above content. */
+    top: 64px;                          /* Leaves global header visible. */
+    right: 0;                           /* Extends overlay to right edge. */
+    bottom: 0;                          /* Extends overlay to bottom edge. */
+    left: 0;                            /* Extends overlay across full width. */
+    display: block;                     /* Enables mobile overlay. */
+    border: 0;                          /* Removes button default border. */
+    background: rgba(9, 30, 66, 0.4); /* Darkens page while drawer is open. */
+  }
+}

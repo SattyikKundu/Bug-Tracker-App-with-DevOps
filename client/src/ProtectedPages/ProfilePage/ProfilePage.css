@@ -1,0 +1,191 @@
+/* src/ProtectedPages/ProfilePage/ProfilePage.css */
+
+.profile-page {
+  width: min(1100px, 100%);  /* Prevents settings content from becoming excessively wide. */
+  margin: 0 auto;            /* Horizontally centers profile content. */
+  padding: 52px 34px 80px;   /* Adds spacing around page content. */
+}
+
+.profile-page-heading {
+  max-width: 700px; /* Keeps introductory text at readable line length. */
+}
+
+.profile-page-eyebrow {
+  margin: 0 0 7px;            /* Separates eyebrow from main heading. */
+  color: #2368a2;           /* Uses application accent blue. */
+  font-size: 0.75rem;         /* Keeps section label compact. */
+  font-weight: 800;           /* Makes uppercase label readable. */
+  letter-spacing: 0.11em;     /* Gives uppercase label polished spacing. */
+  text-transform: uppercase;  /* Distinguishes label from normal content. */
+}
+
+.profile-page-heading h1 {
+  margin: 0;                         /* Removes browser heading margin. */
+  color: #172b4d;                  /* Uses primary heading colour. */
+  font-size: clamp(2rem, 4vw, 3rem); /* Scales profile title responsively. */
+  letter-spacing: -0.035em;          /* Tightens large heading typography. */
+}
+
+.profile-page-heading > p:last-child {
+  margin: 12px 0 0;     /* Separates description from title. */
+  color: #5e6c84;     /* Uses secondary explanatory text colour. */
+  line-height: 1.65;    /* Improves readability. */
+}
+
+.profile-settings-grid {
+  display: grid;                                               /* Creates two-column settings layout. */
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr); /* Gives profile form slightly more space. */
+  gap: 24px;                                                   /* Separates settings cards. */
+  margin-top: 36px;                                            /* Separates settings from page introduction. */
+}
+
+.profile-settings-card {
+  align-self: start;                /* Prevents shorter card stretching unnecessarily. */
+  padding: 28px;                    /* Adds internal settings-card space. */
+  border: 1px solid #dfe3e8;      /* Defines card boundary. */
+  border-radius: 12px;              /* Gives card modest rounded corners. */
+  background: #ffffff;            /* Uses clean form surface. */
+  box-shadow: 0 5px 16px rgba(9, 30, 66, 0.05); /* Adds subtle depth. */
+}
+
+.profile-settings-card-header h2 {
+  margin: 0;            /* Removes default heading spacing. */
+  color: #172b4d;     /* Uses strong card title colour. */
+  font-size: 1.25rem;   /* Establishes clear card hierarchy. */
+}
+
+.profile-settings-card-header p {
+  margin: 8px 0 0;      /* Adds spacing below card heading. */
+  color: #6b778c;     /* Uses secondary explanatory text. */
+  font-size: 0.9rem;    /* Keeps supporting text compact. */
+  line-height: 1.55;    /* Improves multi-line readability. */
+}
+
+.profile-form {
+  display: grid;    /* Stacks fields and actions vertically. */
+  gap: 18px;        /* Adds consistent spacing between form elements. */
+  margin-top: 25px; /* Separates form from section description. */
+}
+
+.profile-name-grid {
+  display: grid;                  /* Places first and last name side-by-side. */
+  grid-template-columns: 1fr 1fr; /* Gives both name fields equal width. */
+  gap: 15px;                      /* Adds spacing between name fields. */
+}
+
+.profile-field {
+  display: grid;    /* Stacks label, input, and help text. */
+  gap: 7px;         /* Adds compact spacing inside each form field. */
+}
+
+.profile-field label {
+  color: #253858;     /* Uses dark label text. */
+  font-size: 0.84rem;   /* Keeps labels compact. */
+  font-weight: 750;     /* Makes field labels easy to scan. */
+}
+
+.profile-field input {
+  min-height: 43px;             /* Provides accessible input height. */
+  width: 100%;                  /* Makes inputs fill available space. */
+  padding: 9px 11px;            /* Adds internal input spacing. */
+  border: 1px solid #b7c0cd;  /* Defines input boundary. */
+  border-radius: 7px;           /* Matches authentication form style. */
+  outline: none;                /* Replaces browser outline with custom focus state. */
+  background: #fafbfc;        /* Gives inputs subtle contrast. */
+  color: #172b4d;             /* Uses primary input text colour. */
+}
+
+.profile-field input:focus {
+  border-color: #2368a2;    /* Highlights active field. */
+  background: #ffffff;      /* Makes active field slightly brighter. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.14); /* Adds accessible focus ring. */
+}
+
+.profile-field small {
+  color: #7a869a;     /* Keeps help text visually tertiary. */
+  font-size: 0.75rem;   /* Makes guidance smaller than form labels. */
+}
+
+.profile-primary-button {
+  justify-self: start;      /* Prevents button from stretching full width. */
+  min-height: 41px;         /* Creates comfortable action target. */
+  padding: 8px 16px;        /* Adds internal button spacing. */
+  border: 0;                /* Removes default button border. */
+  border-radius: 7px;       /* Matches app controls. */
+  background: #2368a2;    /* Uses application primary action colour. */
+  color: #ffffff;         /* Provides readable contrast. */
+  font-weight: 750;         /* Makes action label prominent. */
+  cursor: pointer;          /* Indicates button is interactive. */
+}
+
+.profile-primary-button:hover:not(:disabled) {
+  background: #195888; /* Darkens button during hover. */
+}
+
+.profile-primary-button:disabled {
+  cursor: not-allowed;  /* Communicates temporary unavailable state. */
+  opacity: 0.65;        /* Visually indicates loading state. */
+}
+
+.profile-alert {
+  padding: 11px 13px;   /* Creates comfortable alert spacing. */
+  border-radius: 7px;   /* Matches other application messages. */
+  font-size: 0.86rem;   /* Keeps status messages compact. */
+  line-height: 1.5;     /* Improves message readability. */
+}
+
+.profile-alert--error {
+  border: 1px solid #ffbdad; /* Gives failures clear boundary. */
+  background: #ffebe6;       /* Uses soft red failure background. */
+  color: #ae2a19;            /* Uses readable error text. */
+}
+
+.profile-alert--success {
+  border: 1px solid #7bc99b;   /* Gives success message clear green boundary. */
+  background: #e9f8ef;         /* Uses subtle success background. */
+  color: #1f6f43;              /* Uses readable success text. */
+}
+
+.profile-google-password-info {
+  margin-top: 24px;             /* Separates account-provider notice from heading. */
+  padding: 18px;                /* Gives information box comfortable space. */
+  border: 1px solid #c8d8ea;  /* Defines informational notice. */
+  border-radius: 8px;           /* Matches other UI surfaces. */
+  background: #f3f8fd;        /* Uses light blue informational background. */
+}
+
+.profile-google-password-info strong {
+  color: #174d7a; /* Gives provider notice title emphasis. */
+}
+
+.profile-google-password-info p {
+  margin: 8px 0 0;      /* Separates description from notice title. */
+  color: #5e6c84;     /* Uses secondary informational text. */
+  font-size: 0.88rem;   /* Keeps notice compact. */
+  line-height: 1.55;    /* Improves readability. */
+}
+
+
+/*********************************************************/
+/*************** Mobile device stylings ******************/
+/*********************************************************/
+
+@media (max-width: 880px) {
+  .profile-settings-grid {
+    grid-template-columns: 1fr; /* Stacks profile/password cards on tablets. */
+  }
+}
+@media (max-width: 560px) {
+  .profile-page {
+    padding: 34px 16px 60px; /* Reduces page spacing on phones. */
+  }
+  .profile-settings-card {
+    padding: 21px 17px; /* Reduces card padding on smaller displays. */
+  }
+  .profile-name-grid {
+    grid-template-columns: 1fr; /* Stacks first/last name on phones. */
+  }
+  .profile-primary-button {
+    width: 100%; /* Gives mobile users a full-width action target. */
+  }
+}
