@@ -27,6 +27,7 @@ import projectRoutes    from "./routes/projectRoutes.js";     // Import project 
 import issueRoutes      from "./routes/issueRoutes.js";       // Import issues routes
 import commentRoutes    from "./routes/commentRoutes.js";     // Import comments routes
 import userSearchRoutes from "./routes/userSearchRoutes.js";  // Import user search routes
+import userRoutes       from "./routes/userRoutes.js";        // Import user profile/account-management routes
 
 import swaggerUi   from "swagger-ui-express";   // Import Swagger UI middleware
 import swaggerSpec from "./swaggerConfig.js";
@@ -99,6 +100,7 @@ app.use("/", authRoutes); /* Mount all routes for handling authentication-relate
                            * This would make it scalable and easier to "swap" routes around if needed.
                            */
 
+app.use("/", userRoutes); // Mounts GET/PATCH /users/me and PATCH /users/me/password
 
 app.use("/api/projects", userSearchRoutes); /* Mount at root; mounts user search (search of app users) endpoints 
                                              *

@@ -3,16 +3,16 @@ import passport from "passport";                                      // import 
 import { Strategy as LocalStrategy } from "passport-local";           // Strategy for username/password login
 import { Strategy as GoogleStrategy } from "passport-google-oauth20"; // Strategy for Google OAuth login 
 import bcrypt from "bcryptjs";                                        // for securly comparing hashed passwords
-import User from "../models/user.js";                            // import 'User' MongoDB schema from model file.
+import User from "../models/user.js";                                 // import 'User' MongoDB schema from model file.
 
 /* NOTE: The done() callback in Passport strategies signals result of an
  *       authentication attempt. It's signature typically: 
  *       done(error, user, info)
  * 
- *   Parameter	    Typical Value	      Meaning
+ *   Parameter	  Typical Value	      Meaning
  *     error	    null or Error	      If error, pass error object here. Otherwise, pass null.
- *     user	        user or false	      If authentication succeeded, pass authenticated user object. Otherwise, pass false if failure.
- *     info	         { message: ... }	  Optional info object about authentication results. Commonly used to give a message why authentication failed 
+ *     user	      user or false	      If authentication succeeded, pass authenticated user object. Otherwise, pass false if failure.
+ *     info	      { message: ... }	  Optional info object about authentication results. Commonly used to give a message why authentication failed 
  * 
  *  Examples:
  *  #1.) Successful authentication: done (null,user)
@@ -72,23 +72,14 @@ passport.use(
 
 
         // Read from the logging/registering user's Google profile fields needed by the User schema.
-        const firstName =
-          profile.name?.givenName?.trim() ||
-          "Google";
+        const firstName = profile.name?.givenName?.trim() || "Google";
 
-        const lastName =
-          profile.name?.familyName?.trim() ||
-          "User";
+        const lastName  = profile.name?.familyName?.trim() || "User";
 
-        const email =
-          profile.emails?.[0]?.value?.trim().toLowerCase();
+        const email     = profile.emails?.[0]?.value?.trim().toLowerCase();
 
         if (!email) {
-          return done(
-            null,
-            false,
-            { message: "Google account did not provide an email address." }
-          );
+          return done(null, false, { message: "Google account did not provide an email address." });
         }
 
         // Create a username candidate from the Google display name.
@@ -99,8 +90,7 @@ passport.use(
           `google${profile.id.slice(-6)}`;
 
         // Add part of the Google ID to reduce duplicate-username conflicts.
-        const username =
-          `${usernameBase}${profile.id.slice(-4)}`;
+        const username = `${usernameBase}${profile.id.slice(-4)}`;
 
         user = await User.create({ // create a user 'document' to be passed into 'User' collection in MongoDB
           googleId: profile.id,

@@ -1,7 +1,8 @@
 // server/routes/authRoutes.js
-import express from "express";                      // Imported framework for defining routes
-import passport from "passport";                    // Authentication middleware
-import verifyJWT from "../middleware/verifyJWT.js"; // Import verifyJWT auth middleware
+import express from "express";                            // Imported framework for defining routes
+import passport from "passport";                          // Authentication middleware
+import verifyJWT from "../middleware/verifyJWT.js";       // Import verifyJWT auth middleware
+import { loadCurrentUser } from "../middleware/rbac.js";  // Reloads the latest user profile from MongoDB
 
 import {
   loginUser,            // local login controller
@@ -9,6 +10,11 @@ import {
   registerUser,         // local registration controller
   handleGoogleCallback  // Google OAuth callback controller
 } from "../controllers/authController.js";
+
+import {
+  getMyProfile // Reuses safe current-user profile response for '/auth/me'
+} from "../controllers/userController.js";
+
 
 const router = express.Router();
 
@@ -122,6 +128,8 @@ router.get("/auth/me",             // Define GET route at '/auth/me'
                                     * won't be called. This prevents Express from proceeding to the callback function.
                                     */
 
+  loadCurrentUser,         // Reload CURRENT firstName/lastName/username/email from MongoDB
+
   (req, res) => {         // Callback function runs if token is valid  
                           // At this point, verifyJWT has decoded the JWT and attached user data to req.user
 
@@ -135,7 +143,15 @@ router.get("/auth/me",             // Define GET route at '/auth/me'
      *  caused a redirect to "/profile" page instead due to auth token being stored in bfcache.     
      */ 
 
-    res.json({ user: req.user }); // Send the user info back to the frontend as JSON
+    //res.json({ user: req.user }); // Send the user info back to the frontend as JSON
+
+    /* Reuse the same safe response used by "GET /users/me":
+     *
+     * This is important after profile edits because req.user contains
+     * values originally encoded in the JWT, while 'req.authUser' contains
+     * the newest MongoDB values.
+     */
+    return getMyProfile(req, res, next);
 });
 
 
