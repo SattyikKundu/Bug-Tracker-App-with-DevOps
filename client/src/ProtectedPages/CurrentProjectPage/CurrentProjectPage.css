@@ -94,6 +94,28 @@
   line-height: 1.65;    /* Improves wrapped description readability. */
 }
 
+.current-project-board-button {
+  flex-shrink: 0;               /* Prevents Board button from collapsing beside long title. */
+  align-self: flex-start;       /* Keeps button aligned near top of project heading. */
+  min-height: 40px;             /* Creates comfortable click target. */
+  padding: 9px 14px;            /* Adds internal navigation-button spacing. */
+  border: 1px solid #2368a2;  /* Gives Board navigation a clear blue boundary. */
+  border-radius: 7px;           /* Matches existing project-management controls. */
+  background: #2368a2;        /* Makes Issue Board the primary project-navigation action. */
+  color: #ffffff;             /* Provides strong readable contrast. */
+  font-size: 0.82rem;           /* Keeps project action compact. */
+  font-weight: 750;             /* Makes navigation label easy to identify. */
+  text-decoration: none;        /* Removes Link's default underline. */
+  transition:                   /* Smooths hover feedback. */
+    background 140ms ease,
+    border-color 140ms ease;
+}
+
+.current-project-board-button:hover {
+  border-color: #195888;    /* Darkens button boundary during hover. */
+  background: #195888;      /* Darkens Board action during hover. */
+}
+
 
 .current-project-grid {
   display: grid;        /* Creates details/members two-column layout. */
@@ -515,6 +537,16 @@
 @media (max-width: 650px) {
   .current-project-page {
     padding: 34px 16px 60px; /* Reduces page spacing on phones. */
+  }
+
+  .current-project-heading {
+    align-items: flex-start;  /* Keeps stacked heading content left-aligned. */
+    flex-direction: column;   /* Moves Issue Board button beneath project information. */
+  }
+
+  .current-project-board-button {
+    width: 100%;        /* Gives mobile users a large Board navigation target. */
+    text-align: center; /* Centers Board button text on phones. */
   }
 
   .current-project-transfer-form {

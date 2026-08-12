@@ -348,6 +348,18 @@ const CurrentProjectPage = () => {
         </div>
       )}
 
+      {/* <header className="current-project-heading">
+        <div>
+          <div className="current-project-title-row">
+            <span className="current-project-key">{project.key}</span>
+            {isProjectLead && (
+              <span className="current-project-role-badge">Project Lead</span>
+            )}
+          </div>
+          <h1>{project.name}</h1>
+          <p>{project.description || "No project description has been added yet."}</p>
+        </div>
+      </header> */}
       <header className="current-project-heading">
         <div>
           <div className="current-project-title-row">
@@ -359,6 +371,11 @@ const CurrentProjectPage = () => {
           <h1>{project.name}</h1>
           <p>{project.description || "No project description has been added yet."}</p>
         </div>
+
+        {/* Every project member may open and VIEW the project's issue board. */}
+        <Link className="current-project-board-button" to={`/projects/${projectId}/board`}>
+          View Issue Board →
+        </Link>
       </header>
 
       <section className="current-project-grid">

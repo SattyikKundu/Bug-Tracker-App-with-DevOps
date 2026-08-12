@@ -6,7 +6,7 @@ const { Schema } = mongoose;             // Extract Schema helper
 
 const TYPES      = ["bug"    , "task"         , "story"                         ]; // Allowed issues' types
 const STATUSES   = ["open"   , "in_progress"  , "ready_for_review" , "closed"   ]; // Allowed issues' statuses
-const PRIORITIES = ["low"    , "medium"       , "high     "        , "critical" ]; // Allowed issues' priority level
+const PRIORITIES = ["low"    , "medium"       , "high"             , "critical" ]; // Allowed issues' priority level
 const SEVERITIES = ["minor"  , "major"        , "critical"                      ]; // Allowed issues' severity-level
 
 const AttachmentSchema = new Schema(  // File metadata subdoc

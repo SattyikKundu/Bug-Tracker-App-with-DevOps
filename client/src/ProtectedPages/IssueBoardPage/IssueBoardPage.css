@@ -1,0 +1,423 @@
+/* src/ProtectedPages/IssueBoardPage/IssueBoardPage.css */
+
+
+/* ========================================================================== */
+/* Page                                                                       */
+/* ========================================================================== */
+.issue-board-page {
+  width: 100%;                  /* Allows board to use entire protected workspace. */
+  min-height: 100%;             /* Fills available application content height. */
+  padding: 38px 30px 70px;      /* Adds workspace spacing around the board. */
+  background: #f4f5f7;        /* Matches existing dashboard/project background. */
+}
+
+
+/* ========================================================================== */
+/* Breadcrumb                                                                 */
+/* ========================================================================== */
+.issue-board-breadcrumb {
+  width: min(1600px, 100%);     /* Keeps board controls aligned on large screens.  */
+  margin: 0 auto 20px;          /* Centers breadcrumb and separates it from title. */
+}
+
+.issue-board-breadcrumb a {
+  color: #2368a2;         /* Uses established application navigation blue. */
+  font-size: 0.84rem;       /* Keeps breadcrumb secondary to project title. */
+  font-weight: 750;         /* Makes return navigation easy to identify. */
+  text-decoration: none;    /* Removes browser's default underline. */
+}
+
+.issue-board-breadcrumb a:hover {
+  text-decoration: underline;   /* Gives familiar link hover feedback. */
+}
+
+
+/* ========================================================================== */
+/* Heading                                                                    */
+/* ========================================================================== */
+.issue-board-heading {
+  display: flex;                    /* Places project title and issue count side-by-side. */
+  width: min(1600px, 100%);         /* Prevents oversized heading on very wide screens. */
+  align-items: flex-end;            /* Aligns summary with bottom of title area. */
+  justify-content: space-between;   /* Pushes issue count to far-right side. */
+  gap: 24px;                        /* Prevents heading elements from colliding. */
+  margin: 0 auto;                   /* Centers heading within workspace. */
+}
+
+.issue-board-eyebrow {
+  margin: 0 0 7px;              /* Separates page-category label from project row. */
+  color: #2368a2;             /* Uses established blue accent. */
+  font-size: 0.74rem;           /* Keeps category label compact. */
+  font-weight: 850;             /* Makes uppercase label easy to read. */
+  letter-spacing: 0.11em;       /* Adds professional spacing between letters. */
+  text-transform: uppercase;    /* Distinguishes category from normal text. */
+}
+
+.issue-board-title-row {
+  display: flex;            /* Places project key beside project name. */
+  flex-wrap: wrap;          /* Lets title wrap on narrow layouts. */
+  align-items: center;      /* Vertically aligns key and title. */
+  gap: 12px;                /* Creates separation between project identifier/name. */
+}
+
+.issue-board-project-key {
+  display: inline-flex;     /* Sizes key badge around its content. */
+  align-items: center;      /* Vertically centers project key. */
+  padding: 6px 9px;         /* Adds compact project-key spacing. */
+  border-radius: 6px;       /* Matches project-card key styling. */
+  background: #e8f1fa;    /* Uses established project-key background. */
+  color: #174d7a;         /* Provides readable key contrast. */
+  font-size: 0.75rem;       /* Keeps abbreviated key compact. */
+  font-weight: 850;         /* Makes project identifier easy to scan. */
+  letter-spacing: 0.055em;  /* Improves uppercase-key readability. */
+}
+
+
+.issue-board-title-row h1 {
+  margin: 0;                              /* Removes browser heading margin. */
+  color: #172b4d;                       /* Uses primary application heading color. */
+  font-size: clamp(1.8rem, 4vw, 2.8rem);  /* Scales project name across viewport sizes. */
+  letter-spacing: -0.035em;               /* Tightens large heading typography. */
+}
+
+
+.issue-board-heading > div:first-child > p:last-child {
+  margin: 11px 0 0;     /* Separates description from title row. */
+  color: #5e6c84;     /* Uses existing secondary text color. */
+  font-size: 0.92rem;   /* Keeps description readable but subordinate. */
+  line-height: 1.55;    /* Improves wrapped text readability. */
+}
+
+.issue-board-heading-summary {
+  display: grid;      /* Stacks issue count over explanatory label. */
+  flex-shrink: 0;     /* Prevents summary from becoming compressed. */
+  justify-items: end; /* Right-aligns summary near board edge. */
+  gap: 3px;           /* Adds compact separation between count/text. */
+}
+
+.issue-board-heading-summary strong {
+  color: #172b4d;     /* Gives visible issue count primary emphasis. */
+  font-size: 1.65rem;   /* Makes count easy to scan. */
+  line-height: 1;       /* Removes excess vertical line spacing. */
+}
+
+.issue-board-heading-summary span {
+  color: #7a869a;     /* Uses tertiary explanatory text. */
+  font-size: 0.73rem;   /* Keeps count description compact. */
+}
+
+
+/* ========================================================================== */
+/* Archived-project warning                                                   */
+/* ========================================================================== */
+.issue-board-archive-banner {
+  display: flex;                /* Places archived label beside explanation. */
+  width: min(1600px, 100%);     /* Aligns banner to board width. */
+  align-items: center;          /* Vertically aligns archive message. */
+  gap: 13px;                    /* Separates status label and description. */
+  margin: 22px auto 0;          /* Centers banner and separates it from heading. */
+  padding: 12px 14px;           /* Adds compact notification spacing. */
+  border: 1px solid #c8ccd2;  /* Uses neutral archived-state boundary. */
+  border-radius: 8px;           /* Matches other application notices. */
+  background: #f1f2f4;        /* Distinguishes read-only archived state. */
+  color: #505f79;             /* Uses muted archived explanation text. */
+  font-size: 0.82rem;           /* Keeps banner compact. */
+}
+
+.issue-board-archive-banner strong {
+  color: #253858;   /* Makes archived state label easier to notice. */
+}
+
+
+/* ========================================================================== */
+/* Filter toolbar                                                             */
+/* ========================================================================== */
+.issue-board-toolbar {
+  display: grid;                        /* Builds responsive board-filter control row. */
+  width: min(1600px, 100%);             /* Aligns filters to board width. */
+  grid-template-columns: minmax(240px, 1.8fr) repeat(3, minmax(145px, 0.7fr)) auto;
+                                        /* Gives search more width than dropdown filters. */
+  align-items: end;                     /* Aligns controls by their bottom edge. */
+  gap: 11px;                            /* Adds even separation between filters. */
+  margin: 26px auto 0;                  /* Separates filters from board heading. */
+  padding: 15px;                        /* Gives toolbar comfortable internal spacing. */
+  border: 1px solid #dfe3e8;          /* Defines toolbar surface. */
+  border-radius: 10px;                  /* Matches application card geometry. */
+  background: #ffffff;                /* Keeps controls visually clear. */
+  box-shadow: 0 3px 10px rgba(9, 30, 66, 0.04);/* Adds subtle toolbar depth. */
+}
+
+.issue-board-search,
+.issue-board-filter {
+  display: grid;    /* Stacks each label above its control. */
+  gap: 6px;         /* Adds compact label/control separation. */
+}
+
+.issue-board-search label,
+.issue-board-filter label {
+  color: #5e6c84;             /* Uses secondary control-label color. */
+  font-size: 0.7rem;            /* Keeps toolbar labels compact. */
+  font-weight: 800;             /* Makes small labels readable. */
+  letter-spacing: 0.025em;      /* Slightly improves tiny-label clarity. */
+}
+
+.issue-board-search input,
+.issue-board-filter select {
+  width: 100%;                  /* Makes controls fill assigned grid column. */
+  min-height: 39px;             /* Creates comfortable accessible control height. */
+  padding: 8px 10px;            /* Adds internal input/select spacing. */
+  border: 1px solid #b7c0cd;  /* Defines control boundary. */
+  border-radius: 7px;           /* Matches existing project/profile inputs. */
+  outline: none;                /* Replaces browser focus with custom focus state. */
+  background: #fafbfc;        /* Adds slight contrast against toolbar. */
+  color: #253858;             /* Uses readable control text. */
+  font: inherit;                /* Keeps control typography consistent with application. */
+  font-size: 0.8rem;            /* Keeps dense board controls compact. */
+}
+
+.issue-board-search input:focus,
+.issue-board-filter select:focus {
+  border-color: #2368a2;        /* Highlights currently active filter. */
+  background: #ffffff;          /* Brightens focused control. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.13);   /* Adds accessible focus ring. */
+}
+
+.issue-board-clear-filters {
+  min-height: 39px;               /* Matches neighboring control height. */
+  padding: 7px 12px;              /* Adds compact button spacing. */
+  border: 1px solid #b7c0cd;    /* Defines secondary toolbar action. */
+  border-radius: 7px;             /* Matches filter-control rounding. */
+  background: #ffffff;          /* Keeps reset action visually secondary. */
+  color: #42526e;               /* Uses normal secondary action color. */
+  font-size: 0.75rem;             /* Keeps toolbar action compact. */
+  font-weight: 750;               /* Makes reset action readable. */
+  cursor: pointer;                /* Communicates interaction. */
+}
+
+.issue-board-clear-filters:hover {
+  background: #f1f2f4;  /* Gives visible hover feedback.    */
+}
+
+
+/* ========================================================================== */
+/* Board scrolling / four-column layout                                       */
+/* ========================================================================== */
+.issue-board-scroll-container {
+  width: min(1600px, 100%);     /* Aligns workflow board with page controls. */
+  margin: 20px auto 0;          /* Separates board from filter toolbar. */
+  overflow-x: auto;             /* Allows horizontal navigation on narrow screens. */
+  overflow-y: visible;          /* Allows normal page-level vertical scrolling. */
+  padding-bottom: 10px;         /* Leaves room beneath horizontal scrollbar. */
+  scrollbar-width: thin;        /* Keeps supported browser scrollbar unobtrusive. */
+}
+
+.issue-board-columns {
+  display: grid;            /* Creates the four workflow columns. */
+  min-width: 1180px;        /* Prevents columns becoming unusably narrow. */
+  grid-template-columns: repeat(4, minmax(270px, 1fr)); /* Gives each workflow stage equal usable width. */
+  align-items: start;       /* Allows each column to grow based on issue count. */
+  gap: 14px;                /* Creates visual gutters between workflow stages. */
+}
+
+/* ========================================================================== */
+/* One workflow column                                                        */
+/* ========================================================================== */
+.issue-board-column {
+  min-height: 470px;            /* Keeps empty columns visually meaningful. */
+  overflow: hidden;             /* Keeps child backgrounds inside rounded corners. */
+  border: 1px solid #dfe3e8;  /* Defines each workflow stage. */
+  border-radius: 10px;          /* Gives columns controlled rounded shape. */
+  background: #ebecf0;        /* Differentiates board lanes from white issue cards. */
+}
+
+.issue-board-column-heading {
+  display: flex;             /* Places stage description beside issue count. */
+  min-height: 92px;          /* Gives all column headers consistent height. */
+  align-items: flex-start;   /* Aligns heading content at the top. */
+  justify-content: space-between; /* Pushes issue-count badge to right side. */
+  gap: 12px;                 /* Prevents title/count collision. */
+  padding: 15px;             /* Adds column-header spacing. */
+  border-bottom: 1px solid #d4d8df; /* Separates heading from card collection. */
+  background: #f7f8fa;     /* Gives column header a lighter board surface. */
+}
+
+.issue-board-column-heading h2 {
+  margin: 0;            /* Removes default heading margin. */
+  color: #253858;     /* Uses strong workflow-stage text. */
+  font-size: 0.9rem;    /* Keeps board column heading compact. */
+  font-weight: 850;     /* Makes workflow stages easy to scan. */
+}
+
+.issue-board-column-heading p {
+  margin: 5px 0 0;      /* Separates stage description from title. */
+  color: #7a869a;     /* Uses tertiary explanatory text. */
+  font-size: 0.68rem;   /* Keeps workflow explanation lightweight. */
+  line-height: 1.4;     /* Improves compact multi-line text. */
+}
+
+.issue-board-column-count {
+  display: inline-grid;     /* Makes count badge easy to center. */
+  min-width: 26px;          /* Keeps single/double-digit counts consistent. */
+  min-height: 26px;         /* Matches count badge width. */
+  place-items: center;      /* Centers issue count. */
+  padding: 3px 6px;         /* Supports larger counts. */
+  border-radius: 999px;     /* Gives count a pill/circle shape. */
+  background: #dfe3e8;    /* Differentiates count from header background. */
+  color: #42526e;         /* Keeps number readable. */
+  font-size: 0.69rem;       /* Keeps count compact. */
+  font-weight: 850;         /* Makes column count easy to scan. */
+}
+
+.issue-board-column-cards {
+  display: grid;         /* Stacks issue cards vertically. */
+  align-content: start;  /* Keeps cards anchored to top of lane. */
+  gap: 10px;             /* Adds consistent separation between issues. */
+  padding: 10px;         /* Creates lane spacing around cards. */
+}
+
+.issue-board-column-empty {
+  display: grid;          /* Makes empty-state centering straightforward. */
+  min-height: 130px;      /* Prevents completely collapsed empty lane. */
+  place-items: center;    /* Centers empty-stage message. */
+  padding: 18px;          /* Adds empty-state breathing room. */
+  border: 1px dashed #c5cad3;   /* Indicates an intentionally empty area. */
+  border-radius: 8px;     /* Matches internal board geometry. */
+  color: #8993a4;       /* Uses subtle empty-state text. */
+  font-size: 0.75rem;     /* Keeps message secondary to workflow heading. */
+  font-weight: 650;       /* Retains readability against grey lane. */
+  text-align: center;     /* Centers empty-state copy. */
+}
+
+
+/* ========================================================================== */
+/* Loading / failure states                                                   */
+/* ========================================================================== */
+.issue-board-state-card {
+  display: grid;                        /* Stacks loading/error elements vertically. */
+  width: min(650px, calc(100% - 32px)); /* Prevents state card becoming excessively wide. */
+  justify-items: center;                /* Horizontally centers state content. */
+  gap: 10px;                            /* Adds spacing between state elements. */
+  margin: 70px auto;                    /* Centers state card in protected workspace. */
+  padding: 46px 28px;                   /* Gives state message generous whitespace. */
+  border: 1px solid #dfe3e8;          /* Matches normal application surfaces. */
+  border-radius: 12px;                  /* Preserves existing design language. */
+  background: #ffffff;                /* Gives state content clean surface. */
+  box-shadow: 0 5px 16px rgba(9, 30, 66, 0.05); /* Adds subtle depth. */
+  text-align: center;                    /* Centers loading/error copy. */
+}
+
+.issue-board-state-card h2 {
+  margin: 6px 0 0;      /* Separates heading from spinner. */
+  color: #172b4d;     /* Uses primary application heading color. */
+  font-size: 1.2rem;    /* Gives state title clear hierarchy. */
+}
+
+.issue-board-state-card p {
+  margin: 0;          /* Removes default paragraph spacing. */
+  color: #5e6c84;   /* Uses secondary state-message text. */
+  line-height: 1.55;  /* Improves readability. */
+}
+
+.issue-board-state-card button {
+  min-height: 38px;         /* Gives retry action comfortable click target. */
+  margin-top: 10px;         /* Separates retry action from error text. */
+  padding: 7px 14px;        /* Adds internal button spacing. */
+  border: 0;                /* Removes browser default button border. */
+  border-radius: 7px;       /* Matches application actions. */
+  background: #2368a2;    /* Uses primary application action color. */
+  color: #ffffff;         /* Provides readable contrast. */
+  font-weight: 750;         /* Makes retry action prominent. */
+  cursor: pointer;          /* Communicates interaction. */
+}
+
+.issue-board-state-card a {
+  color: #2368a2;     /* Uses normal application navigation blue. */
+  font-size: 0.8rem;    /* Keeps return link secondary to retry button. */
+  font-weight: 700;     /* Makes link easy to locate. */
+}
+
+.issue-board-state-card--error {
+  border-color: #ffbdad;    /* Gives page-load failure visible red boundary. */
+  background: #fff8f6;      /* Adds subtle failure-state background. */
+}
+
+
+.issue-board-spinner {
+  width: 34px;                      /* Sets spinner width. */
+  height: 34px;                     /* Matches spinner height. */
+  border: 4px solid #d9e5f0;      /* Creates spinner's inactive track. */
+  border-top-color: #2368a2;      /* Creates visible rotating segment. */
+  border-radius: 50%;               /* Converts bordered square into circle. */
+  animation: issue-board-spin 750ms linear infinite;   /* Rotates loading indicator continuously. */
+}
+
+
+@keyframes issue-board-spin {
+  to {
+    transform: rotate(360deg);  /* Completes one full spinner rotation. */
+  }
+}
+
+
+/* ========================================================================== */
+/* Responsive behavior                                                        */
+/* ========================================================================== */
+@media (max-width: 1000px) {
+  .issue-board-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));  /* Uses two filter columns on tablet-sized screens. */
+  }
+
+  .issue-board-search {
+    grid-column: 1 / -1;    /* Gives search full toolbar width on tablets. */
+  }
+
+  .issue-board-clear-filters {
+    justify-self: start;    /* Keeps reset action aligned to left. */
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .issue-board-page {
+    padding: 30px 14px 60px;    /* Reduces board workspace margins on phones. */
+  }
+
+  .issue-board-heading {
+    align-items: flex-start;    /* Better aligns stacked mobile heading content. */
+    flex-direction: column;     /* Places issue count beneath project title. */
+  }
+
+  .issue-board-heading-summary {
+    justify-items: start;   /* Left-aligns issue count in stacked mobile layout. */
+  }
+
+  .issue-board-toolbar {
+    grid-template-columns: 1fr; /* Stacks all filters vertically on phones. */
+  }
+
+  .issue-board-search {
+    grid-column: auto;   /* Returns search to normal one-column grid flow. */
+  }
+
+  .issue-board-clear-filters {
+    width: 100%;    /* Gives mobile users a comfortable reset target. */
+  }
+
+  .issue-board-columns {
+    min-width: 1100px;      /* Preserves usable four-column widths on mobile. */
+  }
+
+  .issue-board-scroll-container {
+    scroll-snap-type: x proximity;  /* Helps users naturally stop near a workflow column. */
+  }
+
+  .issue-board-column {
+    scroll-snap-align: start;   /* Aligns column when horizontally scrolling board. */
+  }
+
+  .issue-board-archive-banner {
+    align-items: flex-start;    /* Improves stacked archived-message alignment. */
+    flex-direction: column;     /* Prevents archive message crowding on phones. */
+  }
+}

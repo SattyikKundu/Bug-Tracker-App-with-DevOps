@@ -1,0 +1,171 @@
+// src/Store/issueSlice.jsx
+
+import {
+  createAsyncThunk, // Creates Redux actions for asynchronous issue API requests
+  createSlice       // Creates issue state, reducers, and generated Redux actions
+} from "@reduxjs/toolkit";
+
+import api from "../api/axios.js"; // Shared Axios client that already sends auth cookies
+
+
+/* GET /projects/:pid/issues
+ *
+ * Retrieves every issue that logged-in user is permitted to view
+ * inside ONE selected project.
+ *
+ * Filtering is intentionally handled client-side during this first board
+ * implementation because full issue collection is already needed to
+ * divide the issues amongst all four workflow columns.
+ */
+export const fetchProjectIssues = createAsyncThunk(
+  "issues/fetchProjectIssues",
+  async (projectId, thunkAPI) => {
+    try {
+      const response = await api.get(`/projects/${projectId}/issues`);
+      return response.data.issues ?? []; // Safely fall back to an empty board
+    }
+    catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to load this project's issues.");
+    }
+  }
+);
+
+
+/* POST /issues/:id/transition
+ *
+ * Performs one explicit workflow transition.
+ * Examples:
+ * open             → in_progress
+ * in_progress      → ready_for_review
+ * ready_for_review → closed
+ *
+ * The backend remains the final permission/workflow authority.
+ */
+export const transitionIssueStatus = createAsyncThunk(
+  "issues/transitionIssueStatus",
+  async (
+    {
+      issueId, // Issue being transitioned
+      to       // Destination status
+    },
+    thunkAPI
+  ) => {
+
+    try {
+      const response = await api.post( 
+        `/issues/${issueId}/transition`,
+        {
+          to // Backend's official transition request property
+        }
+      );
+      return response.data.issue; // Return updated issue to Redux
+    }
+    catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to change issue status.");
+    }
+  }
+);
+
+
+// Initial Redux state for the project issue board.
+const initialState = {
+  issues: [],                  // All issues belonging to the currently opened project
+  status: "idle",              // idle | loading | succeeded | failed
+  error: null,                 // Full-board loading error
+  transitioningIssueId: null   // Tracks which issue currently shows transition loading state
+};
+
+
+const issueSlice = createSlice({
+  name: "issues", // Redux state becomes available through state.issues
+  initialState: initialState,
+  reducers: {
+
+    /* Clear issue-board data when leaving cirrent project board.
+     *
+     * This prevents issues from Project A briefly appearing 
+     * while Project B's board is loading!
+     */
+    clearIssueBoard: (state) => {
+      state.issues = [];                 // Remove previous project's issues
+      state.status = "idle";             // Allows new board to fetch normally
+      state.error = null;                // Remove stale load failures
+      state.transitioningIssueId = null; // Clear temporary transition state
+    },
+    // Clears a failed GET /projects/:pid/issues request.
+    // Useful when manually retrying the board request.
+    clearIssueBoardError: (state) => {
+      state.error = null;
+    }
+  },
+
+  extraReducers: (builder) => {
+    builder
+      // =====================================================================
+      // Fetch project issues
+      // =====================================================================
+      .addCase(fetchProjectIssues.pending, (state) => {
+          state.status = "loading"; // Board is retrieving issue collection
+          state.error = null;       // Remove old board-load errors
+        }
+      )
+      .addCase(fetchProjectIssues.fulfilled, (state, action) => {
+          state.status = "succeeded"; // Board data successfully loaded
+          state.issues = action.payload; // Store complete issue collection
+          state.error = null; // Clear any previous error
+        }
+      )
+      .addCase(fetchProjectIssues.rejected, (state, action) => {
+          state.status = "failed"; // Allows page-level error state
+          state.error = action.payload || "Unable to load this project's issues.";
+        }
+      )
+
+      // =====================================================================
+      // Transition one issue from one board to another
+      // =====================================================================
+      .addCase(transitionIssueStatus.pending, (state, action) => {
+          /*
+           * action.meta.arg contains the object passed to:
+           *
+           * transitionIssueStatus({
+           *   issueId,
+           *   to
+           * })
+           */
+          state.transitioningIssueId = action.meta.arg.issueId;
+        }
+      )
+      .addCase(transitionIssueStatus.fulfilled, (state, action) => {
+          state.transitioningIssueId = null; // Re-enable transition controls
+          const updatedIssue = action.payload; // Updated issue returned by backend
+          const issueIndex = state.issues.findIndex((issue) => (String(issue._id) === String(updatedIssue._id)));
+
+          /* Replace old issue with transitioned issue.
+           *
+           * Because its status changed, IssueBoardPage automatically
+           * moves it into the correct column during the next render.
+           */
+          if (issueIndex !== -1) {
+            state.issues[issueIndex] = updatedIssue;
+          }
+        }
+      )
+      .addCase(transitionIssueStatus.rejected, (state) => {
+
+          /* We intentionally DO NOT store another persistent transition error here.
+           *
+           * The rejected thunk's payload is read directly by IssueBoardPage
+           * and displayed through ErrorMessageToast(). This prevents another
+           * stale Redux-error leak like the project-management issue we fixed.
+           */
+          state.transitioningIssueId = null;
+        }
+      );
+  }
+
+});
+
+export const { clearIssueBoard, clearIssueBoardError } = issueSlice.actions;
+
+export default issueSlice.reducer;

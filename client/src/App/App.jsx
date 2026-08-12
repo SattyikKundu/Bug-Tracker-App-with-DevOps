@@ -16,9 +16,10 @@ import RegisterPage        from '../PublicPages/RegisterPage/RegisterPage.jsx'; 
 import DashboardPage       from "../ProtectedPages/DashboardPage/DashboardPage.jsx"; // issues dashboard after logging in 
 import ProfilePage         from "../ProtectedPages/ProfilePage/ProfilePage.jsx";     // user account settings page
 
-import ProjectsListPage    from "../ProtectedPages/ProjectsListPage/ProjectsListPage.jsx";       // active/archived project browser
+import ProjectsListPage    from "../ProtectedPages/ProjectsListPage/ProjectsListPage.jsx";     // active/archived project browser
 import CreateProjectPage   from "../ProtectedPages/CreateProjectPage/CreateProjectPage.jsx";   // new-project creation form
 import CurrentProjectPage  from "../ProtectedPages/CurrentProjectPage/CurrentProjectPage.jsx"; // current project management page
+import IssueBoardPage      from "../ProtectedPages/IssueBoardPage/IssueBoardPage.jsx";         // Four-column issues workflow board for ONE project
 
 const App = () => {
 
@@ -56,6 +57,10 @@ const App = () => {
           <Route path="projects"      element={<ProjectsListPage />}/>
           <Route path="projects/new"  element={<CreateProjectPage />}/>
           <Route path="projects/:id"  element={<CurrentProjectPage />}/>
+
+          {/* Four-column issue workflow board for the selected project. */}
+          <Route path="projects/:id/board" element={<IssueBoardPage />}/>
+          
         </Route>
 
       </Route>

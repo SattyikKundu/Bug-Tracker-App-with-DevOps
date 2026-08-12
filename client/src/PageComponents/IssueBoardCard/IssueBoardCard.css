@@ -1,0 +1,216 @@
+/* src/PageComponents/IssueBoardCard/IssueBoardCard.css */
+
+
+/* ========================================================================== */
+/* Main issue card                                                            */
+/* ========================================================================== */
+.issue-board-card {
+  display: flex;                      /* Builds a vertical card layout. */
+  flex-direction: column;             /* Stacks metadata, title, labels, and actions. */
+  gap: 13px;                          /* Gives each card section consistent separation. */
+  padding: 15px;                      /* Adds comfortable internal card spacing. */
+  border: 1px solid #dfe3e8;        /* Gives each issue a clear boundary. */
+  border-radius: 9px;                 /* Uses restrained issue-tracker card rounding. */
+  background: #ffffff;              /* Keeps active issue cards easy to scan. */
+  box-shadow: 0 2px 7px rgba(9, 30, 66, 0.08);/* Adds subtle card depth without visual clutter. */
+  transition:                         /* Smooths hover feedback. */
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.issue-board-card:hover {
+  border-color: #b3c5d8;                         /* Makes hovered card boundary more noticeable. */
+  box-shadow: 0 6px 14px rgba(9, 30, 66, 0.11);  /* Raises the card slightly on interaction. */
+  transform: translateY(-1px);                     /* Adds a subtle interactive lift. */
+}
+
+
+/* ========================================================================== */
+/* Key / type row                                                             */
+/* ========================================================================== */
+.issue-board-card-top {
+  display: flex;                    /* Places issue key and issue type on one row. */
+  align-items: center;              /* Vertically aligns both metadata values. */
+  justify-content: space-between;   /* Pushes type indicator to the right. */
+  gap: 10px;                        /* Prevents metadata from touching. */
+}
+
+.issue-board-card-key {
+  color: #2368a2;           /* Uses application blue for issue identifiers. */
+  font-size: 0.74rem;         /* Keeps key compact relative to issue title. */
+  font-weight: 850;           /* Makes human issue key easy to locate. */
+  letter-spacing: 0.035em;    /* Improves readability of short issue keys. */
+}
+
+.issue-board-card-type {
+  display: inline-flex;         /* Sizes type badge to its content. */
+  align-items: center;          /* Vertically centers badge text. */
+  padding: 3px 7px;             /* Gives issue type compact badge spacing. */
+  border-radius: 999px;         /* Gives type indicator a pill shape. */
+  background: #f1f2f4;        /* Uses neutral default badge background. */
+  color: #42526e;             /* Uses readable secondary text. */
+  font-size: 0.66rem;           /* Keeps issue type visually secondary. */
+  font-weight: 800;             /* Makes tiny badge text readable. */
+  text-transform: capitalize;   /* Displays "bug" as "Bug", etc. */
+}
+
+.issue-board-card-type--bug {
+  background: #ffebe6;      /* Gives bugs a restrained red-tinted badge. */
+  color: #ae2a19;           /* Uses readable bug text color. */
+}
+
+.issue-board-card-type--task {
+  background: #e9f2ff;      /* Gives tasks a calm blue badge. */
+  color: #0c66e4;           /* Uses blue task text. */
+}
+
+.issue-board-card-type--story {
+  background: #e9f8ef;      /* Gives stories a subtle green badge. */
+  color: #21643d;           /* Uses readable story text. */
+}
+
+
+/* ========================================================================== */
+/* Issue title                                                                */
+/* ========================================================================== */
+.issue-board-card-title {
+  display: -webkit-box;         /* Enables controlled multi-line clipping. */
+  margin: 0;                    /* Removes browser heading margins. */
+  overflow: hidden;             /* Hides text outside the compact card area. */
+  color: #172b4d;             /* Uses primary readable issue-title color. */
+  font-size: 0.94rem;           /* Keeps board title compact but readable. */
+  font-weight: 750;             /* Gives issue title appropriate emphasis. */
+  line-height: 1.42;            /* Keeps wrapped titles comfortable to read. */
+  -webkit-box-orient: vertical; /* Required for vertical line clamping. */
+  -webkit-line-clamp: 3;        /* Prevents long issue titles dominating column. */
+}
+
+/* ========================================================================== */
+/* Labels                                                                     */
+/* ========================================================================== */
+.issue-board-card-labels {
+  display: flex;        /* Places compact labels beside one another. */
+  flex-wrap: wrap;      /* Allows labels to wrap when necessary. */
+  gap: 5px;             /* Creates spacing between label chips. */
+}
+
+.issue-board-card-label,
+.issue-board-card-label-more {
+  display: inline-flex;     /* Keeps chip width based on content. */
+  align-items: center;      /* Vertically centers chip text. */
+  max-width: 120px;         /* Prevents very long labels widening cards. */
+  padding: 3px 7px;         /* Creates compact label-chip spacing. */
+  overflow: hidden;         /* Prevents label text escaping its chip. */
+  border-radius: 5px;       /* Uses modest label rounding. */
+  background: #ebecf0;    /* Uses neutral category-chip background. */
+  color: #505f79;         /* Keeps label text readable but secondary. */
+  font-size: 0.65rem;       /* Keeps tags visually lightweight. */
+  font-weight: 700;         /* Improves small-label readability. */
+  text-overflow: ellipsis;  /* Shows ... when a label is too long. */
+  white-space: nowrap;      /* Prevents one chip from becoming multi-line. */
+}
+
+.issue-board-card-label-more {
+  background: #f4f5f7;  /* Makes hidden-label count more subtle. */
+  color: #7a869a;       /* Uses tertiary metadata color. */
+}
+
+
+/* ========================================================================== */
+/* Priority / assignee metadata                                               */
+/* ========================================================================== */
+.issue-board-card-meta {
+  display: flex;                    /* Places priority and assignee on one row. */
+  align-items: center;              /* Vertically aligns card metadata. */
+  justify-content: space-between;   /* Separates priority from assignee identity. */
+  gap: 10px;                        /* Prevents metadata collision. */
+}
+
+.issue-board-card-priority {
+  display: inline-flex;         /* Sizes priority label around its text. */
+  align-items: center;          /* Vertically centers priority text. */
+  padding: 4px 7px;             /* Gives priority compact badge spacing. */
+  border-radius: 5px;           /* Creates small rectangular status badge. */
+  font-size: 0.66rem;           /* Keeps priority secondary to issue title. */
+  font-weight: 850;             /* Makes priority easy to scan. */
+  text-transform: uppercase;    /* Gives priority a consistent visual form. */
+}
+
+
+.issue-board-card-priority--low {
+  background: #f1f2f4;  /* Gives low priority a neutral background. */
+  color: #505f79;       /* Uses subdued low-priority text. */
+}
+
+
+.issue-board-card-priority--medium {
+  background: #fff7d6;  /* Uses restrained yellow for medium priority. */
+  color: #7f5f01;       /* Provides readable medium-priority contrast. */
+}
+
+
+.issue-board-card-priority--high {
+  background: #ffebe6;  /* Highlights high priority with soft red. */
+  color: #ae2a19;       /* Uses readable high-priority text.  */
+}
+
+.issue-board-card-priority--critical {
+  background: #ae2a19;     /* Gives critical priority strongest emphasis. */
+  color: #ffffff;           /* Provides strong contrast. */
+}
+
+.issue-board-card-assignee {
+  max-width: 145px;             /* Prevents long names consuming entire row. */
+  overflow: hidden;             /* Hides overflowing assignee name. */
+  color: #5e6c84;             /* Uses secondary identity text.  */
+  font-size: 0.72rem;           /* Keeps assignee compact on cards. */
+  font-weight: 700;             /* Makes identity readable. */
+  text-overflow: ellipsis;      /* Shows ... for long names.  */
+  white-space: nowrap;          /* Keeps assignee on one line. */
+}
+
+
+/* ========================================================================== */
+/* Explicit workflow controls                                                 */
+/* ========================================================================== */
+.issue-board-card-transitions {
+  display: flex;                    /* Places available transition actions together. */
+  flex-wrap: wrap;                  /* Allows two buttons to wrap on narrow cards. */
+  gap: 6px;                         /* Separates transition buttons. */
+  padding-top: 11px;                /* Adds spacing above workflow controls. */
+  border-top: 1px solid #ebecf0;  /* Visually separates actions from issue data. */
+}
+
+.issue-board-card-transition-button {
+  flex: 1;                          /* Shares available action-row width. */
+  min-width: 100px;                 /* Prevents transition labels becoming cramped. */
+  min-height: 32px;                 /* Creates comfortable compact click target. */
+  padding: 5px 8px;                 /* Adds internal action spacing. */
+  border: 1px solid #b7cbe0;      /* Defines workflow action boundary. */
+  border-radius: 6px;               /* Matches compact board controls. */
+  background: #ffffff;            /* Keeps transitions secondary to future Create. */
+  color: #174d7a;                 /* Uses application blue action text. */
+  font-size: 0.69rem;               /* Keeps workflow controls compact. */
+  font-weight: 750;                 /* Makes action labels easy to read. */
+  cursor: pointer;                  /* Communicates that transition is clickable. */
+}
+
+.issue-board-card-transition-button:hover:not(:disabled) {
+  border-color: #579dff;              /* Strengthens button boundary on hover. */
+  background: #e9f2ff;                /* Adds subtle interactive blue tint. */
+}
+
+.issue-board-card-transition-button:disabled {
+  cursor: not-allowed;                         /* Communicates transition request is processing. */
+  opacity: 0.58;                               /* Visually indicates disabled control. */
+}
+
+.issue-board-card-readonly-note {
+  padding-top: 9px;                       /* Separates read-only message from metadata. */
+  border-top: 1px solid #ebecf0;        /* Gives note its own subtle section. */
+  color: #97a0af;                       /* Keeps informational restriction understated. */
+  font-size: 0.68rem;                     /* Makes read-only note visually tertiary. */
+  font-weight: 700;                       /* Ensures small text remains legible. */
+  text-align: right;                      /* Keeps note away from primary issue information. */
+}
