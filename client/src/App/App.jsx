@@ -16,24 +16,23 @@ import RegisterPage        from '../PublicPages/RegisterPage/RegisterPage.jsx'; 
 import DashboardPage       from "../ProtectedPages/DashboardPage/DashboardPage.jsx"; // issues dashboard after logging in 
 import ProfilePage         from "../ProtectedPages/ProfilePage/ProfilePage.jsx";     // user account settings page
 
+import ProjectsListPage    from "../ProtectedPages/ProjectsListPage/ProjectsListPage.jsx";       // active/archived project browser
+import CreateProjectPage   from "../ProtectedPages/CreateProjectPage/CreateProjectPage.jsx";   // new-project creation form
+import CurrentProjectPage  from "../ProtectedPages/CurrentProjectPage/CurrentProjectPage.jsx"; // current project management page
+
 const App = () => {
 
   return (
     <Router>
     <Routes>
-      {/* Basepage layout that wraps ALL pages (both public and protected) except Checkout page. '/' is start (and index) of all routes */}
+      {/* Basepage layout that wraps ALL pages (both public and protected). '/' is start (and index) of all routes */}
       <Route path='/'   element={<BasePageLayout/>} >
 
         {/* All routes that are part of Public Page Layout */}
         <Route element={<PublicPageLayout/>}>
 
-          {/* Redirect '/' and '/products' to '/products/all' */}
-          {/* <Route index            element={<Navigate to='/products/all'/>} /> */}
-
-
           {/* Route for "About" page, which explains the MERN-Bug-Tracker site's features and services */}
           {/* <Route path='/about' element={<AboutPage />} /> */}
-
 
           {/* Dedicated User Login page */}
           <Route index element={<Navigate to="/login" replace/>} />
@@ -41,26 +40,22 @@ const App = () => {
             <Route path="login" element={<LoginPage />}/>
             <Route path="register" element={<RegisterPage />} />
 
-
-             {/* Preserve support for backend-style auth URLs. */}
+             {/*  Dedicated User account Login page */}
             <Route path="auth/login" element={<Navigate to="/login" replace/>} />
+
+            {/* Dedicated User account Registration page */}
             <Route path="auth/register" element={<Navigate to="/register" replace />}/>
           </Route>
-
-          {/* <Route path='/auth/login' element={<Navigate to='/login'/>} />
-          <Route path='/login' element={<LoginPage/>} /> */}
-
-          {/* Dedicated User account Registration page */}
-          {/* <Route path='/auth/register' element={<Navigate to='/register'/>} />
-          <Route path='/register' element={<RegisterPage/>} /> */}
 
         {/* Protected Routes Layout */}
         <Route element={<ProtectedPageLayout />}>
           {/* Page shows user's profile information AND allows user to edit his/her profile information */}
-          {/* <Route path='/profile' element={<ProfilePage />} /> */}
+          <Route path="profile"       element={<ProfilePage />}   />
+          <Route path="dashboard"     element={<DashboardPage />} />
 
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="profile"   element={<ProfilePage />}   />
+          <Route path="projects"      element={<ProjectsListPage />}/>
+          <Route path="projects/new"  element={<CreateProjectPage />}/>
+          <Route path="projects/:id"  element={<CurrentProjectPage />}/>
         </Route>
 
       </Route>

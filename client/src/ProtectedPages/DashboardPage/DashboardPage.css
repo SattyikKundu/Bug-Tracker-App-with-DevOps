@@ -1,290 +1,318 @@
 /* src/ProtectedPages/DashboardPage/DashboardPage.css */
 
 .dashboard-page {
-  min-height: 100vh;     /* Ensures the dashboard covers the full browser height. */
-  background: #f4f5f7; /* Uses a neutral issue-tracker workspace background. */
+  min-height: 100%;       /* Allows dashboard to fill protected content area. */
+  background: #f4f5f7;  /* Preserves existing light-grey workspace background. */
 }
 
 .dashboard-content {
-  width: min(1220px, calc(100% - 36px));  /* Constrains content on wide displays. */
-  margin: 0 auto;                         /* Horizontally centers the dashboard. */
-  padding: 58px 0 80px;                   /* Adds breathing room above and below the content. */
+  width: min(1220px, calc(100% - 36px));  /* Keeps content readable on wide screens. */
+  margin: 0 auto;                         /* Horizontally centers dashboard content. */
+  padding: 58px 0 80px;                   /* Preserves generous dashboard vertical spacing. */
 }
 
-.dashboard-heading-row {
-  display: flex;                  /* Places the heading and project count beside each other. */
-  align-items: flex-end;          /* Aligns the count with the lower heading area. */
-  justify-content: space-between; /* Pushes the project count to the right. */
-  gap: 30px;                      /* Prevents overlap when text is long. */
-}
-
-.dashboard-heading {
-  max-width: 760px; /* Prevents introductory text from becoming too wide. */
+.dashboard-overview-heading {
+  max-width: 760px; /* Prevents heading description from becoming too wide. */
 }
 
 .dashboard-eyebrow {
-  margin: 0 0 8px;            /* Creates space beneath the small section label. */
-  color: #2368a2;           /* Uses the application accent colour. */
-  font-size: 0.78rem;         /* Keeps the eyebrow compact. */
-  font-weight: 800;           /* Makes the uppercase label readable. */
-  letter-spacing: 0.12em;     /* Adds spacing to uppercase characters. */
-  text-transform: uppercase;  /* Creates a recognizable section eyebrow. */
+  margin: 0 0 8px;           /* Separates small category label from main heading. */
+  color: #2368a2;          /* Reuses application's established blue accent. */
+  font-size: 0.78rem;        /* Keeps eyebrow visually secondary. */
+  font-weight: 800;          /* Gives small uppercase text enough emphasis. */
+  letter-spacing: 0.12em;    /* Improves readability of uppercase label. */
+  text-transform: uppercase; /* Creates dashboard-section label styling. */
 }
 
-.dashboard-heading h1 {
-  margin: 0;                  /* Removes default heading spacing. */
-  color: #172b4d;           /* Uses dark navy for the main page title. */
-  font-size: clamp(2.1rem, 5vw, 3.8rem); /* Scales smoothly across screens. */
-  letter-spacing: -0.045em;   /* Gives the large heading a polished density. */
+.dashboard-overview-heading h1 {
+  margin: 0;                              /* Removes browser's default heading margin. */
+  color: #172b4d;                       /* Preserves existing dark-navy heading color. */
+  font-size: clamp(2.1rem, 5vw, 3.8rem);  /* Scales title across desktop/mobile sizes. */
+  letter-spacing: -0.045em;               /* Gives large title polished compact typography. */
 }
 
-.dashboard-heading > p:last-child {
-  margin: 15px 0 0;         /* Separates supporting text from the title. */
-  color: #5e6c84;         /* Uses softer text for explanatory content. */
-  font-size: 1.02rem;       /* Keeps the introduction comfortably readable. */
-  line-height: 1.65;        /* Improves readability across multiple lines. */
+
+.dashboard-overview-heading > p:last-child {
+  margin: 15px 0 0;   /* Separates description from dashboard title. */
+  color: #5e6c84;   /* Uses existing secondary text color. */
+  font-size: 1.02rem; /* Makes overview text comfortably readable. */
+  line-height: 1.65;  /* Improves readability of wrapped description text. */
 }
 
-/* Container holding both project tabs and project sort dropdown. */
-.dashboard-project-controls {
-  display: flex;                      /* Places tabs and sorting on one row. */
-  align-items: flex-end;              /* Aligns control bottoms. */
-  justify-content: space-between;     /* Sends sort control to the right. */
-  gap: 24px;                          /* Prevents tabs and sort dropdown from colliding. */
-  margin-top: 42px;                   /* Separates controls from heading. */
-  padding-bottom: 12px;               /* Adds spacing above dashboard content. */
-  border-bottom: 1px solid #dfe3e8; /* Creates navigation-divider effect. */
+
+/* Three numerical cards across the Dashboard. */
+.dashboard-summary-grid {
+  display: grid;      /* Creates responsive dashboard-statistic columns. */
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* Shows three equal desktop cards. */
+  gap: 20px;          /* Adds equal space between summary cards. */
+  margin-top: 40px;   /* Separates statistics from page heading. */
 }
 
-/* Active/Archived tab group. */
-.dashboard-project-tabs {
-  display: flex;        /* Places the two tabs side-by-side. */
-  align-items: center;  /* Vertically aligns them. */
-  gap: 6px;             /* Adds small separation. */
+.dashboard-summary-card {
+  display: grid;                /* Stacks label, number, and description vertically. */
+  gap: 10px;                    /* Adds controlled spacing between card elements. */
+  padding: 24px;                /* Gives card content comfortable internal whitespace. */
+  border: 1px solid #dfe3e8;  /* Preserves existing issue-tracker card boundary. */
+  border-radius: 12px;          /* Matches existing project-card corner radius. */
+  background: #ffffff;        /* Uses clean white information surface. */
+  box-shadow: 0 5px 16px rgba(9, 30, 66, 0.05); /* Adds subtle existing-style depth. */
 }
 
-/* Individual projects tab */
-.dashboard-tab {
-  display: inline-flex;     /* Allows text and project count to align. */
-  min-height: 40px;         /* Creates comfortable tab click target. */
-  align-items: center;      /* Vertically centers content. */
-  gap: 8px;                 /* Separates tab label from count. */
-  padding: 7px 13px;        /* Adds internal tab spacing. */
-  border: 0;                /* Removes default browser border. */
-  border-bottom: 3px solid transparent; /* Reserves active-indicator space. */
-  background: transparent;  /* Keeps tabs visually integrated into dashboard. */
-  color: #5e6c84;         /* Uses secondary text for inactive tabs. */
-  font-size: 0.9rem;        /* Keeps tabs compact. */
-  font-weight: 750;         /* Makes tab names easy to scan. */
-  cursor: pointer;          /* Indicates interactivity. */
+
+.dashboard-summary-label {
+  color: #5e6c84;           /* Keeps metric label secondary to its numeric value. */
+  font-size: 0.78rem;         /* Uses compact dashboard label typography. */
+  font-weight: 800;           /* Makes small metric title readable. */
+  letter-spacing: 0.06em;     /* Adds subtle visual spacing. */
+  text-transform: uppercase;  /* Distinguishes label from description. */
 }
 
-.dashboard-tab:hover {
-  color: #174d7a;         /* Gives hover feedback. */
-  background: #f0f4f8;    /* Adds subtle hover background. */
+.dashboard-summary-card strong {
+  color: #172b4d;   /* Uses primary dark navy for metric value. */
+  font-size: 2.35rem; /* Makes summary number visually prominent. */
+  line-height: 1;     /* Prevents unnecessary vertical space around number. */
 }
 
-.dashboard-tab--active {
-  border-bottom-color: #2368a2; /* Shows currently selected tab. */
-  color: #174d7a;               /* Gives active tab stronger visual emphasis. */
+.dashboard-summary-card p {
+  margin: 0;          /* Removes browser paragraph margins. */
+  color: #6b778c;   /* Uses subdued explanatory text. */
+  font-size: 0.86rem; /* Keeps supporting text secondary. */
+  line-height: 1.55;  /* Improves small-text readability. */
 }
 
-.dashboard-tab span {
-  display: inline-grid;   /* Makes count easy to center. */
-  min-width: 24px;        /* Keeps one/two-digit counts similarly sized. */
-  min-height: 24px;       /* Creates circular-ish count badge. */
-  place-items: center;    /* Centers number. */
-  padding: 2px 6px;       /* Supports larger numbers. */
-  border-radius: 999px;   /* Creates pill/circle badge. */
-  background: #e8eef5;  /* Gives count a subtle background. */
-  color: #42526e;       /* Uses readable muted text. */
-  font-size: 0.72rem;     /* Keeps count secondary. */
+/* Shared white Dashboard information panel. */
+.dashboard-overview-panel {
+  margin-top: 26px;             /* Adds separation from preceding dashboard section. */
+  padding: 26px;                /* Gives panel comfortable internal spacing. */
+  border: 1px solid #dfe3e8;  /* Matches summary/project cards. */
+  border-radius: 12px;          /* Keeps consistent card geometry. */
+  background: #ffffff;        /* Uses clean information surface. */
+  box-shadow: 0 5px 16px rgba(9, 30, 66, 0.05); /* Adds restrained depth. */
 }
 
-/* Project sort dropdown group classes. */
-.dashboard-sort-control {
-  display: flex;        /* Places label and select beside each other. */
-  align-items: center;  /* Vertically centers sort controls. */
-  gap: 9px;             /* Adds space between label and select. */
+.dashboard-overview-panel h2 {
+  margin: 0;          /* Removes browser's default heading margin. */
+  color: #172b4d;   /* Uses primary heading color. */
+  font-size: 1.18rem; /* Gives section titles clear hierarchy. */
 }
 
-.dashboard-sort-control label {
-  color: #5e6c84;   /* Keeps label visually secondary. */
-  font-size: 0.82rem; /* Uses compact control-label typography. */
-  font-weight: 700;   /* Makes label readable. */
+.dashboard-overview-panel > p {
+  margin: 10px 0 0;   /* Separates explanatory text from title. */
+  color: #6b778c;   /* Uses secondary text color. */
+  font-size: 0.9rem;  /* Keeps panel descriptions compact. */
+  line-height: 1.6;   /* Improves wrapped text readability. */
 }
 
-.dashboard-sort-control select {
-  min-height: 38px; /* Creates accessible dropdown height. */
-  padding: 7px 34px 7px 11px; /* Adds internal spacing around option text. */
-  border: 1px solid #b7c0cd; /* Defines select boundary. */
-  border-radius: 7px; /* Matches existing application controls. */
-  outline: none; /* Removes browser outline in favor of custom focus. */
-  background: #ffffff; /* Keeps dropdown easy to read. */
-  color: #253858; /* Uses primary control text colour. */
-  font-size: 0.85rem; /* Keeps option text compact. */
-  font-weight: 650; /* Improves readability. */
-  cursor: pointer; /* Communicates dropdown interactivity. */
+/* Heading row inside Recent Projects panel. */
+.dashboard-panel-heading {
+  display: flex;                      /* Places heading text and View All link beside each other. */
+  align-items: flex-start;            /* Aligns both sections at their top edge. */
+  justify-content: space-between;     /* Pushes View All Projects to right side. */
+  gap: 20px;                          /* Prevents text/link collision on narrow layouts. */
+  padding-bottom: 18px;               /* Creates spacing above project rows. */
+  border-bottom: 1px solid #ebecf0; /* Separates heading from project list. */
 }
 
-.dashboard-sort-control select:focus {
-  border-color: #2368a2; /* Highlights keyboard/focus interaction. */
-  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.14); /* Accessible focus ring. */
+.dashboard-panel-heading p {
+  margin: 6px 0 0;    /* Separates description from panel title. */
+  color: #7a869a;   /* Keeps description visually subtle. */
+  font-size: 0.84rem; /* Uses compact supporting typography. */
 }
 
-/* Grid for cards under either Active or Archived tab. */
-.project-card-grid {
-  display: grid;        /* Creates a responsive project-card layout. */
-  grid-template-columns: repeat(3, minmax(0, 1fr)); /* Shows three equal columns. */
-  gap: 20px;            /* Adds consistent spacing between cards. */
-  margin-top: 30px;     /* Separates projects from the page introduction. */
+.dashboard-view-all-link {
+  flex-shrink: 0;         /* Prevents action link from becoming compressed. */
+  color: #2368a2;       /* Uses application's familiar action-blue color. */
+  font-size: 0.86rem;     /* Keeps action proportional to panel heading. */
+  font-weight: 750;       /* Makes navigation link easy to discover. */
+  text-decoration: none;  /* Removes browser Link underline. */
 }
 
-/* Shared dashboard loading/error/empty-state container. */
+.dashboard-view-all-link:hover {
+  text-decoration: underline; /* Provides familiar link hover feedback. */
+}
+
+/* Vertical collection of recent project rows. */
+.dashboard-recent-project-list {
+  display: grid; /* Stacks recent projects vertically. */
+}
+
+
+/* One recently updated project. */
+.dashboard-recent-project {
+  display: grid;          /* Creates key/info/arrow project-row layout. */
+  grid-template-columns: auto minmax(0, 1fr) auto; /* Keeps information flexible between fixed key/arrow. */
+  align-items: center;    /* Vertically centers all row elements. */
+  gap: 15px;              /* Adds space between project-key, information, and arrow. */
+  padding: 17px 3px;      /* Creates comfortable row click target. */
+  border-bottom: 1px solid #ebecf0; /* Separates neighboring recent projects. */
+  color: inherit;         /* Prevents Link from overriding text colors. */
+  text-decoration: none;  /* Removes browser Link underline. */
+}
+
+.dashboard-recent-project:last-child {
+  border-bottom: 0; /* Removes unnecessary divider below final project row. */
+}
+
+.dashboard-recent-project:hover {
+  background: #f8fafc; /* Provides restrained hover feedback. */
+}
+
+
+.dashboard-recent-project-key {
+  display: inline-grid;   /* Allows easy horizontal/vertical centering. */
+  min-width: 46px;        /* Keeps different project-key widths visually aligned. */
+  min-height: 32px;       /* Gives key a compact badge-like height. */
+  place-items: center;    /* Centers key text inside badge. */
+  padding: 5px 8px;       /* Adds space around key text. */
+  border-radius: 6px;     /* Matches existing project key badges. */
+  background: #e8f1fa;  /* Reuses existing project-key blue tint. */
+  color: #174d7a;       /* Keeps key text readable against blue background. */
+  font-size: 0.74rem;     /* Keeps abbreviated project key compact. */
+  font-weight: 800;       /* Gives key strong visual identity. */
+}
+
+.dashboard-recent-project-info {
+  display: grid;  /* Stacks project name over last-updated date. */
+  gap: 4px;       /* Adds compact separation between information lines. */
+  min-width: 0;   /* Allows long project names to truncate correctly. */
+}
+
+.dashboard-recent-project-info strong {
+  overflow: hidden;         /* Prevents long project names from breaking row layout. */
+  color: #253858;         /* Uses strong project-name text color. */
+  font-size: 0.91rem;       /* Keeps recent project names readable. */
+  text-overflow: ellipsis;  /* Displays ... when name exceeds available space. */
+  white-space: nowrap;      /* Keeps project name on one line. */
+}
+
+.dashboard-recent-project-info span {
+  color: #7a869a;   /* Uses tertiary color for update metadata. */
+  font-size: 0.76rem; /* Makes date information visually secondary. */
+}
+
+.dashboard-recent-project-arrow {
+  color: #2368a2;     /* Uses action blue to indicate navigation. */
+  font-size: 1rem;      /* Makes directional arrow visible but restrained. */
+  transition: transform 150ms ease; /* Smooths hover movement. */
+}
+
+.dashboard-recent-project:hover .dashboard-recent-project-arrow {
+  transform: translateX(4px); /* Reinforces that project row opens another page. */
+}
+
+
+/* Empty recent-project state. */
+.dashboard-inline-empty-state {
+  display: grid;            /* Stacks message and action vertically. */
+  justify-items: center;    /* Horizontally centers empty-state elements. */
+  gap: 9px;                 /* Adds compact spacing between empty-state lines. */
+  padding: 42px 20px 24px;  /* Gives empty message meaningful vertical space. */
+  text-align: center;       /* Centers explanatory text. */
+}
+
+.dashboard-inline-empty-state strong {
+  color: #172b4d;   /* Uses primary text for empty-state heading. */
+  font-size: 1.05rem; /* Makes empty state clearly identifiable. */
+}
+
+.dashboard-inline-empty-state p {
+  margin: 0;          /* Removes default paragraph spacing. */
+  color: #6b778c;   /* Uses secondary explanatory color. */
+  font-size: 0.86rem; /* Keeps supporting copy compact. */
+}
+
+.dashboard-primary-link {
+  margin-top: 8px;        /* Separates action from empty-state description. */
+  padding: 9px 14px;      /* Creates button-like link click target. */
+  border-radius: 7px;     /* Matches application's buttons. */
+  background: #2368a2;  /* Uses primary action blue. */
+  color: #ffffff;       /* Provides strong action-text contrast. */
+  font-size: 0.84rem;     /* Keeps button-label size consistent. */
+  font-weight: 750;       /* Gives action sufficient emphasis. */
+  text-decoration: none;  /* Removes browser link underline. */
+}
+
+
+.dashboard-primary-link:hover {
+  background: #195888; /* Darkens action on hover. */
+}
+
+
+/* Future dashboard information areas. */
+.dashboard-placeholder-grid {
+  display: grid;            /* Places placeholder cards side-by-side on desktop. */
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* Uses equal two-column layout. */
+  gap: 20px;                /* Adds spacing between future feature areas. */
+}
+
+
+/* Shared API/loading state card retained from previous Dashboard style. */
 .dashboard-state-card {
-  display: grid;                /* Stacks icon, heading, text, and optional button. */
-  width: min(100%, 680px);      /* Prevents state messages from becoming too wide. */
-  justify-items: center;        /* Horizontally centers state content. */
-  margin: 44px auto 0;          /* Centers the card beneath the heading. */
-  padding: 48px 28px;           /* Gives the message generous internal space. */
-  border: 1px solid #dfe3e8;  /* Defines the message area. */
-  border-radius: 13px;          /* Matches project-card styling. */
-  background: #ffffff;        /* Separates the state from the page background. */
+  display: grid;                /* Stacks state indicator and text vertically. */
+  width: min(100%, 680px);      /* Prevents state message becoming too wide. */
+  justify-items: center;        /* Centers state content horizontally. */
+  margin: 44px auto 0;          /* Centers state card beneath heading. */
+  padding: 48px 28px;           /* Adds generous state-message spacing. */
+  border: 1px solid #dfe3e8;  /* Matches normal dashboard cards. */
+  border-radius: 13px;          /* Preserves established card radius. */
+  background: #ffffff;        /* Uses clean state surface. */
   box-shadow: 0 8px 22px rgba(9, 30, 66, 0.05); /* Adds subtle depth. */
-  text-align: center;           /* Centers message text beneath the icon. */
+  text-align: center;           /* Centers state text. */
 }
 
-.dashboard-empty-projects {
-  min-height: 260px;      /* Gives empty state meaningful vertical presence. */
-  align-content: center;  /* Centers content within larger empty area. */
-}
 
 .dashboard-state-card h2 {
-  margin: 16px 0 0;        /* Separates the heading from the indicator or icon. */
-  color: #172b4d;        /* Uses strong readable heading colour. */
-  font-size: 1.25rem;      /* Gives the state message clear hierarchy. */
+  margin: 16px 0 0;     /* Separates heading from indicator. */
+  color: #172b4d;     /* Uses primary heading color. */
+  font-size: 1.25rem;   /* Gives state heading visible hierarchy. */
 }
+
 
 .dashboard-state-card p {
-  max-width: 470px;     /* Keeps explanatory text at a readable line length. */
-  margin: 10px 0 0;     /* Separates the paragraph from its heading. */
-  color: #5e6c84;     /* Uses secondary text colour. */
-  line-height: 1.6;     /* Improves multi-line readability. */
+  max-width: 470px;   /* Prevents long error/loading lines. */
+  margin: 10px 0 0;   /* Separates supporting text from title. */
+  color: #5e6c84;   /* Uses secondary copy color. */
+  line-height: 1.6;   /* Improves readability. */
 }
 
-.dashboard-state-card button {
-  min-height: 40px;     /* Provides an accessible click target. */
-  margin-top: 22px;     /* Separates the retry action from error text. */
-  padding: 8px 16px;    /* Adds comfortable internal button space. */
-  border: 0;            /* Removes the browser's default button border. */
-  border-radius: 7px;   /* Matches authentication buttons. */
-  background: #2368a2; /* Uses the main application action colour. */
-  color: #ffffff;     /* Ensures readable button text. */
-  font-weight: 750;     /* Makes the retry action prominent. */
-}
-
-.dashboard-state-card button:hover {
-  background: #195888; /* Darkens the action on hover. */
-}
 
 .dashboard-state-card--error {
-  border-color: #ffbdad; /* Signals an API failure using a muted red border. */
-  background: #fff8f6;   /* Adds a subtle error-tinted background. */
+  border-color: #ffbdad;  /* Gives failure state muted red outline. */
+  background: #fff8f6;    /* Adds subtle red-tinted error background. */
 }
 
-.dashboard-empty-icon {
-  color: #7a869a;  /* Keeps the empty-state symbol intentionally subtle. */
-  font-size: 2.1rem; /* Makes the symbol visible without becoming dominant. */
-}
-
-/* Error produced specifically by the restore endpoint. */
-.dashboard-restore-error {
-  margin-top: 18px;             /* Separates error from controls. */
-  padding: 11px 13px;           /* Adds internal message spacing. */
-  border: 1px solid #ffbdad;  /* Gives restore error clear boundary. */
-  border-radius: 7px;           /* Matches other alerts. */
-  background: #ffebe6;        /* Uses soft red error background. */
-  color: #ae2a19;             /* Uses readable error text. */
-  font-size: 0.88rem;           /* Keeps message compact. */
-}
 
 .dashboard-loading-indicator {
-  width: 34px;                  /* Sets the spinner width. */
-  height: 34px;                 /* Matches the spinner width. */
-  border: 4px solid #d9e5f0;  /* Creates the spinner's inactive track. */
-  border-top-color: #2368a2;  /* Highlights one edge for visible rotation. */
-  border-radius: 50%;           /* Turns the bordered square into a circle. */
-  animation: dashboard-spin 750ms linear infinite; /* Continuously rotates it. */
+  width: 34px;                    /* Sets loading spinner width. */
+  height: 34px;                   /* Matches spinner width. */
+  border: 4px solid #d9e5f0;    /* Creates inactive spinner track. */
+  border-top-color: #2368a2;    /* Creates visible rotating segment. */
+  border-radius: 50%;             /* Turns bordered square into circular spinner. */
+  animation: dashboard-spin 750ms linear infinite; /* Rotates spinner continuously. */
 }
+
 
 @keyframes dashboard-spin {
-  to {
-    transform: rotate(360deg); /* Completes one full spinner rotation. */
-  }
+  to { transform: rotate(360deg); } /* Completes one spinner rotation. */
 }
 
 
-/*********************************************************************/
-/**** Below are CSS modifications for laptop/mobile screen sizes *****/
-/*********************************************************************/
-
-@media (max-width: 980px) {
-  .project-card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Uses two tablet columns. */
-  }
+@media (max-width: 900px) {
+  .dashboard-summary-grid { grid-template-columns: 1fr;  } /* Stacks summary cards on smaller layouts. */
+  .dashboard-placeholder-grid { grid-template-columns: 1fr;  } /* Stacks future panels vertically. */
 }
 
-@media (max-width: 700px) {
 
-  .dashboard-project-controls {
-    align-items: stretch;     /* Allows controls to use available width. */
-    flex-direction: column;   /* Stacks tabs above sorting. */
-  }
-
-  .dashboard-sort-control {
-    justify-content: space-between; /* Separates sort label from dropdown. */
-  }
-
-  .dashboard-sort-control select {
-    flex: 1;                  /* Allows select to expand on smaller screens. */
-    max-width: 280px;         /* Prevents excessive width. */
-  }
-
-  .project-card-grid {
-    grid-template-columns: 1fr; /* Uses one project card per mobile row. */
-  }
-}
-
-@media (max-width: 480px) {
-
-  .dashboard-username {
-    max-width: 130px;        /* Prevents long usernames from widening the header. */
-    overflow: hidden;        /* Hides text beyond the available width. */
-    text-overflow: ellipsis; /* Shows an ellipsis for truncated usernames. */
-    white-space: nowrap;     /* Keeps the username on one line. */
-  }
-
+@media (max-width: 600px) {
   .dashboard-content {
-    width: min(100% - 24px, 1220px); /* Reduces side margins on phones. */
-    padding-top: 42px;               /* Uses less top space on small displays. */
+    width: min(100% - 24px, 1220px);  /* Reduces dashboard margins on phones. */
+    padding-top: 38px;                /* Uses less vertical space on mobile. */
   }
-
-  .dashboard-project-tabs {
-    width: 100%;                  /* Makes tab group span phone width. */
+  .dashboard-panel-heading {
+    align-items: flex-start;  /* Keeps stacked controls left-aligned. */
+    flex-direction: column;   /* Places View All beneath panel heading. */
   }
-
-  .dashboard-tab {
-    flex: 1;                  /* Gives Active and Archived equal mobile width. */
-    justify-content: center;  /* Centers tab labels and counts. */
-  }
-
-  .dashboard-sort-control {
-    align-items: stretch;     /* Makes mobile sort controls align cleanly. */
-    flex-direction: column;   /* Places label above dropdown. */
-  }
-
-  .dashboard-sort-control select {
-    width: 100%;        /* Makes dropdown comfortable on phones. */
-    max-width: none;    /* Removes tablet width restriction. */
+  .dashboard-recent-project {
+    grid-template-columns: auto minmax(0, 1fr) auto; /* Keeps compact mobile project row. */
   }
 }

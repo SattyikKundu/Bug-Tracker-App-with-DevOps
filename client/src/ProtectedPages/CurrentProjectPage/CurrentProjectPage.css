@@ -1,0 +1,560 @@
+/* src/ProtectedPages/CurrentProjectPage/CurrentProjectPage.css */
+
+.current-project-page {
+  width: min(1180px, 100%); /* Keeps management page from becoming excessively wide. */
+  margin: 0 auto;           /* Centers project content inside protected workspace. */
+  padding: 42px 34px 80px;  /* Provides consistent page spacing. */
+}
+
+
+.current-project-breadcrumb {
+  margin-bottom: 22px; /* Separates Projects link from project heading. */
+}
+
+
+.current-project-breadcrumb a {
+  color: #2368a2;       /* Uses application navigation blue. */
+  font-size: 0.85rem;     /* Keeps breadcrumb visually secondary. */
+  font-weight: 700;       /* Makes navigation easy to identify. */
+  text-decoration: none;  /* Removes browser underline. */
+}
+
+
+.current-project-breadcrumb a:hover {
+  text-decoration: underline; /* Adds familiar hover feedback. */
+}
+
+
+.current-project-archive-banner {
+  display: flex;                /* Places archived title and explanation beside each other. */
+  align-items: center;          /* Vertically aligns banner content. */
+  gap: 14px;                    /* Adds space between title and explanation. */
+  margin-bottom: 24px;          /* Separates archived notice from page heading. */
+  padding: 13px 15px;           /* Gives archive notice comfortable spacing. */
+  border: 1px solid #c8ccd2;  /* Uses neutral archived-state border. */
+  border-radius: 8px;           /* Matches application surfaces. */
+  background: #f1f2f4;        /* Visually distinguishes archived/read-only state. */
+  color: #505f79;             /* Uses readable muted archive text. */
+  font-size: 0.86rem;           /* Keeps banner compact. */
+}
+
+
+.current-project-archive-banner strong {
+  color: #253858;    /* Gives Archived Project label stronger emphasis. */
+}
+
+.current-project-heading {
+  display: flex;                  /* Supports future heading-side project actions. */
+  justify-content: space-between; /* Leaves room for later Board/settings controls. */
+  gap: 25px;                      /* Prevents heading sections from colliding. */
+}
+
+.current-project-title-row {
+  display: flex;        /* Places project key and role badge beside one another. */
+  flex-wrap: wrap;      /* Allows badges to wrap on narrow displays. */
+  align-items: center;  /* Vertically aligns badges. */
+  gap: 9px;             /* Adds spacing between project key and role badge. */
+}
+
+.current-project-key {
+  display: inline-flex;     /* Keeps key badge sized to text. */
+  align-items: center;      /* Vertically centers key. */
+  padding: 5px 9px;         /* Adds compact badge spacing. */
+  border-radius: 6px;       /* Matches project-card key styling. */
+  background: #e8f1fa;    /* Uses established project-key tint. */
+  color: #174d7a;         /* Provides readable contrast. */
+  font-size: 0.75rem;       /* Keeps project key compact. */
+  font-weight: 800;         /* Gives project identifier strong visibility. */
+  letter-spacing: 0.06em;   /* Improves uppercase identifier readability. */
+}
+
+.current-project-role-badge {
+  display: inline-flex;   /* Sizes leadership badge around content. */
+  padding: 5px 9px;       /* Adds compact badge spacing. */
+  border-radius: 999px;   /* Gives leadership indicator pill shape. */
+  background: #fff0d6;  /* Uses established leadership warm tone. */
+  color: #8c5300;       /* Gives role text readable contrast. */
+  font-size: 0.73rem;     /* Keeps role visually secondary. */
+  font-weight: 750;       /* Makes role easy to scan. */
+}
+
+
+.current-project-heading h1 {
+  margin: 12px 0 0;             /* Separates name from key/role badges. */
+  color: #172b4d;             /* Uses primary project heading navy. */
+  font-size: clamp(2rem, 4vw, 3.2rem); /* Scales project title responsively. */
+  letter-spacing: -0.04em;      /* Gives large project name polished density. */
+}
+
+
+.current-project-heading p {
+  max-width: 760px;     /* Prevents project description from becoming too wide. */
+  margin: 13px 0 0;     /* Separates description from project name. */
+  color: #5e6c84;     /* Uses secondary text color. */
+  line-height: 1.65;    /* Improves wrapped description readability. */
+}
+
+
+.current-project-alert {
+  margin-top: 24px;     /* Separates management feedback from heading. */
+  padding: 11px 13px;   /* Adds comfortable message spacing. */
+  border-radius: 7px;   /* Matches other application alerts. */
+  font-size: 0.86rem;   /* Keeps feedback compact. */
+}
+
+
+.current-project-alert--error {
+  border: 1px solid #ffbdad;    /* Gives errors clear visual boundary. */
+  background: #ffebe6;          /* Adds muted error background. */
+  color: #ae2a19;               /* Uses readable error text. */
+}
+
+.current-project-alert--success {
+  border: 1px solid #7bc99b;    /* Gives success feedback green boundary. */
+  background: #e9f8ef;          /* Uses restrained success background. */
+  color: #1f6f43;               /* Uses readable success text. */
+}
+
+.current-project-grid {
+  display: grid;        /* Creates details/members two-column layout. */
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.9fr); /* Gives details slightly more room. */
+  gap: 22px;            /* Separates management panels. */
+  margin-top: 34px;     /* Separates panels from project heading. */
+}
+
+.current-project-panel {
+  align-self: start;            /* Prevents shorter panels stretching vertically. */
+  padding: 26px;                /* Gives management panels comfortable whitespace. */
+  border: 1px solid #dfe3e8;  /* Defines panel boundary. */
+  border-radius: 12px;          /* Matches Dashboard/Profile visual language. */
+  background: #ffffff;        /* Uses clean management surface. */
+  box-shadow: 0 5px 16px rgba(9, 30, 66, 0.05); /* Adds restrained depth. */
+}
+
+.current-project-management-panel {
+  margin-top: 22px; /* Separates additional management sections. */
+}
+
+.current-project-panel-heading h2 {
+  margin: 0;            /* Removes default heading spacing. */
+  color: #172b4d;     /* Uses primary section heading color. */
+  font-size: 1.18rem;   /* Establishes clear panel hierarchy. */
+}
+
+.current-project-panel-heading p {
+  margin: 7px 0 0;      /* Separates description from section title. */
+  color: #6b778c;     /* Uses secondary explanatory text. */
+  font-size: 0.86rem;   /* Keeps supporting text compact. */
+  line-height: 1.55;    /* Improves readability. */
+}
+
+.current-project-form {
+  display: grid;    /* Stacks editable project fields. */
+  gap: 17px;        /* Adds space between fields and save button. */
+  margin-top: 22px; /* Separates form from heading. */
+}
+
+.current-project-form label {
+  display: grid;        /* Stacks label text over its input. */
+  gap: 7px;             /* Adds spacing between label and control. */
+  color: #253858;     /* Uses readable form-label text. */
+  font-size: 0.84rem;   /* Keeps labels compact. */
+  font-weight: 750;     /* Makes field names easy to scan. */
+}
+
+.current-project-form input,
+.current-project-form textarea,
+.current-project-member-search input,
+.current-project-transfer-form select {
+  width: 100%;                  /* Makes controls fill available panel width. */
+  padding: 9px 11px;            /* Adds comfortable text-entry spacing. */
+  border: 1px solid #b7c0cd;  /* Defines control boundaries. */
+  border-radius: 7px;           /* Matches application forms. */
+  outline: none;                /* Replaces browser focus with custom state. */
+  background: #fafbfc;        /* Gives controls subtle contrast. */
+  color: #172b4d;             /* Uses primary input text. */
+  font: inherit;                /* Ensures controls inherit application typography. */
+}
+
+.current-project-form input,
+.current-project-member-search input,
+.current-project-transfer-form select {
+  min-height: 42px; /* Gives single-line controls accessible height. */
+}
+
+
+.current-project-form textarea {
+  resize: vertical;     /* Allows longer project descriptions vertically only. */
+  line-height: 1.55;    /* Improves multiline readability. */
+}
+
+
+.current-project-form input:focus,
+.current-project-form textarea:focus,
+.current-project-member-search input:focus,
+.current-project-transfer-form select:focus {
+  border-color: #2368a2;                          /* Highlights focused field. */
+  background: #ffffff;                            /* Brightens active control. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.14); /* Adds accessible focus ring. */
+}
+
+
+.current-project-primary-button,
+.current-project-secondary-action-button {
+  justify-self: start;  /* Prevents button stretching unnecessarily. */
+  min-height: 39px;     /* Gives action comfortable click target. */
+  padding: 8px 14px;    /* Adds internal action spacing. */
+  border-radius: 7px;   /* Matches application controls. */
+  font-weight: 750;     /* Makes actions easy to identify. */
+  cursor: pointer;      /* Indicates clickable action. */
+}
+
+.current-project-primary-button {
+  border: 0;             /* Removes default button border. */
+  background: #2368a2; /* Uses primary application action color. */
+  color: #ffffff;      /* Gives strong contrast. */
+}
+
+.current-project-primary-button:hover:not(:disabled) {
+  background: #195888; /* Darkens primary action on hover. */
+}
+
+.current-project-secondary-action-button {
+  border: 1px solid #b7c0cd; /* Defines secondary action. */
+  background: #ffffff;       /* Keeps it lower priority. */
+  color: #253858;           /* Uses normal dark action text. */
+}
+
+.current-project-primary-button:disabled,
+.current-project-secondary-action-button:disabled {
+  cursor: not-allowed;  /* Communicates unavailable action. */
+  opacity: 0.6;         /* Visually indicates disabled state. */
+}
+
+
+.current-project-readonly-details {
+  display: grid;    /* Stacks project-lead label and value. */
+  gap: 6px;         /* Adds compact spacing. */
+  margin-top: 22px; /* Separates data from panel heading. */
+}
+
+.current-project-readonly-details strong {
+  color: #42526e;          /* Uses secondary label color. */
+  font-size: 0.78rem;        /* Keeps field label compact. */
+  text-transform: uppercase; /* Distinguishes label from value. */
+}
+
+
+.current-project-readonly-details span {
+  color: #172b4d;   /* Uses primary value text. */
+  font-size: 0.92rem; /* Keeps user identity readable. */
+}
+
+.current-project-member-list {
+  display: grid;    /* Stacks project members vertically. */
+  margin-top: 19px; /* Separates member list from panel heading. */
+}
+
+.current-project-member-row {
+  display: flex;                  /* Places member identity and actions on one row. */
+  align-items: center;            /* Vertically aligns member information. */
+  justify-content: space-between; /* Pushes member actions to right. */
+  gap: 15px;                      /* Prevents identity/action overlap. */
+  padding: 13px 0;                /* Creates comfortable member-row height. */
+  border-bottom: 1px solid #ebecf0; /* Separates neighboring members. */
+}
+
+.current-project-member-row:last-child {
+  border-bottom: 0; /* Removes divider beneath final member. */
+}
+
+.current-project-member-row > div:first-child {
+  display: grid; /* Stacks full name over username. */
+  gap: 3px;      /* Adds compact identity spacing. */
+}
+
+
+.current-project-member-row strong {
+  color: #253858; /* Uses strong member-name text. */
+  font-size: 0.87rem; /* Keeps member name compact. */
+}
+
+
+.current-project-member-row span {
+  color: #7a869a;   /* Uses tertiary username text. */
+  font-size: 0.76rem; /* Makes username secondary. */
+}
+
+
+.current-project-member-actions {
+  display: flex;        /* Places role badge and Remove action together. */
+  align-items: center;  /* Vertically aligns action elements. */
+  gap: 8px;             /* Adds spacing between badge and button. */
+}
+
+
+.current-project-member-badge {
+  display: inline-flex;         /* Keeps badge sized around text. */
+  padding: 4px 8px;             /* Adds compact badge spacing. */
+  border-radius: 999px;         /* Gives member role pill shape. */
+  background: #e9f4ec;        /* Uses calm green membership tint. */
+  color: #21643d !important;  /* Overrides generic row span color. */
+  font-size: 0.7rem !important; /* Keeps role indicator compact. */
+  font-weight: 750;             /* Makes role readable. */
+}
+
+
+.current-project-member-badge--lead {
+  background: #fff0d6;       /* Uses warm leadership tint. */
+  color: #8c5300 !important; /* Gives lead badge readable contrast. */
+}
+
+
+.current-project-remove-button {
+  padding: 5px 8px;             /* Creates compact member-removal target. */
+  border: 1px solid #ffbdad;  /* Gives removal action red boundary. */
+  border-radius: 6px;           /* Matches small action controls. */
+  background: #fff8f6;        /* Adds subtle destructive tint. */
+  color: #ae2a19;             /* Uses destructive action text. */
+  font-size: 0.72rem;           /* Keeps button proportional to member row. */
+  font-weight: 700;             /* Makes Remove clearly actionable. */
+  cursor: pointer;              /* Communicates interactivity. */
+}
+
+.current-project-member-search {
+  display: grid;    /* Stacks search input/results vertically. */
+  gap: 10px;        /* Adds consistent space between search elements. */
+  margin-top: 20px; /* Separates search from section heading. */
+}
+
+.current-project-member-search small,
+.current-project-member-search > p {
+  margin: 0;            /* Removes browser paragraph margins. */
+  color: #7a869a;     /* Uses tertiary search guidance text. */
+  font-size: 0.77rem;   /* Keeps search feedback compact. */
+}
+
+.current-project-search-error {
+  color: #ae2a19 !important; /* Highlights failed member search. */
+}
+
+
+.current-project-search-results {
+  overflow: hidden;             /* Keeps result backgrounds inside rounded container. */
+  border: 1px solid #dfe3e8;  /* Defines autocomplete-style results box. */
+  border-radius: 8px;           /* Matches application surfaces. */
+  background: #ffffff;        /* Uses clean result surface. */
+}
+
+.current-project-search-result {
+  display: flex;                  /* Places identity and Add button on one row. */
+  align-items: center;            /* Vertically aligns result elements. */
+  justify-content: space-between; /* Pushes Add action to right edge. */
+  gap: 15px;                      /* Prevents text/button collision. */
+  padding: 11px 13px;             /* Creates comfortable result-row click area. */
+  border-bottom: 1px solid #ebecf0; /* Separates neighboring search results. */
+}
+
+.current-project-search-result:last-child {
+  border-bottom: 0; /* Removes divider beneath final result. */
+}
+
+
+.current-project-search-result--member {
+  background: #f4f5f7; /* Greys out users already belonging to project. */
+}
+
+
+.current-project-search-result > div {
+  display: grid; /* Stacks name and username. */
+  gap: 2px;      /* Adds compact identity spacing. */
+}
+
+.current-project-search-result strong {
+  color: #253858;   /* Uses primary result-name text. */
+  font-size: 0.85rem; /* Keeps search result compact. */
+}
+
+.current-project-search-result span {
+  color: #7a869a;   /* Uses secondary username color. */
+  font-size: 0.75rem; /* Makes username subordinate to full name. */
+}
+
+
+.current-project-search-result button {
+  min-width: 92px;              /* Keeps Add/already-added buttons visually aligned. */
+  min-height: 32px;             /* Provides compact accessible action height. */
+  padding: 5px 9px;             /* Adds internal button spacing. */
+  border: 1px solid #579dff;  /* Defines active Add control. */
+  border-radius: 6px;           /* Matches compact controls. */
+  background: #ffffff;        /* Uses simple action surface. */
+  color: #0c66e4;             /* Uses recognizable add-action blue. */
+  font-size: 0.73rem;           /* Keeps button compact. */
+  font-weight: 750;             /* Makes action readable. */
+  cursor: pointer;              /* Communicates interactivity. */
+}
+
+.current-project-search-result button:disabled {
+  border-color: #c8ccd2; /* Mutes unavailable Add action. */
+  background: #ebecf0;   /* Greys out existing members. */
+  color: #7a869a;        /* Uses muted disabled text. */
+  cursor: not-allowed;     /* Communicates user cannot be added again. */
+}
+
+.current-project-search-empty {
+  padding: 25px 15px; /* Gives empty search state space. */
+  color: #7a869a;   /* Uses tertiary empty-state text. */
+  font-size: 0.84rem; /* Keeps message compact. */
+  text-align: center; /* Centers no-results message. */
+}
+
+.current-project-search-more {
+  padding: 9px 12px;    /* Adds space around search-more guidance. */
+  border-top: 1px solid #ebecf0; /* Separates guidance from result list. */
+  color: #7a869a;     /* Keeps pagination guidance subtle. */
+  font-size: 0.74rem;   /* Makes it secondary to actual results. */
+  text-align: center;   /* Centers refinement message. */
+}
+
+.current-project-transfer-form {
+  display: flex;       /* Places member dropdown and transfer button together. */
+  align-items: center; /* Vertically aligns controls. */
+  gap: 10px;           /* Adds spacing between selection and action. */
+  margin-top: 20px;    /* Separates controls from section description. */
+}
+
+.current-project-transfer-form select {
+  flex: 1; /* Allows member selection to use remaining width. */
+}
+
+.current-project-danger-zone {
+  margin-top: 24px;             /* Separates lifecycle controls from normal management. */
+  padding: 26px;                /* Gives lifecycle area comfortable spacing. */
+  border: 1px solid #ffbdad;  /* Clearly identifies sensitive actions. */
+  border-radius: 12px;          /* Matches surrounding panels. */
+  background: #fffafa;        /* Gives danger zone subtle red tint. */
+}
+
+.current-project-danger-zone h2 {
+  margin: 0 0 7px;      /* Separates heading from actions. */
+  color: #ae2a19;     /* Uses destructive-state heading color. */
+  font-size: 1.15rem;   /* Establishes lifecycle section hierarchy. */
+}
+
+
+.current-project-danger-row {
+  display: flex;        /* Places action explanation and button side-by-side. */
+  align-items: center;  /* Vertically aligns lifecycle row. */
+  justify-content: space-between; /* Pushes action button to right. */
+  gap: 24px;            /* Prevents explanation/button collision. */
+  padding: 18px 0;      /* Gives each lifecycle action comfortable height. */
+  border-top: 1px solid #ffd6cc; /* Separates lifecycle actions. */
+}
+
+
+.current-project-danger-row strong {
+  color: #253858;   /* Keeps action names readable. */
+  font-size: 0.88rem; /* Uses compact lifecycle title. */
+}
+
+
+.current-project-danger-row p {
+  max-width: 650px;     /* Prevents explanation from stretching too wide. */
+  margin: 5px 0 0;      /* Separates description from action name. */
+  color: #6b778c;     /* Uses secondary explanation text. */
+  font-size: 0.82rem;   /* Keeps lifecycle description compact. */
+  line-height: 1.5;     /* Improves wrapped text readability. */
+}
+
+
+.current-project-archive-button,
+.current-project-delete-button {
+  flex-shrink: 0;      /* Prevents lifecycle buttons from compressing. */
+  min-height: 38px;    /* Provides accessible click target. */
+  padding: 7px 12px;   /* Adds internal action spacing. */
+  border-radius: 7px;  /* Matches application buttons. */
+  font-size: 0.78rem;  /* Keeps sensitive actions compact. */
+  font-weight: 750;    /* Makes labels clearly readable. */
+  cursor: pointer;     /* Indicates action availability. */
+}
+
+.current-project-archive-button {
+  border: 1px solid #b7c0cd; /* Uses neutral archive boundary. */
+  background: #ffffff;       /* Keeps Archive less destructive than Delete. */
+  color: #42526e;            /* Uses normal dark action text. */
+}
+
+.current-project-delete-button {
+  border: 1px solid #e2483d; /* Gives delete clear destructive boundary. */
+  background: #ae2a19; /* Uses strong destructive background. */
+  color: #ffffff; /* Gives delete button strong contrast. */
+}
+
+
+.current-project-state-card {
+  display: grid;                        /* Stacks spinner/title/error information. */
+  width: min(650px, calc(100% - 32px)); /* Keeps state message reasonably narrow. */
+  justify-items: center;                /* Centers state contents. */
+  margin: 70px auto;                    /* Centers state card in page area. */
+  padding: 45px 25px;                   /* Gives state content generous space. */
+  border: 1px solid #dfe3e8;          /* Matches normal application cards. */
+  border-radius: 12px;                  /* Preserves visual consistency. */
+  background: #ffffff;                /* Uses clean state surface. */
+  text-align: center;                   /* Centers message copy. */
+}
+
+.current-project-state-card--error {
+  border-color: #ffbdad;  /* Highlights failed project load. */
+  background: #fff8f6;    /* Adds subtle error tint. */
+}
+
+.current-project-spinner {
+  width: 34px;                  /* Sets loading spinner width. */
+  height: 34px;                 /* Matches spinner height. */
+  border: 4px solid #d9e5f0;  /* Creates spinner track. */
+  border-top-color: #2368a2;  /* Highlights rotating segment. */
+  border-radius: 50%;           /* Creates circular spinner. */
+  animation: current-project-spin 750ms linear infinite; /* Rotates continuously. */
+}
+
+
+@keyframes current-project-spin {
+  to {
+    transform: rotate(360deg); /* Completes full spinner rotation. */
+  }
+}
+
+
+@media (max-width: 900px) {
+  .current-project-grid {
+    grid-template-columns: 1fr; /* Stacks detail/member panels on tablets. */
+  }
+}
+
+
+@media (max-width: 650px) {
+  .current-project-page {
+    padding: 34px 16px 60px; /* Reduces page spacing on phones. */
+  }
+
+  .current-project-transfer-form {
+    align-items: stretch; /* Lets stacked controls use full width. */
+    flex-direction: column; /* Places Transfer button beneath member dropdown. */
+  }
+
+  .current-project-danger-row {
+    align-items: stretch; /* Makes lifecycle controls align in stacked layout. */
+    flex-direction: column; /* Places action button below explanation. */
+  }
+
+  .current-project-archive-button,
+  .current-project-delete-button {
+    width: 100%; /* Gives sensitive mobile actions full-width target. */
+  }
+
+  .current-project-archive-banner {
+    align-items: flex-start; /* Improves stacked archive-banner alignment. */
+    flex-direction: column; /* Prevents archive banner crowding on phones. */
+  }
+
+}

@@ -44,6 +44,12 @@
   text-decoration: none;    /* Removes NavLink underline. */
 }
 
+.app-sidebar-link--nested {
+  margin-left: 12px;        /* Visually nests Create Project beneath Projects section. */
+  width: calc(100% - 12px); /* Prevents indentation from making link overflow sidebar. */
+  font-size: 0.84rem;       /* Gives nested shortcut slightly lower visual priority. */
+}
+
 .app-sidebar-link:hover {
   background: #f1f2f4;  /* Adds hover feedback. */
   color: #172b4d;       /* Strengthens hovered text. */

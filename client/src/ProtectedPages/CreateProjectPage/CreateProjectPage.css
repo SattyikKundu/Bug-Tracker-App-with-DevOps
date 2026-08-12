@@ -1,0 +1,157 @@
+/* src/ProtectedPages/CreateProjectPage/CreateProjectPage.css */
+
+.create-project-page {
+  width: min(900px, 100%);  /* Keeps form comfortably narrow on large displays. */
+  margin: 0 auto;           /* Centers page in protected workspace. */
+  padding: 52px 34px 80px;  /* Matches Dashboard/Profile page spacing. */
+}
+
+.create-project-heading {
+  max-width: 720px; /* Keeps introductory content at readable line length. */
+}
+
+.create-project-eyebrow {
+  margin: 0 0 8px;           /* Separates section label from title. */
+  color: #2368a2;          /* Reuses primary application accent. */
+  font-size: 0.76rem;        /* Keeps section label compact. */
+  font-weight: 800;          /* Gives uppercase text readable emphasis. */
+  letter-spacing: 0.11em;    /* Adds professional spacing between letters. */
+  text-transform: uppercase; /* Visually distinguishes category label. */
+}
+
+.create-project-heading h1 {
+  margin: 0;                 /* Removes browser heading margin. */
+  color: #172b4d;          /* Uses established heading navy. */
+  font-size: clamp(2rem, 4vw, 3rem); /* Scales heading across viewport sizes. */
+  letter-spacing: -0.035em;  /* Tightens large title typography. */
+}
+
+.create-project-heading > p:last-child {
+  margin: 13px 0 0;   /* Adds space below title. */
+  color: #5e6c84;   /* Uses established secondary text. */
+  line-height: 1.65;  /* Improves paragraph readability. */
+}
+
+.create-project-card {
+  margin-top: 34px;             /* Separates form card from page heading. */
+  padding: 30px;                /* Gives form comfortable internal space. */
+  border: 1px solid #dfe3e8;  /* Matches Dashboard/Profile card borders. */
+  border-radius: 12px;          /* Maintains application card radius. */
+  background: #ffffff;        /* Uses clean form surface. */
+  box-shadow: 0 5px 16px rgba(9, 30, 66, 0.05); /* Adds restrained depth. */
+}
+
+.create-project-form {
+  display: grid;  /* Stacks form fields vertically. */
+  gap: 22px;      /* Adds consistent space between form sections. */
+}
+
+.create-project-field {
+  display: grid;    /* Stacks label/input/help text. */
+  gap: 7px;         /* Adds compact spacing within fields. */
+}
+
+.create-project-field label {
+  color: #253858;     /* Uses dark form-label text. */
+  font-size: 0.85rem;   /* Keeps labels compact. */
+  font-weight: 750;     /* Makes labels easy to scan. */
+}
+
+
+.create-project-field input,
+.create-project-field textarea {
+  width: 100%;          /* Allows controls to fill form width. */
+  padding: 10px 11px;   /* Adds comfortable text-entry spacing. */
+  border: 1px solid #b7c0cd; /* Defines input/textarea boundaries. */
+  border-radius: 7px;   /* Matches existing profile/auth controls. */
+  outline: none;        /* Replaces browser focus outline with custom style. */
+  background: #fafbfc; /* Adds subtle field contrast. */
+  color: #172b4d;   /* Uses primary input text. */
+  font: inherit;      /* Makes textarea/input typography match application. */
+}
+
+.create-project-field input {
+  min-height: 43px; /* Provides comfortable accessible input height. */
+}
+
+.create-project-field textarea {
+  resize: vertical;     /* Allows description to expand vertically only. */
+  line-height: 1.55;    /* Improves multi-line description readability. */
+}
+
+.create-project-field input:focus,
+.create-project-field textarea:focus {
+  border-color: #2368a2;      /* Highlights active form control. */
+  background: #ffffff;        /* Brightens focused field. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.14); /* Adds accessible focus ring. */
+}
+
+.create-project-field small {
+  color: #7a869a;     /* Keeps helper copy visually tertiary. */
+  font-size: 0.76rem;   /* Makes helper copy smaller than labels. */
+  line-height: 1.5;     /* Keeps wrapped guidance readable. */
+}
+
+.create-project-alert {
+  padding: 11px 13px;   /* Adds alert-message breathing room. */
+  border-radius: 7px;   /* Matches application message styling. */
+  font-size: 0.86rem;   /* Keeps error copy compact. */
+}
+
+.create-project-alert--error {
+  border: 1px solid #ffbdad; /* Gives error state visible boundary. */
+  background: #ffebe6;       /* Adds muted red error background. */
+  color: #ae2a19;            /* Uses readable error text. */
+}
+
+.create-project-actions {
+  display: flex;        /* Places Cancel/Create buttons beside one another. */
+  justify-content: flex-end; /* Aligns form actions to right side. */
+  gap: 10px;            /* Adds spacing between buttons. */
+  padding-top: 6px;     /* Separates actions from previous field. */
+}
+
+.create-project-primary-button,
+.create-project-secondary-button {
+  min-height: 41px;     /* Creates comfortable click target. */
+  padding: 8px 16px;    /* Adds internal button spacing. */
+  border-radius: 7px;   /* Matches application controls. */
+  font-weight: 750;     /* Gives actions strong readability. */
+  cursor: pointer;      /* Communicates buttons are interactive. */
+}
+
+.create-project-primary-button {
+  border: 0;              /* Removes browser default border. */
+  background: #2368a2;  /* Uses primary application action color. */
+  color: #ffffff;       /* Gives button strong contrast. */
+}
+
+.create-project-primary-button:hover:not(:disabled) {
+  background: #195888; /* Darkens primary action on hover. */
+}
+
+.create-project-primary-button:disabled {
+  cursor: not-allowed;  /* Communicates loading state. */
+  opacity: 0.65;        /* Visually indicates temporary disabled state. */
+}
+
+.create-project-secondary-button {
+  border: 1px solid #b7c0cd;    /* Defines secondary action boundary. */
+  background: #ffffff;          /* Keeps Cancel less prominent. */
+  color: #42526e;               /* Uses secondary action text. */
+}
+
+.create-project-secondary-button:hover {
+  background: #f1f2f4; /* Adds hover feedback. */
+}
+
+
+@media (max-width: 600px) {
+
+  .create-project-page {    padding: 36px 16px 60px;        } /* Reduces spacing for phone screens. */
+  .create-project-card {    padding: 22px 17px;             } /* Reduces card padding on narrow displays. */
+  .create-project-actions { flex-direction: column-reverse; } /* Places Create above Cancel visually. */
+
+  .create-project-primary-button,
+  .create-project-secondary-button { width: 100%; } /* Gives mobile actions full-width click targets. */
+}

@@ -30,11 +30,9 @@ const AppSidebar = ({
 
           <div className="app-sidebar-divider" />
 
-          <p className="app-sidebar-section-label">Projects</p>
-
-          {/*  Project creation belongs to the next project-management branch,
-            * so this control is visible but intentionally disabled for now.
-            */}
+          {/* <p className="app-sidebar-section-label">Projects</p>
+           // Project creation belongs to the next project-management branch,
+          // so this control is visible but intentionally disabled for now.
           <button
             className="app-sidebar-disabled-action"
             type="button"
@@ -42,9 +40,31 @@ const AppSidebar = ({
             title="Project creation will be added in the project-management branch"
           >
             <span aria-hidden="true">＋</span>
-
             Create Project
-          </button>
+          </button> */}
+
+          <p className="app-sidebar-section-label">Projects</p>
+
+          {/* Opens the full Active/Archived Projects browser. */}
+          <NavLink className={navClassName} to="/projects" onClick={onCloseSidebar}>
+            <span aria-hidden="true">▣</span>
+            Browse Projects
+          </NavLink>
+
+          {/* Direct shortcut to the dedicated project-creation form. */}
+          <NavLink
+            className={({ isActive }) =>
+              isActive
+                ? "app-sidebar-link app-sidebar-link--nested app-sidebar-link--active"
+                : "app-sidebar-link app-sidebar-link--nested"
+            }
+            to="/projects/new"
+            onClick={onCloseSidebar}
+          >
+            <span aria-hidden="true">＋</span>
+            Create Project
+          </NavLink>
+
         </nav>
       </aside>
       {sidebarOpen && (

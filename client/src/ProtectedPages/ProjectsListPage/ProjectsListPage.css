@@ -1,0 +1,290 @@
+/* src/ProtectedPages/ProjectListPage/ProjectListPage.css */
+
+.projects-page {
+  min-height: 100vh;     /* Ensures the dashboard covers the full browser height. */
+  background: #f4f5f7; /* Uses a neutral issue-tracker workspace background. */
+}
+
+.projects-content {
+  width: min(1220px, calc(100% - 36px));  /* Constrains content on wide displays. */
+  margin: 0 auto;                         /* Horizontally centers the dashboard. */
+  padding: 58px 0 80px;                   /* Adds breathing room above and below the content. */
+}
+
+.projects-heading-row {
+  display: flex;                  /* Places the heading and project count beside each other. */
+  align-items: flex-end;          /* Aligns the count with the lower heading area. */
+  justify-content: space-between; /* Pushes the project count to the right. */
+  gap: 30px;                      /* Prevents overlap when text is long. */
+}
+
+.projects-heading {
+  max-width: 760px; /* Prevents introductory text from becoming too wide. */
+}
+
+.projects-eyebrow {
+  margin: 0 0 8px;            /* Creates space beneath the small section label. */
+  color: #2368a2;           /* Uses the application accent colour. */
+  font-size: 0.78rem;         /* Keeps the eyebrow compact. */
+  font-weight: 800;           /* Makes the uppercase label readable. */
+  letter-spacing: 0.12em;     /* Adds spacing to uppercase characters. */
+  text-transform: uppercase;  /* Creates a recognizable section eyebrow. */
+}
+
+.projects-heading h1 {
+  margin: 0;                  /* Removes default heading spacing. */
+  color: #172b4d;           /* Uses dark navy for the main page title. */
+  font-size: clamp(2.1rem, 5vw, 3.8rem); /* Scales smoothly across screens. */
+  letter-spacing: -0.045em;   /* Gives the large heading a polished density. */
+}
+
+.projects-heading > p:last-child {
+  margin: 15px 0 0;         /* Separates supporting text from the title. */
+  color: #5e6c84;         /* Uses softer text for explanatory content. */
+  font-size: 1.02rem;       /* Keeps the introduction comfortably readable. */
+  line-height: 1.65;        /* Improves readability across multiple lines. */
+}
+
+/* Container holding both project tabs and project sort dropdown. */
+.projects-project-controls {
+  display: flex;                      /* Places tabs and sorting on one row. */
+  align-items: flex-end;              /* Aligns control bottoms. */
+  justify-content: space-between;     /* Sends sort control to the right. */
+  gap: 24px;                          /* Prevents tabs and sort dropdown from colliding. */
+  margin-top: 42px;                   /* Separates controls from heading. */
+  padding-bottom: 12px;               /* Adds spacing above dashboard content. */
+  border-bottom: 1px solid #dfe3e8; /* Creates navigation-divider effect. */
+}
+
+/* Active/Archived tab group. */
+.projects-project-tabs {
+  display: flex;        /* Places the two tabs side-by-side. */
+  align-items: center;  /* Vertically aligns them. */
+  gap: 6px;             /* Adds small separation. */
+}
+
+/* Individual projects tab */
+.projects-tab {
+  display: inline-flex;     /* Allows text and project count to align. */
+  min-height: 40px;         /* Creates comfortable tab click target. */
+  align-items: center;      /* Vertically centers content. */
+  gap: 8px;                 /* Separates tab label from count. */
+  padding: 7px 13px;        /* Adds internal tab spacing. */
+  border: 0;                /* Removes default browser border. */
+  border-bottom: 3px solid transparent; /* Reserves active-indicator space. */
+  background: transparent;  /* Keeps tabs visually integrated into dashboard. */
+  color: #5e6c84;         /* Uses secondary text for inactive tabs. */
+  font-size: 0.9rem;        /* Keeps tabs compact. */
+  font-weight: 750;         /* Makes tab names easy to scan. */
+  cursor: pointer;          /* Indicates interactivity. */
+}
+
+.projects-tab:hover {
+  color: #174d7a;         /* Gives hover feedback. */
+  background: #f0f4f8;    /* Adds subtle hover background. */
+}
+
+.projects-tab--active {
+  border-bottom-color: #2368a2; /* Shows currently selected tab. */
+  color: #174d7a;               /* Gives active tab stronger visual emphasis. */
+}
+
+.projects-tab span {
+  display: inline-grid;   /* Makes count easy to center. */
+  min-width: 24px;        /* Keeps one/two-digit counts similarly sized. */
+  min-height: 24px;       /* Creates circular-ish count badge. */
+  place-items: center;    /* Centers number. */
+  padding: 2px 6px;       /* Supports larger numbers. */
+  border-radius: 999px;   /* Creates pill/circle badge. */
+  background: #e8eef5;  /* Gives count a subtle background. */
+  color: #42526e;       /* Uses readable muted text. */
+  font-size: 0.72rem;     /* Keeps count secondary. */
+}
+
+/* Project sort dropdown group classes. */
+.projects-sort-control {
+  display: flex;        /* Places label and select beside each other. */
+  align-items: center;  /* Vertically centers sort controls. */
+  gap: 9px;             /* Adds space between label and select. */
+}
+
+.projects-sort-control label {
+  color: #5e6c84;   /* Keeps label visually secondary. */
+  font-size: 0.82rem; /* Uses compact control-label typography. */
+  font-weight: 700;   /* Makes label readable. */
+}
+
+.projects-sort-control select {
+  min-height: 38px; /* Creates accessible dropdown height. */
+  padding: 7px 34px 7px 11px; /* Adds internal spacing around option text. */
+  border: 1px solid #b7c0cd; /* Defines select boundary. */
+  border-radius: 7px; /* Matches existing application controls. */
+  outline: none; /* Removes browser outline in favor of custom focus. */
+  background: #ffffff; /* Keeps dropdown easy to read. */
+  color: #253858; /* Uses primary control text colour. */
+  font-size: 0.85rem; /* Keeps option text compact. */
+  font-weight: 650; /* Improves readability. */
+  cursor: pointer; /* Communicates dropdown interactivity. */
+}
+
+.projects-sort-control select:focus {
+  border-color: #2368a2; /* Highlights keyboard/focus interaction. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.14); /* Accessible focus ring. */
+}
+
+/* Grid for cards under either Active or Archived tab. */
+.project-card-grid {
+  display: grid;        /* Creates a responsive project-card layout. */
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* Shows three equal columns. */
+  gap: 20px;            /* Adds consistent spacing between cards. */
+  margin-top: 30px;     /* Separates projects from the page introduction. */
+}
+
+/* Shared dashboard loading/error/empty-state container. */
+.projects-state-card {
+  display: grid;                /* Stacks icon, heading, text, and optional button. */
+  width: min(100%, 680px);      /* Prevents state messages from becoming too wide. */
+  justify-items: center;        /* Horizontally centers state content. */
+  margin: 44px auto 0;          /* Centers the card beneath the heading. */
+  padding: 48px 28px;           /* Gives the message generous internal space. */
+  border: 1px solid #dfe3e8;  /* Defines the message area. */
+  border-radius: 13px;          /* Matches project-card styling. */
+  background: #ffffff;        /* Separates the state from the page background. */
+  box-shadow: 0 8px 22px rgba(9, 30, 66, 0.05); /* Adds subtle depth. */
+  text-align: center;           /* Centers message text beneath the icon. */
+}
+
+.projects-empty-projects {
+  min-height: 260px;      /* Gives empty state meaningful vertical presence. */
+  align-content: center;  /* Centers content within larger empty area. */
+}
+
+.projects-state-card h2 {
+  margin: 16px 0 0;        /* Separates the heading from the indicator or icon. */
+  color: #172b4d;        /* Uses strong readable heading colour. */
+  font-size: 1.25rem;      /* Gives the state message clear hierarchy. */
+}
+
+.projects-state-card p {
+  max-width: 470px;     /* Keeps explanatory text at a readable line length. */
+  margin: 10px 0 0;     /* Separates the paragraph from its heading. */
+  color: #5e6c84;     /* Uses secondary text colour. */
+  line-height: 1.6;     /* Improves multi-line readability. */
+}
+
+.projects-state-card button {
+  min-height: 40px;     /* Provides an accessible click target. */
+  margin-top: 22px;     /* Separates the retry action from error text. */
+  padding: 8px 16px;    /* Adds comfortable internal button space. */
+  border: 0;            /* Removes the browser's default button border. */
+  border-radius: 7px;   /* Matches authentication buttons. */
+  background: #2368a2; /* Uses the main application action colour. */
+  color: #ffffff;     /* Ensures readable button text. */
+  font-weight: 750;     /* Makes the retry action prominent. */
+}
+
+.projects-state-card button:hover {
+  background: #195888; /* Darkens the action on hover. */
+}
+
+.projects-state-card--error {
+  border-color: #ffbdad; /* Signals an API failure using a muted red border. */
+  background: #fff8f6;   /* Adds a subtle error-tinted background. */
+}
+
+.projects-empty-icon {
+  color: #7a869a;  /* Keeps the empty-state symbol intentionally subtle. */
+  font-size: 2.1rem; /* Makes the symbol visible without becoming dominant. */
+}
+
+/* Error produced specifically by the restore endpoint. */
+.projects-restore-error {
+  margin-top: 18px;             /* Separates error from controls. */
+  padding: 11px 13px;           /* Adds internal message spacing. */
+  border: 1px solid #ffbdad;  /* Gives restore error clear boundary. */
+  border-radius: 7px;           /* Matches other alerts. */
+  background: #ffebe6;        /* Uses soft red error background. */
+  color: #ae2a19;             /* Uses readable error text. */
+  font-size: 0.88rem;           /* Keeps message compact. */
+}
+
+.projects-loading-indicator {
+  width: 34px;                  /* Sets the spinner width. */
+  height: 34px;                 /* Matches the spinner width. */
+  border: 4px solid #d9e5f0;  /* Creates the spinner's inactive track. */
+  border-top-color: #2368a2;  /* Highlights one edge for visible rotation. */
+  border-radius: 50%;           /* Turns the bordered square into a circle. */
+  animation: projects-spin 750ms linear infinite; /* Continuously rotates it. */
+}
+
+@keyframes projects-spin {
+  to {
+    transform: rotate(360deg); /* Completes one full spinner rotation. */
+  }
+}
+
+
+/*********************************************************************/
+/**** Below are CSS modifications for laptop/mobile screen sizes *****/
+/*********************************************************************/
+
+@media (max-width: 980px) {
+  .project-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Uses two tablet columns. */
+  }
+}
+
+@media (max-width: 700px) {
+
+  .projects-project-controls {
+    align-items: stretch;     /* Allows controls to use available width. */
+    flex-direction: column;   /* Stacks tabs above sorting. */
+  }
+
+  .projects-sort-control {
+    justify-content: space-between; /* Separates sort label from dropdown. */
+  }
+
+  .projects-sort-control select {
+    flex: 1;                  /* Allows select to expand on smaller screens. */
+    max-width: 280px;         /* Prevents excessive width. */
+  }
+
+  .project-card-grid {
+    grid-template-columns: 1fr; /* Uses one project card per mobile row. */
+  }
+}
+
+@media (max-width: 480px) {
+
+  .projects-username {
+    max-width: 130px;        /* Prevents long usernames from widening the header. */
+    overflow: hidden;        /* Hides text beyond the available width. */
+    text-overflow: ellipsis; /* Shows an ellipsis for truncated usernames. */
+    white-space: nowrap;     /* Keeps the username on one line. */
+  }
+
+  .projects-content {
+    width: min(100% - 24px, 1220px); /* Reduces side margins on phones. */
+    padding-top: 42px;               /* Uses less top space on small displays. */
+  }
+
+  .projects-project-tabs {
+    width: 100%;                  /* Makes tab group span phone width. */
+  }
+
+  .projects-tab {
+    flex: 1;                  /* Gives Active and Archived equal mobile width. */
+    justify-content: center;  /* Centers tab labels and counts. */
+  }
+
+  .projects-sort-control {
+    align-items: stretch;     /* Makes mobile sort controls align cleanly. */
+    flex-direction: column;   /* Places label above dropdown. */
+  }
+
+  .projects-sort-control select {
+    width: 100%;        /* Makes dropdown comfortable on phones. */
+    max-width: none;    /* Removes tablet width restriction. */
+  }
+}
