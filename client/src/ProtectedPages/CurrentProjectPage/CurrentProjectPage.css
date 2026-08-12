@@ -95,26 +95,6 @@
 }
 
 
-.current-project-alert {
-  margin-top: 24px;     /* Separates management feedback from heading. */
-  padding: 11px 13px;   /* Adds comfortable message spacing. */
-  border-radius: 7px;   /* Matches other application alerts. */
-  font-size: 0.86rem;   /* Keeps feedback compact. */
-}
-
-
-.current-project-alert--error {
-  border: 1px solid #ffbdad;    /* Gives errors clear visual boundary. */
-  background: #ffebe6;          /* Adds muted error background. */
-  color: #ae2a19;               /* Uses readable error text. */
-}
-
-.current-project-alert--success {
-  border: 1px solid #7bc99b;    /* Gives success feedback green boundary. */
-  background: #e9f8ef;          /* Uses restrained success background. */
-  color: #1f6f43;               /* Uses readable success text. */
-}
-
 .current-project-grid {
   display: grid;        /* Creates details/members two-column layout. */
   grid-template-columns: minmax(0, 1fr) minmax(340px, 0.9fr); /* Gives details slightly more room. */

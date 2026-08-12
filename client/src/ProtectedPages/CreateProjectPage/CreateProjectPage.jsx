@@ -1,6 +1,10 @@
 // src/ProtectedPages/CreateProjectPage/CreateProjectPage.jsx
 
-import { useState } from "react"; // used to stores new-project form values and local validation messages
+import { useState,    // used to stores new-project form values and local validation messages
+        useEffect     // used to watch Redux errors and converts them into toast notifications
+       } from "react"; 
+
+import { ErrorMessageToast, SuccessMessageToast } from "../../utils/utilityFunctions.jsx"
 
 import { useNavigate } from "react-router"; // Sends user to newly-created project after success
 
@@ -24,12 +28,26 @@ const CreateProjectPage = () => {
 
   const [formData, setFormData] = useState({ key: "", name: "", description: "" }); // Store values entered into the create-project form.
 
-  const [validationError, setValidationError] = useState(""); // Store browser-side validation feedback.
+  //const [validationError, setValidationError] = useState(""); // Store browser-side validation feedback.
 
   const {
     mutationStatus, // Tracks create request
     mutationError   // Backend project creation error
   } = useSelector( (state) => state.projects);
+
+   /* Project creation errors are stored in shared Redux state.
+    *
+    * Display backend error as a toast and then immediately clear it
+    * so it can't appear later on CurrentProjectPage or another route.
+    */
+  useEffect(() => {
+    if (!mutationError) { return;  } // Nothing to display
+
+    ErrorMessageToast(mutationError);  // Example: "Project key already exists."
+
+    dispatch(clearProjectMutationError()); // Remove stale shared Redux error after toast receives message
+
+  }, [mutationError,dispatch]);
 
 
   
@@ -46,7 +64,7 @@ const CreateProjectPage = () => {
       })
     );
 
-    setValidationError(""); // Clear old client-side validation
+    //setValidationError(""); // Clear old client-side validation
 
     if (mutationError) {
       dispatch(clearProjectMutationError());
@@ -61,12 +79,17 @@ const CreateProjectPage = () => {
 
     // Checks to match backend's 2-10 character project-key rule.
     if (!/^[A-Z][A-Z0-9]{1,9}$/.test(normalizedKey)) {
-      setValidationError("Project key must be 2-10 characters, begin with a letter, and contain only letters or numbers.");
+      //setValidationError("Project key must be within 2-10 characters, begin with a letter, and contain only letters or numbers.");
+      ErrorMessageToast(
+        "Project key must be within 2-10 characters, begin with a letter, and contain only letters or numbers.", 
+        3300, 
+        'top-center');
       return;
     }
 
     if (!formData.name.trim()) { // checks if project name is given
-      setValidationError("Project name is required.");
+      //setValidationError("Project name is required.");
+      ErrorMessageToast("Project name is required.");
       return;
     }
 
@@ -79,8 +102,9 @@ const CreateProjectPage = () => {
         })
       );
 
-    if (createProject.fulfilled.match(resultAction)) {
-      navigate(`/projects/${resultAction.payload._id}`); // Open newly-created project immediately
+    if (createProject.fulfilled.match(resultAction)) { 
+      SuccessMessageToast("Project created successfully.");  // Remains visible even after navigation occurs
+      navigate(`/projects/${resultAction.payload._id}`);     // Open newly created project
     }
   };
 
@@ -102,10 +126,10 @@ const CreateProjectPage = () => {
               name="key"
               value={formData.key}
               onChange={handleInputChange}
-              minLength="2"
-              maxLength="10"
+              //minLength="2"
+              //maxLength="10"
               placeholder="BT"
-              required
+              //required
             />
             <small>A globally unique 2-10 character identifier used in issue keys such as BT-12.</small>
           </div>
@@ -118,7 +142,7 @@ const CreateProjectPage = () => {
               value={formData.name}
               onChange={handleInputChange}
               placeholder="Bug Tracker Application"
-              required
+              //required
             />
           </div>
 
@@ -134,11 +158,17 @@ const CreateProjectPage = () => {
             />
           </div>
 
-          {(validationError || mutationError) && (
+          {/* {(validationError || mutationError) && (
             <div className="create-project-alert create-project-alert--error" role="alert">
               {validationError || mutationError}
             </div>
-          )}
+          )} */}
+
+          {/* {validationError && (
+            <div className="create-project-alert create-project-alert--error" role="alert" >
+              {validationError}
+            </div>
+          )} */}
 
           <div className="create-project-actions">
             <button

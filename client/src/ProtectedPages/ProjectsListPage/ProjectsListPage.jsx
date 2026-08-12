@@ -6,14 +6,12 @@ import {
   useState   // store and update data that changes over time and triggers UI re-renders
 } from "react";
 
-
 import {
     useDispatch,// Hook returns a reference to Redux dispatch function. Used to send actions to your 
                 // store, which triggers your reducers to update the state.
     useSelector // Hook extracts data from Redux store state. It takes a selector function and automatically 
                 // subscribes your component to changes, forcing a re-render if that specific data updates.
 } from "react-redux";
-
 
 import {
   clearRestoreError, // Clears restore-related API messages.
@@ -22,6 +20,9 @@ import {
 } from "../../Store/projectSlice.jsx";
 
 import ProjectCard from "../../PageComponents/ProjectCard/ProjectCard.jsx";
+
+import { ErrorMessageToast, SuccessMessageToast } from "../../utils/utilityFunctions.jsx"
+
 
 import "./ProjectsListPage.css"; // for styling
 
@@ -62,6 +63,17 @@ const ProjectListPage = () => {
     restoreError,       // Error message IF error when restoring an archived project
     restoringProjectId  // ID of the project being restored
   } = useSelector((state) => state.projects);  // tracks and responds to changes in project-dashboard state
+
+
+  // Display restore failures globally and immediately remove the error
+  // from Redux so it cannot reappear after tab/page navigation.
+  useEffect(() => {
+    if (!restoreError) { 
+      return; 
+    }
+    ErrorMessageToast(restoreError);
+    dispatch(clearRestoreError());
+  }, [restoreError, dispatch]);
 
 
   // Fetch projects once when this dashboard first opens.
@@ -160,7 +172,14 @@ const ProjectListPage = () => {
   /* Restore an archived project:
    * The backend remains responsible for confirming user is actually stored project lead.
    */
-  const handleRestoreProject = async (projectId) => { await dispatch(restoreProject(projectId)); };
+  const handleRestoreProject = async (projectId) => { 
+
+    const resultAction = await dispatch(restoreProject(projectId));
+
+    if (restoreProject.fulfilled.match(resultAction)) {
+      SuccessMessageToast("Project restored successfully.");
+    }
+  };
 
 
   //Choose the correct centered message when a tab contains no projects.
@@ -255,10 +274,6 @@ const ProjectListPage = () => {
                 </select>
               </div>
             </section>
-
-            {restoreError && (
-              <div className="projects-restore-error" role="alert">{restoreError}</div>
-            )}
 
             {sortedProjects.length === 0 ? (
               <section className="projects-state-card projects-empty-projects">

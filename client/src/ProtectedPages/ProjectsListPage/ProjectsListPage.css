@@ -197,16 +197,6 @@
   font-size: 2.1rem; /* Makes the symbol visible without becoming dominant. */
 }
 
-/* Error produced specifically by the restore endpoint. */
-.projects-restore-error {
-  margin-top: 18px;             /* Separates error from controls. */
-  padding: 11px 13px;           /* Adds internal message spacing. */
-  border: 1px solid #ffbdad;  /* Gives restore error clear boundary. */
-  border-radius: 7px;           /* Matches other alerts. */
-  background: #ffebe6;        /* Uses soft red error background. */
-  color: #ae2a19;             /* Uses readable error text. */
-  font-size: 0.88rem;           /* Keeps message compact. */
-}
 
 .projects-loading-indicator {
   width: 34px;                  /* Sets the spinner width. */

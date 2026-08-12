@@ -17,6 +17,9 @@ import {
   useSelector  // Used to read and extract data from global redux store state
 } from "react-redux";
 
+import toast from "react-hot-toast";
+import { ErrorMessageToast, SuccessMessageToast, NeutralMessageToast } from "../../utils/utilityFunctions.jsx"
+
 import api from "../../api/axios.js"; // Used for api requests to backend
 
 import {
@@ -48,6 +51,21 @@ const CurrentProjectPage = () => {
     mutationError                 // Mutation-specific API failure
   } = useSelector((state) => state.projects);
 
+
+ /* Convert shared Redux project-management errors into toast notifications.
+  *
+  * Once toast.error() receives the message, immediately clear Redux so the
+  * same failure cannot follow the user to another project or route.
+  */
+  useEffect(() => {
+    if (!mutationError) {
+      return;
+    }
+    ErrorMessageToast(mutationError);
+    dispatch(clearProjectMutationError());
+  }, [mutationError, dispatch]);
+
+
   // Local editable project information form.
   const [projectForm, setProjectForm] = useState({ name: "", description: ""});
 
@@ -60,13 +78,12 @@ const CurrentProjectPage = () => {
   // Search results from /api/projects/:id/member-search.
   const [memberSearchResults, setMemberSearchResults] = useState([]);
 
-
   // Indicates whether more search results exist.
   const [memberSearchPagination, setMemberSearchPagination] = useState({ page: 1, hasMore: false, nextPage: null });
 
+  
   const [memberSearchStatus, setMemberSearchStatus] = useState("idle"); // idle | loading | succeeded | failed
   const [memberSearchError,  setMemberSearchError]  = useState("");     // Search-specific error message
-  const [successMessage,     setSuccessMessage]     = useState("");     // Shows successful management actions
 
 
   // Load the complete selected project whenever :id changes.
@@ -163,7 +180,6 @@ const CurrentProjectPage = () => {
 
     const { name, value } = event.target;
     setProjectForm((current) => ({ ...current, [name]: value }));
-    setSuccessMessage("");
 
     if (mutationError) {
       dispatch(clearProjectMutationError());
@@ -186,14 +202,15 @@ const CurrentProjectPage = () => {
     }
 
     if (Object.keys(projectUpdates).length === 0) {
-      setSuccessMessage("No project changes to save.");
+      //setSuccessMessage("No project changes to save.");
+      NeutralMessageToast("No project changes to save."); // Informational rather than success/failure
       return;
     }
 
     const resultAction = await dispatch(updateProject({projectId, projectUpdates}));
 
     if (updateProject.fulfilled.match(resultAction)) {
-      setSuccessMessage("Project details updated successfully.");
+      SuccessMessageToast("Project details updated successfully.");
     }
 
   };
@@ -205,8 +222,7 @@ const CurrentProjectPage = () => {
 
     if (updateProjectMembers.fulfilled.match(resultAction)) {
 
-      setSuccessMessage("Project member added successfully.");
-
+      SuccessMessageToast("Project member added successfully.");
       
       // Refresh search so newly-added user becomes greyed out
       // marked as an existing member.
@@ -227,7 +243,7 @@ const CurrentProjectPage = () => {
     const resultAction = await dispatch(updateProjectMembers({ projectId, add: [], remove: [memberId]}));
 
     if (updateProjectMembers.fulfilled.match(resultAction)) {
-      setSuccessMessage("Project member removed successfully.");
+      SuccessMessageToast("Project member removed successfully.");
     }
   };
 
@@ -257,7 +273,7 @@ const CurrentProjectPage = () => {
       );
 
     if (updateProject.fulfilled.match(resultAction)) {
-      setSuccessMessage("Project leadership transferred successfully.");
+      SuccessMessageToast("Project leadership transferred successfully.");
       setNewLeadId("");
     }
   };
@@ -273,6 +289,8 @@ const CurrentProjectPage = () => {
 
     const resultAction = await dispatch(archiveProject(projectId));
     if (archiveProject.fulfilled.match(resultAction)) {
+      SuccessMessageToast("Project archived successfully.");
+
       navigate("/projects"); // Archived project will now appear under Archived tab
     }
   };
@@ -289,6 +307,7 @@ const CurrentProjectPage = () => {
     const resultAction = await dispatch(deleteProject(projectId));
 
     if (deleteProject.fulfilled.match(resultAction)) {
+      SuccessMessageToast("Project permanently deleted.");
       navigate("/projects", { replace: true});
     }
   };
@@ -341,20 +360,6 @@ const CurrentProjectPage = () => {
           <p>{project.description || "No project description has been added yet."}</p>
         </div>
       </header>
-
-      {(mutationError || successMessage) && (
-        <div
-          className={
-            mutationError
-              ? "current-project-alert current-project-alert--error"
-              : "current-project-alert current-project-alert--success"
-          }
-          role={mutationError ? "alert" : "status"}
-        >
-          {mutationError || successMessage}
-        </div>
-      )}
-
 
       <section className="current-project-grid">
         <article className="current-project-panel">
