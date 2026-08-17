@@ -13,10 +13,10 @@ import User       from "../models/user.js";          // imports User model
 
 
 const ALLOWED_TRANSITIONS = { // defines which issue-status transitions are permitted
-  open:             [ "in_progress"                     ],
-  in_progress:      [ "open"       , "ready_for_review" ],
-  ready_for_review: [ "in_progress", "closed"           ],
-  closed:           [ "open"                            ]
+  open:             [ "in_progress"                            ],
+  in_progress:      [ "open"            ,   "ready_for_review" ],
+  ready_for_review: [ "in_progress"     ,   "closed"           ],
+  closed:           [ "ready_for_review",   "open"             ]
 }; 
 
 const isValidId = (id) => { // validate id helper function

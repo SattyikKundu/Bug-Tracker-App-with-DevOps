@@ -341,7 +341,7 @@
   background: #fff8f6;      /* Adds subtle failure-state background. */
 }
 
-
+/* For Makeshift Loading Spinner  */
 .issue-board-spinner {
   width: 34px;                      /* Sets spinner width. */
   height: 34px;                     /* Matches spinner height. */
@@ -350,7 +350,6 @@
   border-radius: 50%;               /* Converts bordered square into circle. */
   animation: issue-board-spin 750ms linear infinite;   /* Rotates loading indicator continuously. */
 }
-
 
 @keyframes issue-board-spin {
   to {

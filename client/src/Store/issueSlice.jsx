@@ -15,7 +15,7 @@ import api from "../api/axios.js"; // Shared Axios client that already sends aut
  *
  * Filtering is intentionally handled client-side during this first board
  * implementation because full issue collection is already needed to
- * divide the issues amongst all four workflow columns.
+ * divide issues amongst all four workflow columns.
  */
 export const fetchProjectIssues = createAsyncThunk(
   "issues/fetchProjectIssues",
@@ -39,7 +39,7 @@ export const fetchProjectIssues = createAsyncThunk(
  * in_progress      → ready_for_review
  * ready_for_review → closed
  *
- * The backend remains the final permission/workflow authority.
+ * Backend remains the final permission/workflow authority.
  */
 export const transitionIssueStatus = createAsyncThunk(
   "issues/transitionIssueStatus",
@@ -67,9 +67,9 @@ export const transitionIssueStatus = createAsyncThunk(
 );
 
 
-// Initial Redux state for the project issue board.
+// Initial Redux state for project issue board.
 const initialState = {
-  issues: [],                  // All issues belonging to the currently opened project
+  issues: [],                  // All issues belonging to currently opened project
   status: "idle",              // idle | loading | succeeded | failed
   error: null,                 // Full-board loading error
   transitioningIssueId: null   // Tracks which issue currently shows transition loading state
@@ -93,9 +93,33 @@ const issueSlice = createSlice({
       state.transitioningIssueId = null; // Clear temporary transition state
     },
     // Clears a failed GET /projects/:pid/issues request.
-    // Useful when manually retrying the board request.
+    // Useful when manually retrying board request.
     clearIssueBoardError: (state) => {
       state.error = null;
+    },
+    // Immediately moves an issue into its target column BEFORE API finishes.
+    // This gives drag/drop fast response expected from a Kanban board.
+    optimisticMoveIssue: (state, action) => {
+      const {issueId, to} = action.payload;
+      const issue = state.issues.find(
+        (currentIssue) => 
+          (String(currentIssue._id) === String(issueId))
+      );
+      if (issue) {
+        issue.status = to;
+      }
+    },
+    // Restore an issue to its previous workflow status when backend
+    // rejects an optimistic drag/drop transition.
+    revertOptimisticIssueMove: (state, action) => {
+      const {issueId, from} = action.payload;
+      const issue = state.issues.find(
+        (currentIssue) =>
+          (String(currentIssue._id) === String(issueId))
+      );
+      if (issue) {
+        issue.status = from;
+      }
     }
   },
 
@@ -144,7 +168,7 @@ const issueSlice = createSlice({
           /* Replace old issue with transitioned issue.
            *
            * Because its status changed, IssueBoardPage automatically
-           * moves it into the correct column during the next render.
+           * moves it into correct column during next render.
            */
           if (issueIndex !== -1) {
             state.issues[issueIndex] = updatedIssue;
@@ -155,7 +179,7 @@ const issueSlice = createSlice({
 
           /* We intentionally DO NOT store another persistent transition error here.
            *
-           * The rejected thunk's payload is read directly by IssueBoardPage
+           * Rejected thunk's payload is read directly by IssueBoardPage
            * and displayed through ErrorMessageToast(). This prevents another
            * stale Redux-error leak like the project-management issue we fixed.
            */
@@ -166,6 +190,11 @@ const issueSlice = createSlice({
 
 });
 
-export const { clearIssueBoard, clearIssueBoardError } = issueSlice.actions;
+export const { 
+  clearIssueBoard,           // Clears issue board (esp. to prevent "bleeding" into other projects' issue boards)
+  clearIssueBoardError,      // Clears the board error (so it doesn't carry over to other issue boards)
+  optimisticMoveIssue,       // Immediately moves a dragged card locally
+  revertOptimisticIssueMove  // Restores card when backend rejects movement
+} = issueSlice.actions;
 
 export default issueSlice.reducer;

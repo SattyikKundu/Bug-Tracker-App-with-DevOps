@@ -16,15 +16,25 @@ import {
   useSelector  // Reads project, issue, and auth states
 } from "react-redux";
 
+import { DragDropProvider } from "@dnd-kit/react"; // Used for coordinating draggable cards and workflow-column targets
+
+import {
+  PointerActivationConstraints,  // Controls how far/long pointer must move before drag begins
+  PointerSensor                  // Handles mouse, pen, and touch dragging
+} from "@dnd-kit/dom";
+
 import {
   clearCurrentProject, // Removes stale project after leaving board
   fetchProjectById     // Loads selected project's name, members, archive state
 } from "../../Store/projectSlice.jsx";
 
 import {
-  clearIssueBoard,        // Clears issue collection when leaving board
-  fetchProjectIssues,     // GET /projects/:pid/issues
-  transitionIssueStatus   // POST /issues/:id/transition
+  clearIssueBoard,          // Clears old project issues 4-column board state when leaving board
+  fetchProjectIssues,       // Loads current project issues via "GET /projects/:pid/issues"
+  optimisticMoveIssue,      // Moves drag/drop issue immediately in Redux
+  revertOptimisticIssueMove,// Restores issue after rejected backend request
+  transitionIssueStatus,    // Persists workflow movement through existing backend endpoint
+                            // via "POST /issues/:id/transition"
 } from "../../Store/issueSlice.jsx";
 
 import {
@@ -32,36 +42,123 @@ import {
   SuccessMessageToast  // successful toast notification
 } from "../../utils/utilityFunctions.jsx";
 
-import IssueBoardCard from "../../PageComponents/IssueBoardCard/IssueBoardCard.jsx";
+//import IssueBoardCard from "../../PageComponents/IssueBoardCard/IssueBoardCard.jsx";
+import DraggableIssueCard from "../../PageComponents/DraggableIssueCard/DraggableIssueCard.jsx";
+import IssueDropColumn from "../../PageComponents/IssueDropColumn/IssueDropColumn.jsx";
 import "./IssueBoardPage.css"; // Four-column board styling
 
+import {
+  BOARD_COLUMNS,       // Defines the four board lanes and their order
+  STATUS_LABELS,       // Converts target status into readable toast text
+  canTransitionStatus  // Validates drag/drop workflow destinations
+} from "../../utils/issueWorkflow.jsx";
 
-// Fixed workflow columns for this simplified tracker.
-// Their order is deliberate and matches the normal issue lifecycle.
-const BOARD_COLUMNS = [
-  {
-    status: "open",
-    title: "Open",
-    description: "Reported work waiting to begin."
-  },
-  {
-    status: "in_progress",
-    title: "In Progress",
-    description: "Work currently being investigated or implemented."
-  },
-  {
-    status: "ready_for_review",
-    title: "Ready for Review",
-    description: "Completed work awaiting final verification."
-  },
-  {
-    status: "closed",
-    title: "Closed",
-    description: "Finished and accepted work."
+
+
+/* Animates a backend-rejected optimistic move back to its ORIGINAL column.
+ *
+ * Technique:
+ * 1. Measure where optimistic card currently appears.
+ * 2. Redux restores old status, which moves the DOM card back.
+ * 3. Measure the card's restored location.
+ * 4. Temporarily translate restored card back over its rejected location.
+ * 5. Animate that translation to zero.
+ *
+ * Result:
+ *
+ * target column
+ *      ↓
+ *   [CARD]
+ *      ╲
+ *       ╲ smoothly floats backward
+ *        ╲
+ *        original column
+ */
+const animateRejectedIssueBack = (issueId, rejectedPosition) => {
+  if (!rejectedPosition) {
+    return;
   }
+
+  window.requestAnimationFrame(
+    () => {
+      const restoredCard = document.querySelector(`[data-issue-card-id="${issueId}"]`);
+
+      if (!restoredCard) {
+        return;
+      }
+
+      const restoredPosition = restoredCard.getBoundingClientRect();
+
+      // Calculates how far  DOM card moved when Redux restored its original workflow status.
+      const translateX = rejectedPosition.left - restoredPosition.left;
+      const translateY = rejectedPosition.top - restoredPosition.top;
+
+      // Web Animations API draws the card from its rejected location back toward its now-restored DOM position.
+      restoredCard.animate(
+        [
+          {
+            transform: `translate3d(${translateX}px, ${translateY}px, 0)`,
+            zIndex:    200,
+            boxShadow: "0 14px 30px rgba(9, 30, 66, 0.22)"
+          },
+          {
+            transform: "translate3d(0, 0, 0)",
+            zIndex:    1,
+            boxShadow: "0 2px 7px rgba(9, 30, 66, 0.08)"
+          }
+        ],
+        {
+          duration: 300, // Short enough to feel responsive but visibly floats home
+          easing:   "cubic-bezier(0.22, 0.8, 0.3, 1)"
+        }
+      );
+    }
+  );
+};
+
+
+/* Customize pointer dragging w/out removing dnd-kit's default KeyboardSensor.
+ *
+ * Mouse/pen: pointer must move 8px before a drag begins.
+ * Touch:     hold briefly before dragging, while allowing a little finger movement.
+ *
+ * This makes normal clicks and scrolling less likely to accidentally turn into drag operations.
+ */
+const issueBoardSensors = (defaultSensors) => [
+
+  // Remove default immediately-activating PointerSensor.
+  // KeyboardSensor and any other defaults remain untouched.
+  ...defaultSensors.filter((sensor) => sensor !== PointerSensor),
+
+  // Add our customized pointer behavior back.
+  PointerSensor.configure({ activationConstraints: (event) => {
+
+      // Touchscreens need a different compromise since 
+      // users commonly press/move slightly while intending to scroll.       
+      if (event.pointerType === "touch") {
+        return [
+          new PointerActivationConstraints.Delay({
+            value:     220,  // Finger must remain down for ~0.22 sec before drag starts
+            tolerance: 8     // Small natural finger movement is tolerated
+          })
+        ];
+      }
+
+      // Mouse and pen:
+      // A simple click causes virtually zero travel and therefore does NOT start dragging.
+      return [
+        new PointerActivationConstraints.Distance({value: 8})  // Pointer must travel at least 8 pixels
+      ];
+    }
+  })
 ];
 
 
+//=================================================================================================
+//=================================================================================================
+//    Below is ACTUAL Issue Board Page component
+//=================================================================================================
+//=================================================================================================
 const IssueBoardPage = () => {
 
   const { id: projectId } = useParams(); // Current project's MongoDB ID from /projects/:id/board.
@@ -216,7 +313,7 @@ const IssueBoardPage = () => {
    * + project lead; OR
    * + member who is reporter/assignee.
    *
-   * The backend still makes final decision.
+   * Backend still makes final decision.
    */
   const userCanTransitionIssue = (issue) => {
     if (project?.archived === true) {
@@ -330,7 +427,7 @@ const IssueBoardPage = () => {
   ]);
 
 
-  // Group the filtered collection into the four workflow columns.
+  // Group filtered collection into four workflow columns.
   const issuesByStatus = useMemo(() => {
 
     const grouped = {
@@ -371,13 +468,109 @@ const IssueBoardPage = () => {
 
     if (transitionIssueStatus.fulfilled.match(resultAction)) {
       const targetColumn = BOARD_COLUMNS.find((column) => column.status === targetStatus);
-      SuccessMessageToast(`${issue.key} moved to ${targetColumn?.title ?? targetStatus}.`);
+      //SuccessMessageToast(`${issue.key} moved to ${targetColumn?.title ?? targetStatus}.`);
       return;
     }
 
     ErrorMessageToast(resultAction.payload || "Unable to change issue status.");
   };
 
+
+ /* Handles mouse/touch/keyboard drag/drop workflow movement.
+  *
+  * Existing arrow controls remain available, so drag/drop is a
+  * progressive enhancement rather than the only way to move an issue.
+  */
+  const handleDragEnd = async (event) => {
+    const { operation, canceled } = event;
+
+    if (canceled) {   // Escape/cancelled drag naturally returns the card home.
+      return;
+    }
+
+    const { source, target } = operation;
+
+   /* No valid drop target means the issue was released:
+    * + outside the board; OR
+    * + over an invalid workflow column.
+    *
+    * We DO NOT change Redux.
+    * dnd-kit therefore performs its normal drop-back animation and the
+    * card visually floats back into its original location.
+    */
+    if (!source || !target) {
+      return;
+    }
+
+    const draggedIssue = source.data?.issue;
+
+    if (!draggedIssue) {
+      return;
+    }
+
+    const issueId      = String(draggedIssue._id);
+    const fromStatus   = source.data?.fromStatus || draggedIssue.status;
+    const targetStatus = target.data?.status || String(target.id).replace("issue-column:", "");
+
+
+    if (fromStatus === targetStatus) {  // Dropping back into same column is simply a no-op.
+      return;
+    }
+
+   /* Defense-in-depth check:
+    * IssueDropColumn already rejects invalid destinations, but checking
+    * again here prevents accidental future UI changes from bypassing
+    * client workflow map.
+    */
+    if (!canTransitionStatus(fromStatus, targetStatus)) {
+      NeutralMessageToast("That workflow transition is not available.");
+      return;
+    }
+
+    // Don't trust drag/drop alone for permissions:
+    // Backend will check again, but avoiding an unnecessary request
+    // gives users faster feedback.
+    if (!userCanTransitionIssue(draggedIssue)) {
+      ErrorMessageToast("You do not have permission to move this issue.");
+      return;
+    }
+
+    // OPTIMISTIC UPDATE:
+    // Move the card immediately so the board feels responsive.
+    dispatch(optimisticMoveIssue({ issueId, to: targetStatus }));
+
+    // Persist the SAME transition through backend endpoint 
+    // already used by your arrow buttons.
+    const resultAction = await dispatch(transitionIssueStatus({ issueId, to: targetStatus }));
+
+    // -------------------------------------------------------------------
+    // Backend accepted the drag/drop
+    // -------------------------------------------------------------------
+    if (transitionIssueStatus.fulfilled.match(resultAction)) {
+      //SuccessMessageToast(`${draggedIssue.key} moved to ${STATUS_LABELS[targetStatus]}.`);
+      return;
+    }
+
+
+    // -------------------------------------------------------------------
+    // Backend rejected the optimistic move
+    // -------------------------------------------------------------------
+    
+    // At this point, optimistic card is visually sitting inside target column.
+    // Measure THAT position before Redux restores the original status.
+    const rejectedCard     = document.querySelector(`[data-issue-card-id="${issueId}"]`);
+    const rejectedPosition = rejectedCard ? rejectedCard.getBoundingClientRect() : null;
+
+    // Restore the original status.
+    // This immediately places the issue back into its original column.
+    dispatch(revertOptimisticIssueMove({ issueId, from: fromStatus }));
+
+    // Animate from rejected visual position towards restored
+    // source position so card appears to "magically float back."
+    animateRejectedIssueBack(issueId, rejectedPosition);
+
+    ErrorMessageToast(resultAction.payload || "The issue could not be moved and was returned to its previous column.");
+  };
 
  
   const handleClearFilters = () => {  // Reset every board filter to default state.
@@ -387,7 +580,6 @@ const IssueBoardPage = () => {
     setAssigneeFilter("all");
   };
 
-
   
   const filtersAreActive =          // Determine whether any filter is currently active.
     searchText.trim() !== "" ||
@@ -396,9 +588,8 @@ const IssueBoardPage = () => {
     assigneeFilter !== "all";
 
 
-  /* Loading project and issues together prevents board 
-   * from showing incomplete header/permission information.
-   */
+  // Loading project and issues together prevents board 
+  // from showing incomplete header/permission information.
   if (
     currentProjectStatus === "idle" ||
     currentProjectStatus === "loading" ||
@@ -423,20 +614,11 @@ const IssueBoardPage = () => {
         <section className="issue-board-state-card issue-board-state-card--error" role="alert">
           <h2>Issue board could not be loaded</h2>
           <p>{currentProjectError || issueError}</p>
-
           <button
             type="button"
             onClick={() => {
-              dispatch(
-                fetchProjectById(
-                  projectId
-                )
-              );
-              dispatch(
-                fetchProjectIssues(
-                  projectId
-                )
-              );
+              dispatch(fetchProjectById(projectId));
+              dispatch(fetchProjectIssues(projectId));
             }}
           >
             Try Again
@@ -464,9 +646,7 @@ const IssueBoardPage = () => {
         <div>
           <p className="issue-board-eyebrow">Project Board</p>
           <div className="issue-board-title-row">
-            <span className="issue-board-project-key">
-              {project?.key}
-            </span>
+            <span className="issue-board-project-key">{project?.key}</span>
             <h1>{project?.name}</h1>
           </div>
           <p>Track issues through the project's four-stage workflow.</p>
@@ -507,66 +687,38 @@ const IssueBoardPage = () => {
             value={priorityFilter}
             onChange={(event) => setPriorityFilter(event.target.value)}
           >
-            <option value="all">
-              All priorities
-            </option>
-            <option value="critical">
-              Critical
-            </option>
-            <option value="high">
-              High
-            </option>
-            <option value="medium">
-              Medium
-            </option>
-            <option value="low">
-              Low
-            </option>
+            <option value="all">All priorities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
           </select>
         </div>
 
         <div className="issue-board-filter">
-          <label htmlFor="issue-type-filter">
-            Type
-          </label>
+          <label htmlFor="issue-type-filter">Type</label>
           <select
             id="issue-type-filter"
             value={typeFilter}
             onChange={(event) => setTypeFilter(event.target.value)}
           >
-            <option value="all">
-              All types
-            </option>
-            <option value="bug">
-              Bugs
-            </option>
-            <option value="task">
-              Tasks
-            </option>
-            <option value="story">
-              Stories
-            </option>
+            <option value="all">All types</option>
+            <option value="bug">Bugs</option>
+            <option value="task">Tasks</option>
+            <option value="story">Stories</option>
           </select>
         </div>
 
         <div className="issue-board-filter">
-          <label htmlFor="issue-assignee-filter">
-            Assignment
-          </label>
+          <label htmlFor="issue-assignee-filter">Assignment</label>
           <select
             id="issue-assignee-filter"
             value={assigneeFilter}
             onChange={(event) => setAssigneeFilter(event.target.value)}
           >
-            <option value="all">
-              All issues
-            </option>
-            <option value="mine">
-              Only my issues
-            </option>
-            <option value="unassigned">
-              Unassigned
-            </option>
+            <option value="all">All issues</option>
+            <option value="mine">Only my issues</option>
+            <option value="unassigned">Unassigned</option>
           </select>
         </div>
 
@@ -582,62 +734,50 @@ const IssueBoardPage = () => {
       </section>
 
       {/* Horizontal Kanban-style workflow board. */}
-      <section
-        className="issue-board-scroll-container"
-        aria-label="Issue workflow board"
+      <DragDropProvider
+        sensors={issueBoardSensors} // Adds click-vs-drag activation thresholds
+        onDragEnd={handleDragEnd}   // Persists or reverts the completed movement
       >
-        <div className="issue-board-columns">
-          {BOARD_COLUMNS.map(
-            (column) => {
-              const columnIssues = issuesByStatus[column.status] ?? [];
+        <section
+          className="issue-board-scroll-container"
+          aria-label="Issue workflow board"
+        >
+          <div className="issue-board-columns">
+            {BOARD_COLUMNS.map(
+              (column) => {
+                const columnIssues = issuesByStatus[column.status] ?? [];
 
-              return (
-                <section
-                  className={`issue-board-column issue-board-column--${column.status}`}
-                  key={column.status}
-                  aria-label={`${column.title} issues`}
-                >
+                return (
+                  <IssueDropColumn
+                    key={column.status}
+                    column={column}
+                    issueCount={columnIssues.length}
+                    filtersAreActive={filtersAreActive}
+                  >
+                    {columnIssues.map((issue) => {
+                        const canTransition = userCanTransitionIssue(issue);
+                        const isTransitioning = (String(transitioningIssueId) === String(issue._id));
 
-                  {/* Column heading remains visible above issue cards. */}
-                  <header className="issue-board-column-heading">
-                    <div>
-                      <h2>{column.title}</h2>
-                      <p>{column.description}</p>
-                    </div>
-                    <span
-                      className="issue-board-column-count"
-                      aria-label={`${columnIssues.length} issues`}
-                    >
-                      {columnIssues.length}
-                    </span>
-                  </header>
-
-                  <div className="issue-board-column-cards">
-                    {columnIssues.length === 0 ? (
-                      <div className="issue-board-column-empty">
-                        {filtersAreActive ? "No matching issues" : "No issues in this stage"}
-                      </div>
-                    ) : (
-                      columnIssues.map((issue) => (
-                          <IssueBoardCard
+                        return (
+                          <DraggableIssueCard
                             key={issue._id}
                             issue={issue}
                             assigneeName={getAssigneeName(issue)}
-                            canTransition={userCanTransitionIssue(issue)}
+                            canTransition={canTransition}
                             projectArchived={project?.archived === true}
-                            isTransitioning={(String(transitioningIssueId) === String(issue._id))}
+                            isTransitioning={isTransitioning}
                             onTransition={handleTransition}
                           />
-                        )
-                      )
+                        );
+                      }
                     )}
-                  </div>
-                </section>
-              );
-            }
-          )}
-        </div>
-      </section>
+                  </IssueDropColumn>
+                );
+              }
+            )}
+          </div>
+        </section>
+      </DragDropProvider>
     </main>
   );
 };

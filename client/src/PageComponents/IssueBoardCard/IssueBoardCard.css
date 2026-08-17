@@ -36,6 +36,7 @@
   gap: 10px;                        /* Prevents metadata from touching. */
 }
 
+
 .issue-board-card-key {
   color: #2368a2;           /* Uses application blue for issue identifiers. */
   font-size: 0.74rem;         /* Keeps key compact relative to issue title. */

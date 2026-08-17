@@ -1,0 +1,39 @@
+/* src/PageComponents/DraggableIssueCard/DraggableIssueCard.css */
+
+/* ========================================================================== */
+/* Draggable-issue wrapper                                                    */
+/* ========================================================================== */
+.draggable-issue-card {
+  position: relative;       /* Provides stable positioning during drag/revert effects. */
+  width: 100%;              /* Keeps wrapper identical to normal board-card width. */
+  will-change: transform;   /* Helps browser prepare for temporary card movement. */
+}
+
+.draggable-issue-card--dragging {
+  z-index: 150;     /* Keeps dragged issue above neighboring board elements. */
+  opacity: 0.94;    /* Slightly separates active card visually from the lane. */
+}
+
+.draggable-issue-card--dragging {
+  user-select: none;  /* Prevents text highlighting during active card movement.  */
+}
+
+.draggable-issue-card--dragging .issue-board-card {
+  border-color: #579dff;                          /* Highlights the issue currently being dragged. */
+  box-shadow: 0 14px 28px rgba(9, 30, 66, 0.20);  /* Makes dragged card visibly float above the board. */
+}
+
+.draggable-issue-card--dropping {
+  pointer-events: none;             /* Prevents clicking while 'dnd-kit' completes drop feedback. */
+}
+
+
+/* ========================================================================== */
+/* Respects users who use media with reduced animation.                       */
+/* The card still changes columns, but unnecessary visual motion is reduced.  */
+/* ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .draggable-issue-card {
+    transition: none;   /* Removes additional wrapper transition motion.  */
+  }
+}

@@ -2,31 +2,12 @@
 
 import "./IssueBoardCard.css"; // Styling for one compact board issue card
 
-/*
- * Human-friendly text used throughout the issue board.
- */
-const STATUS_LABELS = {
-  open:             "Open",
-  in_progress:      "In Progress",
-  ready_for_review: "Ready for Review",
-  closed:           "Closed"
-};
+import {
+  ALLOWED_TRANSITIONS, // Determines which arrow-button transitions are available
+  STATUS_LABELS        // Converts internal status values into readable labels
+} from "../../utils/issueWorkflow.jsx";
 
 
-/*
- * Mirrors backend's currently permitted workflow transitions.
- *
- * IMPORTANT: This is UX guidance only.
- *
- * The backend still validates every transition and remains
- * the actual security/workflow authority.
- */
-const ALLOWED_TRANSITIONS = {
-  open:             [ "in_progress"                     ],
-  in_progress:      [ "open",        "ready_for_review" ],
-  ready_for_review: [ "in_progress", "closed"           ],
-  closed:           [ "open"                            ]
-};
 
 
 // More descriptive button text for certain workflow movements.
@@ -46,6 +27,9 @@ const TRANSITION_LABELS = {
   "ready_for_review->closed":
     "Close Issue →",
 
+  "closed->ready_for_review":
+  "← Return to Review",
+
   "closed->open":
     "Reopen Issue"
 };
@@ -54,10 +38,10 @@ const TRANSITION_LABELS = {
 const IssueBoardCard = ({
   issue,                // Individual issue document
   assigneeName,         // Human-readable assignee identity
-  canTransition,        // Whether current user can modify this issue's status
+  canTransition,        // Whether current user can modify this issue's status (via arrow-buttons)
   projectArchived,      // Archived projects remain read-only
   isTransitioning,      // Shows temporary loading/disabled state
-  onTransition          // Callback supplied by IssueBoardPage
+  onTransition,         // Callback supplied by IssueBoardPage
 }) => {
 
 
@@ -91,7 +75,9 @@ const IssueBoardCard = ({
 
       {/* Top metadata row: issue key + issue type. */}
       <div className="issue-board-card-top">
-        <span className="issue-board-card-key">{issue.key}</span>
+        <span className="issue-board-card-key">
+          {issue.key}
+        </span>
         <span className={ `issue-board-card-type issue-board-card-type--${normalizedType}`}>
           {normalizedType}
         </span>
