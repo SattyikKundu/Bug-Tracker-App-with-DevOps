@@ -19,6 +19,7 @@ import ProfilePage         from "../ProtectedPages/ProfilePage/ProfilePage.jsx";
 import ProjectsListPage    from "../ProtectedPages/ProjectsListPage/ProjectsListPage.jsx";     // active/archived project browser
 import CreateProjectPage   from "../ProtectedPages/CreateProjectPage/CreateProjectPage.jsx";   // new-project creation form
 import CurrentProjectPage  from "../ProtectedPages/CurrentProjectPage/CurrentProjectPage.jsx"; // current project management page
+import IssueFormPage       from "../ProtectedPages/IssueFormPage/IssueFormPage.jsx";           // Shared create/edit issue form
 import IssueBoardPage      from "../ProtectedPages/IssueBoardPage/IssueBoardPage.jsx";         // Four-column issues workflow board for ONE project
 
 const App = () => {
@@ -60,9 +61,13 @@ const App = () => {
 
           {/* Four-column issue workflow board for the selected project. */}
           <Route path="projects/:id/board" element={<IssueBoardPage />}/>
-          
-        </Route>
 
+          {/* Creates a new issue inside one selected project. */}
+          <Route path="projects/:projectId/issues/new" element={<IssueFormPage />}/>
+
+          {/* Edits one existing issue while preserving parent-project context. */}
+          <Route path="projects/:projectId/issues/:issueId/edit" element={<IssueFormPage />}/>
+        </Route>
       </Route>
 
       {/* Keep unknown URLs inside this branch's auth flow. */}

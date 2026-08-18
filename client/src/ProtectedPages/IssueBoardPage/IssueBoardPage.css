@@ -88,6 +88,33 @@
   line-height: 1.55;    /* Improves wrapped text readability. */
 }
 
+.issue-board-heading-actions {
+  display: flex;            /* Places issue count and Create Issue action together. */
+  flex-shrink: 0;           /* Prevents heading actions compressing beside long title. */
+  align-items: flex-end;    /* Aligns create button with issue-count summary. */
+  gap: 14px;                /* Separates count from primary create action. */
+}
+
+.issue-board-create-button {
+  display: inline-flex;           /* Creates consistent button-like Link layout. */
+  min-height: 40px;               /* Provides comfortable primary-action click target. */
+  align-items: center;            /* Vertically centers button text. */
+  justify-content: center;        /* Horizontally centers Create Issue label. */
+  padding: 8px 14px;              /* Adds compact primary-action spacing. */
+  border: 1px solid #2368a2;    /* Defines primary button boundary. */
+  border-radius: 7px;             /* Matches existing project/board controls. */
+  background: #2368a2;          /* Uses established application action blue. */
+  color: #ffffff;               /* Gives create action strong text contrast. */
+  font-size: 0.8rem;              /* Keeps board action compact. */
+  font-weight: 780;               /* Makes Create Issue easy to identify. */
+  text-decoration: none;          /* Removes Link's default underline. */
+}
+
+.issue-board-create-button:hover {
+  border-color: #195888;    /* Darkens button boundary during hover. */
+  background: #195888;      /* Provides visible primary-action hover feedback. */
+}
+
 .issue-board-heading-summary {
   display: grid;      /* Stacks issue count over explanatory label. */
   flex-shrink: 0;     /* Prevents summary from becoming compressed. */
@@ -389,6 +416,16 @@
 
   .issue-board-heading-summary {
     justify-items: start;   /* Left-aligns issue count in stacked mobile layout. */
+  }
+
+  .issue-board-heading-actions {
+    width: 100%;                /* Lets mobile actions use full heading width. */
+    align-items: flex-start;    /* Aligns count/create action cleanly when stacked. */
+    flex-direction: column;     /* Places Create Issue beneath issue-count summary. */
+  }
+
+  .issue-board-create-button {
+    width: 100%;      /* Gives phone users large Create Issue target. */
   }
 
   .issue-board-toolbar {

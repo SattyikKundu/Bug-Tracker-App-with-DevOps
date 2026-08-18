@@ -1,0 +1,350 @@
+/* src/ProtectedPages/IssueFormPage/IssueFormPage.css */
+
+
+/* ========================================================================== */
+/* Page                                                                       */
+/* ========================================================================== */
+
+.issue-form-page {
+  width: min(1000px, 100%); /* Keeps long forms readable on large desktop screens. */
+  min-height: 100%;         /* Allows page to fill protected workspace height. */
+  margin: 0 auto;           /* Centers issue form inside application content area. */
+  padding: 44px 32px 80px;  /* Matches spacing used across project-management pages. */
+}
+
+/* ========================================================================== */
+/* Breadcrumb                                                                 */
+/* ========================================================================== */
+
+.issue-form-breadcrumb {
+  margin-bottom: 22px;  /* Separates return navigation from page heading. */
+}
+
+.issue-form-breadcrumb a {
+  color: #2368a2;           /* Uses established application navigation blue. */
+  font-size: 0.84rem;         /* Keeps breadcrumb visually secondary. */
+  font-weight: 750;           /* Makes project-board navigation easy to find. */
+  text-decoration: none;      /* Removes browser's default Link underline. */
+}
+
+.issue-form-breadcrumb a:hover {
+  text-decoration: underline;   /* Adds familiar navigation hover feedback. */
+}
+
+/* ========================================================================== */
+/* Heading                                                                    */
+/* ========================================================================== */
+
+.issue-form-heading {
+  max-width: 780px;     /* Prevents introductory copy becoming excessively wide. */
+}
+
+.issue-form-eyebrow {
+  margin: 0 0 8px;              /* Separates project identifier from page title. */
+  color: #2368a2;             /* Reuses application's primary blue accent. */
+  font-size: 0.74rem;           /* Keeps contextual label compact. */
+  font-weight: 850;             /* Improves small uppercase text readability. */
+  letter-spacing: 0.105em;      /* Adds professional spacing to category label. */
+  text-transform: uppercase;    /* Visually separates context from normal copy. */
+}
+
+.issue-form-heading h1 {
+  margin: 0;                            /* Removes default browser heading margin. */
+  color: #172b4d;                     /* Uses established primary heading navy. */
+  font-size: clamp(2rem, 4vw, 3rem);    /* Scales create/edit title across viewport sizes. */
+  letter-spacing: -0.038em;             /* Gives large heading compact professional typography. */
+}
+
+.issue-form-heading > p:last-child {
+  margin: 13px 0 0;         /* Separates supporting description from title. */
+  color: #5e6c84;         /* Uses secondary explanatory text color. */
+  font-size: 0.94rem;       /* Keeps introduction readable but subordinate. */
+  line-height: 1.62;        /* Improves wrapped explanatory text. */
+}
+
+/* ========================================================================== */
+/* Main form card                                                             */
+/* ========================================================================== */
+
+.issue-form-card {
+  margin-top: 32px;               /* Separates editable form from page heading. */
+  padding: 30px;                  /* Gives form comfortable internal whitespace. */
+  border: 1px solid #dfe3e8;    /* Defines form against application background. */
+  border-radius: 12px;            /* Matches project/profile card geometry. */
+  background: #ffffff;          /* Uses clean editable surface. */
+  box-shadow: 0 5px 16px rgba(9, 30, 66, 0.05); /* Adds restrained depth consistent with application. */
+}
+
+.issue-form {
+  display: grid;    /* Stacks each form section vertically. */
+  gap: 24px;        /* Creates consistent separation between fields. */
+}
+
+
+/* ========================================================================== */
+/* Form fields                                                                */
+/* ========================================================================== */
+
+.issue-form-field {
+  display: grid;    /* Stacks label, control, helper text, and preview. */
+  gap: 7px;         /* Gives each field's elements consistent spacing. */
+}
+
+
+.issue-form-field label {
+  color: #253858;       /* Uses strong readable form-label color. */
+  font-size: 0.84rem;     /* Keeps field labels compact. */
+  font-weight: 780;       /* Makes field names easy to scan. */
+}
+
+.issue-form-field label span {
+  margin-left: 3px;     /* Separates required marker from field label. */
+  color: #ae2a19;     /* Uses error red for required-field marker. */
+}
+
+.issue-form-field input,
+.issue-form-field textarea,
+.issue-form-field select {
+  width: 100%;                    /* Makes controls fill their available grid area. */
+  border: 1px solid #b7c0cd;    /* Defines editable control boundaries. */
+  border-radius: 7px;             /* Matches existing profile/project inputs. */
+  outline: none;                  /* Replaces browser outline with controlled focus style. */
+  background: #fafbfc;          /* Adds subtle contrast to editable fields. */
+  color: #172b4d;               /* Uses primary readable input text. */
+  font: inherit;                  /* Keeps controls consistent with application typography. */
+}
+
+.issue-form-field input,
+.issue-form-field select {
+  min-height: 43px;     /* Gives single-line controls accessible click height. */
+  padding: 9px 11px;    /* Adds comfortable input/select internal spacing. */
+}
+
+.issue-form-field textarea {
+  min-height: 150px;    /* Provides useful initial description-writing area. */
+  padding: 11px;        /* Gives multiline text comfortable spacing. */
+  line-height: 1.55;    /* Improves longer description readability. */
+  resize: vertical;     /* Allows height adjustment without breaking page width. */
+}
+
+.issue-form-field input:focus,
+.issue-form-field textarea:focus,
+.issue-form-field select:focus {
+  border-color: #2368a2;    /* Highlights the currently active control. */
+  background: #ffffff;      /* Brightens focused form control. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.13);     /* Adds accessible application-style focus ring. */
+}
+
+.issue-form-field small {
+  color: #7a869a;     /* Keeps helper text visually tertiary. */
+  font-size: 0.74rem;   /* Makes guidance smaller than actual form values. */
+  line-height: 1.5;     /* Keeps wrapped helper copy readable. */
+}
+
+.issue-form-field-error {
+  color: #ae2a19 !important;    /* Gives assignee-loading failure clear error emphasis. */
+}
+
+
+/* ========================================================================== */
+/* Type / Priority / Severity row                                             */
+/* ========================================================================== */
+
+.issue-form-three-column-grid {
+  display: grid;                                      /* Places three enum controls on one desktop row.           */
+  grid-template-columns: repeat(3, minmax(0, 1fr));    /* Gives Type/Priority/Severity equal widths.               */
+  gap: 16px;                                          /* Adds clear separation between metadata controls.         */
+}
+
+
+/* ========================================================================== */
+/* Read-only assignee                                                        */
+/* ========================================================================== */
+
+.issue-form-readonly-value {
+  display: flex;            /* Makes read-only identity align like a normal control. */
+  min-height: 43px;         /* Matches neighboring select/input height. */
+  align-items: center;      /* Vertically centers current assignee identity. */
+  padding: 9px 11px;        /* Matches normal editable-control spacing. */
+  border: 1px solid #d8dde5;    /* Defines read-only field without implying editability. */
+  border-radius: 7px;       /* Keeps geometry consistent with form fields. */
+  background: #f1f2f4;    /* Visually communicates that value cannot be changed. */
+  color: #5e6c84;         /* Uses restrained read-only text. */
+  font-size: 0.84rem;       /* Keeps identity consistent with input text. */
+}
+
+
+/* ========================================================================== */
+/* Label preview                                                              */
+/* ========================================================================== */
+
+.issue-form-label-preview {
+  display: flex;        /* Displays normalized labels as compact chips. */
+  flex-wrap: wrap;      /* Allows longer label collections to wrap naturally. */
+  gap: 6px;             /* Creates consistent spacing between label chips. */
+  padding-top: 3px;     /* Separates preview slightly from helper copy. */
+}
+
+
+.issue-form-label-chip {
+  display: inline-flex;     /* Sizes each chip according to its label content. */
+  align-items: center;      /* Vertically centers label text. */
+  padding: 4px 8px;         /* Gives label compact tag-style spacing. */
+  border-radius: 5px;       /* Matches label presentation on issue board cards. */
+  background: #ebecf0;    /* Uses established neutral label background. */
+  color: #505f79;         /* Provides readable secondary label text. */
+  font-size: 0.69rem;       /* Keeps tags compact. */
+  font-weight: 700;         /* Makes small label text legible. */
+}
+
+
+/* ========================================================================== */
+/* Validation                                                                 */
+/* ========================================================================== */
+
+.issue-form-validation-error {
+  padding: 11px 13px;               /* Gives validation message comfortable spacing. */
+  border: 1px solid #ffbdad;      /* Clearly identifies invalid local form data. */
+  border-radius: 7px;               /* Matches application alerts. */
+  background: #ffebe6;            /* Uses restrained red validation background. */
+  color: #ae2a19;                 /* Uses readable error message text. */
+  font-size: 0.83rem;               /* Keeps validation feedback concise. */
+  font-weight: 650;                 /* Gives validation enough emphasis without shouting. */
+}
+
+
+/* ========================================================================== */
+/* Form actions                                                               */
+/* ========================================================================== */
+
+.issue-form-actions {
+  display: flex;                /* Places Cancel and Save/Create actions beside each other. */
+  justify-content: flex-end;    /* Aligns primary form actions to right side. */
+  gap: 10px;                    /* Adds spacing between cancel and primary action. */
+  padding-top: 4px;             /* Gives small separation from final form field. */
+}
+
+.issue-form-cancel-button,
+.issue-form-save-button {
+  display: inline-flex;         /* Allows consistent vertical/horizontal centering. */
+  min-height: 42px;             /* Creates accessible action click targets. */
+  align-items: center;          /* Vertically centers action text. */
+  justify-content: center;      /* Horizontally centers button/link text. */
+  padding: 8px 16px;            /* Gives actions comfortable internal spacing. */
+  border-radius: 7px;           /* Matches application buttons. */
+  font-size: 0.83rem;           /* Keeps form actions compact. */
+  font-weight: 780;             /* Makes action labels easy to scan. */
+  text-decoration: none;        /* Removes default Link underline from Cancel. */
+}
+
+.issue-form-cancel-button {
+  border: 1px solid #b7c0cd;    /* Defines secondary Cancel action. */
+  background: #ffffff;          /* Keeps Cancel visually less prominent. */
+  color: #42526e;               /* Uses secondary action text. */
+}
+
+.issue-form-cancel-button:hover {
+  background: #f1f2f4;          /* Adds visible Cancel hover feedback. */
+}
+
+.issue-form-save-button {
+  border: 1px solid #2368a2;    /* Defines primary action boundary. */
+  background: #2368a2;          /* Uses application primary blue. */
+  color: #ffffff;               /* Gives primary action strong contrast. */
+  cursor: pointer;                /* Communicates button interactivity. */
+}
+
+.issue-form-save-button:hover:not(:disabled) {
+  border-color: #195888;    /* Darkens primary action boundary on hover. */
+  background: #195888;      /* Darkens primary action on hover. */
+}
+
+.issue-form-save-button:disabled {
+  cursor: not-allowed;  /* Communicates that save request is processing. */
+  opacity: 0.6;         /* Visually distinguishes temporary disabled state. */
+}
+
+
+/* ========================================================================== */
+/* Loading / Error state                                                      */
+/* ========================================================================== */
+
+.issue-form-state-card {
+  display: grid;                        /* Stacks loading/error content vertically. */
+  width: min(650px, calc(100% - 32px)); /* Keeps state message comfortably narrow. */
+  justify-items: center;                /* Centers state-card contents horizontally. */
+  gap: 10px;                            /* Adds consistent space between state elements. */
+  margin: 70px auto;                    /* Centers state card inside application content. */
+  padding: 44px 26px;                   /* Gives state content comfortable whitespace. */
+  border: 1px solid #dfe3e8;          /* Matches normal application card boundaries. */
+  border-radius: 12px;                  /* Preserves established card geometry. */
+  background: #ffffff;                /* Uses clean state surface. */
+  text-align: center;                   /* Centers loading/error copy. */
+}
+
+.issue-form-state-card h2 {
+  margin: 3px 0 0;          /* Separates heading from spinner/preceding content. */
+  color: #172b4d;         /* Uses primary heading color. */
+}
+
+.issue-form-state-card p {
+  margin: 0;            /* Removes browser paragraph margin. */
+  color: #5e6c84;     /* Uses secondary state-message text. */
+  line-height: 1.55;    /* Improves explanatory text readability. */
+}
+
+.issue-form-state-card a {
+  margin-top: 7px;      /* Separates navigation link from state description. */
+  color: #2368a2;     /* Uses established application link color. */
+  font-weight: 700;     /* Makes return action easy to identify. */
+}
+
+.issue-form-state-card--error {
+  border-color: #ffbdad;    /* Gives failed state visible error boundary. */
+  background: #fff8f6;      /* Adds restrained error-state background. */
+}
+
+
+.issue-form-spinner {
+  width: 34px;                      /* Sets loading indicator width. */
+  height: 34px;                     /* Matches spinner width. */
+  border: 4px solid #d9e5f0;      /* Creates spinner inactive track. */
+  border-top-color: #2368a2;      /* Creates visible rotating segment. */
+  border-radius: 50%;               /* Converts bordered element into circle. */
+  animation: issue-form-spin 750ms linear infinite;   /* Rotates loading indicator continuously. */
+}
+
+
+@keyframes issue-form-spin {
+  to {
+    transform: rotate(360deg);  /* Completes one spinner rotation. */
+  }
+}
+
+
+/* ========================================================================== */
+/* Responsive layout                                                          */
+/* ========================================================================== */
+
+@media (max-width: 700px) {
+
+  .issue-form-page {
+    padding: 34px 16px 60px;    /* Reduces page margins on smaller screens. */
+  }
+
+  .issue-form-card {
+    padding: 22px 17px; /* Reduces form-card padding on mobile. */
+  }
+
+  .issue-form-three-column-grid {
+    grid-template-columns: 1fr;   /* Stacks Type/Priority/Severity vertically on phones. */
+  }
+
+  .issue-form-actions {
+    flex-direction: column-reverse;     /* Keeps primary create/save action visually first. */
+  }
+
+  .issue-form-cancel-button, .issue-form-save-button {
+    width: 100%;        /* Provides full-width mobile action targets. */
+  }
+}

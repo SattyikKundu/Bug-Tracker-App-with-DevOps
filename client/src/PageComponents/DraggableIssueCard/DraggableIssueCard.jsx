@@ -13,7 +13,8 @@ const DraggableIssueCard = ({
   canTransition,     // Existing issue-edit permission
   projectArchived,   // Prevents dragging archived-project issues
   isTransitioning,   // Prevents another movement while API request is active
-  onTransition       // Existing arrow-button status-change callback
+  onTransition,      // Existing arrow-button status-change callback
+  editPath           // Route to Edit Issue form
 }) => {
 
 
@@ -63,6 +64,7 @@ const DraggableIssueCard = ({
         projectArchived={projectArchived}
         isTransitioning={isTransitioning}
         onTransition={onTransition}
+        editPath={editPath}
       />
     </div>
   );

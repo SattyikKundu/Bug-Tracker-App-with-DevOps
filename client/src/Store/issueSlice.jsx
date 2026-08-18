@@ -67,14 +67,75 @@ export const transitionIssueStatus = createAsyncThunk(
 );
 
 
+/* POST /projects/:projectId/issues
+ *
+ * Creates a brand-new issue.
+ * Backend automatically:
+ * + sets reporterId to logged-in user;
+ * + generates the project's issue key;
+ * + starts status at "open".
+ */
+export const createIssue = createAsyncThunk(
+  "issues/createIssue",
+  async ({projectId, issueData}, thunkAPI) => {
+    try {
+      const response = await api.post(`/projects/${projectId}/issues`, issueData);
+      return response.data.issue;
+    }
+    catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to create issue.");
+    }
+  }
+);
+
+
+/* GET /issues/:issueId
+ * Retrieves one existing issue for the Edit Issue form.
+ */
+export const fetchIssueById = createAsyncThunk(
+  "issues/fetchIssueById",
+  async (issueId, thunkAPI) => {
+    try {
+      const response = await api.get(`/issues/${issueId}`);
+      return response.data.issue;
+    }
+    catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to load issue.");
+    }
+  }
+);
+
+
+/* PATCH /issues/:issueId
+ * Partially updates an existing issue.
+ * The form sends ONLY changed fields.
+ */
+export const updateIssue = createAsyncThunk(
+  "issues/updateIssue",
+  async ({ issueId, issueUpdates}, thunkAPI) => {
+    try {
+      const response = await api.patch(`/issues/${issueId}`, issueUpdates);
+      return response.data.issue;
+    }
+    catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to update issue.");
+    }
+  }
+);
+
+
+
 // Initial Redux state for project issue board.
 const initialState = {
   issues: [],                  // All issues belonging to currently opened project
   status: "idle",              // idle | loading | succeeded | failed
   error: null,                 // Full-board loading error
-  transitioningIssueId: null   // Tracks which issue currently shows transition loading state
+  transitioningIssueId: null,  // Tracks which issue currently shows transition loading state
+  currentIssue: null,          // Existing issue currently opened for editing
+  currentIssueStatus: "idle",  // idle | loading | succeeded | failed
+  currentIssueError: null,     // GET /issues/:id failure
+  saveStatus: "idle"           // Tracks create/edit form submission
 };
-
 
 const issueSlice = createSlice({
   name: "issues", // Redux state becomes available through state.issues
@@ -92,11 +153,22 @@ const issueSlice = createSlice({
       state.error = null;                // Remove stale load failures
       state.transitioningIssueId = null; // Clear temporary transition state
     },
+
+    // Clears one previously edited issue.
+    // ex: Prevents values from Issue A briefly appearing when Issue B is opened for editing.    
+    clearCurrentIssue: (state) => {
+      state.currentIssue        = null;
+      state.currentIssueStatus  = "idle";
+      state.currentIssueError   = null;
+      state.saveStatus          = "idle";
+    },
+
     // Clears a failed GET /projects/:pid/issues request.
     // Useful when manually retrying board request.
     clearIssueBoardError: (state) => {
       state.error = null;
     },
+
     // Immediately moves an issue into its target column BEFORE API finishes.
     // This gives drag/drop fast response expected from a Kanban board.
     optimisticMoveIssue: (state, action) => {
@@ -143,6 +215,85 @@ const issueSlice = createSlice({
           state.status = "failed"; // Allows page-level error state
           state.error = action.payload || "Unable to load this project's issues.";
         }
+      )
+      
+      // =====================================================================
+      // Load one issue for editing
+      // =====================================================================
+      .addCase(
+        fetchIssueById.pending,
+        (state) => {
+          state.currentIssueStatus = "loading";
+          state.currentIssueError = null;
+        }
+      )
+      .addCase(
+        fetchIssueById.fulfilled,
+        (state, action) => {
+          state.currentIssueStatus = "succeeded";
+          state.currentIssue = action.payload;
+          state.currentIssueError = null;
+        }
+      )
+      .addCase(
+        fetchIssueById.rejected,
+        (state, action) => {
+          state.currentIssueStatus = "failed";
+          state.currentIssueError = action.payload || "Unable to load issue.";
+        }
+      )
+
+      // =====================================================================
+      // Create issue
+      // =====================================================================
+      .addCase(
+        createIssue.pending,
+        (state) => {
+          state.saveStatus = "loading";
+        }
+      )
+      .addCase(
+        createIssue.fulfilled,
+        (state, action) => {
+          state.saveStatus = "succeeded";
+          // If board data happens to remain loaded, this makes the new issue immediately available there.
+          // The Board will still safely refetch when its route opens.
+          state.issues.unshift(action.payload);
+        }
+      )
+      .addCase(
+        createIssue.rejected,
+        (state) => {
+          state.saveStatus = "failed";
+        }
+      )
+
+      // =====================================================================
+      // Update existing issue
+      // =====================================================================
+      .addCase(
+        updateIssue.pending,
+        (state) => {
+          state.saveStatus = "loading";
+        }
+      )
+      .addCase(
+        updateIssue.fulfilled,
+        (state, action) => {
+          state.saveStatus = "succeeded";
+          state.currentIssue = action.payload;
+          const issueIndex =
+            state.issues.findIndex(
+              (issue) => (String(issue._id) === String(action.payload._id))
+            );
+          if (issueIndex !== -1) {
+            state.issues[issueIndex] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        updateIssue.rejected,
+        (state) => { state.saveStatus = "failed"; }
       )
 
       // =====================================================================
@@ -193,6 +344,7 @@ const issueSlice = createSlice({
 export const { 
   clearIssueBoard,           // Clears issue board (esp. to prevent "bleeding" into other projects' issue boards)
   clearIssueBoardError,      // Clears the board error (so it doesn't carry over to other issue boards)
+  clearCurrentIssue,         // Clears existing issue edit-form state
   optimisticMoveIssue,       // Immediately moves a dragged card locally
   revertOptimisticIssueMove  // Restores card when backend rejects movement
 } = issueSlice.actions;

@@ -652,9 +652,20 @@ const IssueBoardPage = () => {
           <p>Track issues through the project's four-stage workflow.</p>
         </div>
 
-        <div className="issue-board-heading-summary">
-          <strong>{filteredIssues.length}</strong>
-          <span>of {issues.length} issues shown</span>
+        <div className="issue-board-heading-actions">
+          <div className="issue-board-heading-summary">
+            <strong>{filteredIssues.length}</strong>
+            <span>of {issues.length} issues shown</span>
+          </div>
+
+          {/*  Any member who can access an ACTIVE project may create an issue.
+            *  Archived projects deliberately do not expose the mutation action.
+            */}
+          {!project?.archived && (
+            <Link className="issue-board-create-button" to={`/projects/${projectId}/issues/new`}>
+              + Create Issue
+            </Link>
+          )}
         </div>
       </header>
 
@@ -767,6 +778,7 @@ const IssueBoardPage = () => {
                             projectArchived={project?.archived === true}
                             isTransitioning={isTransitioning}
                             onTransition={handleTransition}
+                            editPath={`/projects/${projectId}/issues/${issue._id}/edit`}
                           />
                         );
                       }

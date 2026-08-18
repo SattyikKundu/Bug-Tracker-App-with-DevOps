@@ -117,6 +117,27 @@
   color: #7a869a;       /* Uses tertiary metadata color. */
 }
 
+/* =========================================================================== */
+/*  Issue Editing Link                                                         */
+/* =========================================================================== */
+
+.issue-board-card-edit-row {
+  display: flex;              /* Gives Edit Issue its own small card action row. */
+  justify-content: flex-end;  /* Keeps edit action visually secondary on right side. */
+}
+
+.issue-board-card-edit-link {
+  color: #2368a2;       /* Uses established application action blue. */
+  font-size: 0.69rem;     /* Keeps Edit subordinate to workflow buttons. */
+  font-weight: 750;       /* Makes small edit link readable. */
+  text-decoration: none;  /* Removes browser default underline. */
+  cursor: pointer;        /* Reinforces that this area is clickable, not draggable. */
+}
+
+.issue-board-card-edit-link:hover {
+  text-decoration: underline;     /* Gives familiar link hover feedback.  */
+}
+
 
 /* ========================================================================== */
 /* Priority / assignee metadata                                               */
@@ -170,6 +191,7 @@
   text-overflow: ellipsis;      /* Shows ... for long names.  */
   white-space: nowrap;          /* Keeps assignee on one line. */
 }
+
 
 
 /* ========================================================================== */
