@@ -1,0 +1,557 @@
+/* src/ProtectedPages/IssueDetailsPage/IssueDetailsPage.css */
+
+/* ========================================================================== */
+/* Page                                                                       */
+/* ========================================================================== */
+.issue-details-page {
+  width: min(1280px, 100%); /* Keeps issue content readable on very wide screens. */
+  min-height: 100%;         /* Allows details page to fill protected workspace. */
+  margin: 0 auto;           /* Centers issue content inside application shell. */
+  padding: 40px 32px 80px;  /* Matches project/issue workspace spacing. */
+}
+
+
+/* ========================================================================== */
+/* Breadcrumb                                                                 */
+/* ========================================================================== */
+.issue-details-breadcrumb {
+  display: flex;            /* Places project/board/issue hierarchy on one row. */
+  flex-wrap: wrap;          /* Allows breadcrumb to wrap on narrow screens. */
+  align-items: center;      /* Vertically aligns breadcrumb elements. */
+  gap: 7px;                 /* Adds compact hierarchy spacing. */
+  margin-bottom: 21px;      /* Separates navigation from issue heading. */
+  color: #7a869a;         /* Keeps breadcrumb secondary to issue content. */
+  font-size: 0.78rem;       /* Uses compact issue-tracker navigation size. */
+}
+
+.issue-details-breadcrumb a {
+  color: #2368a2;         /* Uses established application navigation blue. */
+  font-weight: 700;         /* Makes clickable breadcrumb entries noticeable. */
+  text-decoration: none;    /* Removes browser's default Link underline. */
+}
+
+.issue-details-breadcrumb a:hover {
+  text-decoration: underline;       /* Gives familiar link hover feedback. */
+}
+
+
+/* ========================================================================== */
+/* Archived-project warning                                                   */
+/* ========================================================================== */
+.issue-details-archive-banner {
+  display: flex;                    /* Places archive label and explanation together. */
+  align-items: center;              /* Vertically aligns archived-state content. */
+  gap: 13px;                        /* Separates archive label from description. */
+  margin-bottom: 22px;              /* Separates archived notice from issue heading. */
+  padding: 12px 14px;               /* Gives read-only notice comfortable spacing. */
+  border: 1px solid #c8ccd2;      /* Defines archived-state notification boundary. */
+  border-radius: 8px;               /* Matches other application notices. */
+  background: #f1f2f4;            /* Gives archived state a neutral muted surface. */
+  color: #505f79;                 /* Uses subdued archived-state text. */
+  font-size: 0.82rem;               /* Keeps notification compact. */
+}
+
+.issue-details-archive-banner strong {
+  color: #253858;           /* Gives archived label stronger emphasis. */
+}
+
+
+/* ========================================================================== */
+/* Heading                                                                    */
+/* ========================================================================== */
+.issue-details-heading {
+  display: flex;                    /* Places issue identity and actions beside one another. */
+  align-items: flex-start;          /* Aligns actions near top of issue heading. */
+  justify-content: space-between;   /* Pushes actions to right side of page. */
+  gap: 28px;                        /* Prevents long title from colliding with actions. */
+}
+
+.issue-details-heading-main {
+  min-width: 0;         /* Allows long issue titles to wrap correctly. */
+}
+
+.issue-details-heading-meta {
+  display: flex;            /* Places issue key and current status together. */
+  flex-wrap: wrap;          /* Allows metadata badges to wrap on smaller screens. */
+  align-items: center;      /* Vertically aligns key/status badges. */
+  gap: 9px;                 /* Separates key from status. */
+}
+
+.issue-details-key {
+  color: #2368a2;         /* Uses established identifier/action blue. */
+  font-size: 0.79rem;       /* Keeps issue key compact. */
+  font-weight: 850;         /* Makes human-readable issue ID easy to scan. */
+  letter-spacing: 0.04em;   /* Improves compact identifier readability. */
+}
+
+.issue-details-status {
+  display: inline-flex;     /* Sizes status badge according to its text. */
+  align-items: center;      /* Vertically centers status text. */
+  padding: 5px 9px;         /* Gives workflow badge compact spacing. */
+  border-radius: 999px;     /* Creates recognizable status pill. */
+  background: #ebecf0;    /* Provides neutral fallback status background. */
+  color: #42526e;         /* Uses readable fallback status text. */
+  font-size: 0.69rem;       /* Keeps workflow status visually compact. */
+  font-weight: 820;         /* Makes small status text legible. */
+}
+
+.issue-details-status--open {
+  background: #e9f2ff;  /* Gives Open a calm blue status surface. */
+  color: #0c66e4;       /* Uses readable Open status text. */
+}
+
+.issue-details-status--in_progress {
+  background: #fff7d6;      /* Gives active work a restrained yellow surface. */
+  color: #7f5f01;           /* Provides readable In Progress text. */
+}
+
+.issue-details-status--ready_for_review {
+  background: #eae6ff;  /* Gives review stage a distinct purple tint. */
+  color: #5243aa;       /* Uses readable review-stage text. */
+}
+
+.issue-details-status--closed {
+  background: #e9f8ef;  /* Gives completed work a calm green surface. */
+  color: #21643d;       /* Uses readable Closed text. */
+}
+
+.issue-details-heading h1 {
+  max-width: 880px;         /* Prevents extremely long title dominating wide page. */
+  margin: 10px 0 0;         /* Separates title from issue key/status row. */
+  color: #172b4d;         /* Uses primary issue-title navy. */
+  font-size: clamp(2rem, 4vw, 3rem);  /* Scales title naturally across viewport sizes. */
+  line-height: 1.12;        /* Keeps wrapped titles compact and readable. */
+  letter-spacing: -0.035em; /* Gives large title polished typography. */
+}
+
+.issue-details-heading-actions {
+  display: flex;            /* Places Watch and Edit actions next to one another. */
+  flex-shrink: 0;           /* Prevents action controls from collapsing. */
+  align-items: center;      /* Vertically aligns issue actions. */
+  gap: 9px;                 /* Separates Watch and Edit controls. */
+}
+
+.issue-details-watch-button,
+.issue-details-edit-button {
+  display: inline-flex;     /* Gives button/Link identical action layout. */
+  min-height: 40px;         /* Provides comfortable click target. */
+  align-items: center;      /* Vertically centers action text. */
+  justify-content: center;  /* Horizontally centers action text. */
+  padding: 8px 13px;        /* Gives actions consistent internal spacing. */
+  border-radius: 7px;       /* Matches other issue/project controls. */
+  font-size: 0.79rem;       /* Keeps actions compact. */
+  font-weight: 760;         /* Makes action text easy to scan. */
+  text-decoration: none;    /* Removes Link underline from Edit Issue. */
+}
+
+
+.issue-details-watch-button {
+  border: 1px solid #b7c0cd;  /* Defines secondary Watch action boundary. */
+  background: #ffffff;        /* Keeps Watch less prominent than Edit. */
+  color: #42526e;             /* Uses normal secondary action text. */
+  cursor: pointer;              /* Communicates button interactivity. */
+}
+
+.issue-details-watch-button:hover:not(:disabled) {
+  background: #f1f2f4;  /* Adds visible Watch hover feedback. */
+}
+
+.issue-details-watch-button--active {
+  border-color: #85b8ff;    /* Distinguishes current watching state. */
+  background: #e9f2ff;      /* Adds restrained active-watch tint. */
+  color: #0c66e4;           /* Uses blue active-watch text. */
+}
+
+.issue-details-watch-button:disabled {
+  cursor: not-allowed;  /* Communicates API request is still processing. */
+  opacity: 0.6;         /* Visually indicates temporary disabled state. */
+}
+
+.issue-details-edit-button {
+  border: 1px solid #2368a2;    /* Defines primary edit action. */
+  background: #2368a2;          /* Uses primary application action color. */
+  color: #ffffff;               /* Provides strong button contrast. */
+}
+
+.issue-details-edit-button:hover {
+  border-color: #195888;    /* Darkens edit action boundary on hover. */
+  background: #195888;      /* Gives primary action hover feedback. */
+}
+
+/* ========================================================================== */
+/* Two-column issue layout                                                    */
+/* ========================================================================== */
+.issue-details-layout {
+  display: grid;        /* Creates main issue content + metadata sidebar. */
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 350px);
+                        /* Gives description/history more room than metadata. */
+  align-items: start;   /* Prevents sidebar panels stretching unnecessarily. */
+  gap: 22px;            /* Adds clear separation between content columns. */
+  margin-top: 31px;     /* Separates issue body from heading. */
+}
+
+.issue-details-main-column {
+  display: grid;    /* Stacks Description, History, Activity panels. */
+  gap: 20px;        /* Adds consistent vertical panel spacing. */
+}
+
+.issue-details-sidebar {
+  display: grid;    /* Stacks details and labels panels. */
+  gap: 20px;        /* Gives sidebar cards consistent separation. */
+}
+
+/* ========================================================================== */
+/* Shared panel                                                               */
+/* ========================================================================== */
+.issue-details-panel {
+  padding: 24px;                  /* Gives issue-detail cards comfortable whitespace. */
+  border: 1px solid #dfe3e8;    /* Defines each information surface. */
+  border-radius: 11px;            /* Matches established application card geometry. */
+  background: #ffffff;          /* Uses clean readable issue surface. */
+  box-shadow: 0 4px 13px rgba(9, 30, 66, 0.045);      /* Adds subtle depth without dashboard-like heaviness. */
+}
+
+.issue-details-section-heading {
+  display: flex;                      /* Places heading and small section count together. */
+  align-items: center;                /* Vertically aligns heading metadata. */
+  justify-content: space-between;     /* Pushes count to opposite side. */
+  gap: 12px;                          /* Prevents heading/count collision. */
+  padding-bottom: 13px;               /* Separates heading from section content. */
+  border-bottom: 1px solid #ebecf0; /* Provides subtle section-header divider. */
+}
+
+.issue-details-section-heading h2 {
+  margin: 0;            /* Removes browser heading margin. */
+  color: #172b4d;     /* Uses primary section heading color. */
+  font-size: 1.05rem;   /* Gives section headings clear hierarchy. */
+}
+
+.issue-details-section-heading span {
+  color: #7a869a;     /* Uses tertiary section-count color. */
+  font-size: 0.7rem;    /* Keeps count visually secondary. */
+  font-weight: 700;     /* Ensures small metadata remains legible. */
+}
+
+/* ========================================================================== */
+/* Description                                                                */
+/* ========================================================================== */
+.issue-details-description {
+  margin-top: 18px;         /* Separates description body from heading divider. */
+  color: #344563;         /* Uses readable body-text navy-grey. */
+  font-size: 0.92rem;       /* Gives description comfortable reading size. */
+  line-height: 1.72;        /* Supports longer reproduction/instruction text. */
+  white-space: pre-wrap;    /* Preserves user-entered line breaks. */
+}
+
+.issue-details-empty-copy {
+  margin: 18px 0 0;     /* Places empty-value text below heading. */
+  color: #8993a4;     /* Uses restrained empty-information color. */
+  font-size: 0.82rem;   /* Keeps missing-content message visually secondary. */
+  font-style: italic;   /* Distinguishes absence from actual issue content. */
+}
+
+/* ========================================================================== */
+/* Metadata                                                                   */
+/* ========================================================================== */
+.issue-details-metadata-list {
+  display: grid;        /* Stacks issue metadata rows vertically. */
+  gap: 0;               /* Row padding controls vertical spacing. */
+  margin: 11px 0 0;     /* Separates metadata list from section heading. */
+}
+
+.issue-details-metadata-list > div {
+  display: grid;                                  /* Creates label/value layout for each property. */
+  grid-template-columns: 88px minmax(0, 1fr);     /* Keeps field labels aligned while values remain flexible.*/
+  gap: 10px;                                      /* Separates metadata labels from values. */
+  padding: 11px 0;                                /* Gives each metadata row comfortable height. */
+  border-bottom: 1px solid #f0f1f3;             /* Subtly separates adjacent properties. */
+}
+
+.issue-details-metadata-list > div:last-child {
+  border-bottom: 0;     /* Removes unnecessary final metadata divider. */
+}
+
+.issue-details-metadata-list dt {
+  color: #7a869a;     /* Keeps metadata field name secondary. */
+  font-size: 0.72rem;   /* Uses compact property-label typography. */
+  font-weight: 760;     /* Makes small labels easy to scan. */
+}
+
+.issue-details-metadata-list dd {
+  min-width: 0;         /* Allows long identities to wrap correctly. */
+  margin: 0;            /* Removes default definition-list margin. */
+  color: #344563;     /* Uses readable metadata value color. */
+  font-size: 0.78rem;   /* Keeps dense sidebar metadata compact. */
+  line-height: 1.45;    /* Improves wrapping for long names/dates. */
+}
+
+.issue-details-priority {
+  display: inline-flex;         /* Sizes priority indicator to its content. */
+  padding: 3px 7px;             /* Gives compact priority badge spacing. */
+  border-radius: 5px;           /* Matches board priority chips. */
+  font-size: 0.66rem;           /* Keeps priority small within metadata sidebar. */
+  font-weight: 820;             /* Makes priority easily scannable. */
+  text-transform: uppercase;    /* Gives consistent priority presentation. */
+}
+
+.issue-details-priority--low {
+  background: #f1f2f4;  /* Gives Low neutral emphasis. */
+  color: #505f79;       /* Uses subdued Low text. */
+}
+
+.issue-details-priority--medium {
+  background: #fff7d6;  /* Gives Medium yellow emphasis. */
+  color: #7f5f01;       /* Provides readable Medium contrast. */
+}
+
+.issue-details-priority--high {
+  background: #ffebe6;      /* Gives High restrained red emphasis. */
+  color: #ae2a19;           /* Uses readable High text. */
+}
+
+.issue-details-priority--critical {
+  background: #ae2a19;  /* Gives Critical strongest visual emphasis. */
+  color: #ffffff;       /* Provides strong contrast for Critical. */
+}
+
+
+/* ========================================================================== */
+/* Labels                                                                     */
+/* ========================================================================== */
+.issue-details-label-list {
+  display: flex;        /* Places label chips beside one another. */
+  flex-wrap: wrap;      /* Allows larger label lists to wrap naturally. */
+  gap: 6px;             /* Adds consistent spacing between labels. */
+  margin-top: 17px;     /* Separates labels from section heading. */
+}
+
+.issue-details-label {
+  display: inline-flex;     /* Sizes chip according to label content. */
+  align-items: center;      /* Vertically centers label text. */
+  padding: 4px 8px;         /* Gives labels compact tag spacing. */
+  border-radius: 5px;       /* Matches board-card labels. */
+  background: #ebecf0;    /* Uses established neutral label surface. */
+  color: #505f79;         /* Provides readable label text. */
+  font-size: 0.69rem;       /* Keeps label metadata compact. */
+  font-weight: 700;         /* Makes small label text legible. */
+}
+
+/* ========================================================================== */
+/* Status history                                                             */
+/* ========================================================================== */
+.issue-details-history-list {
+  display: grid;            /* Stacks workflow-history entries vertically. */
+  gap: 0;                   /* Individual entries provide their own spacing. */
+  margin: 18px 0 0;         /* Separates timeline from section heading. */
+  padding: 0;               /* Removes browser ordered-list padding. */
+  list-style: none;         /* Replaces numeric list with visual timeline. */
+}
+
+.issue-details-history-entry {
+  display: grid;                /* Places timeline marker beside entry content. */
+  grid-template-columns: 18px minmax(0, 1fr);   /* Gives marker fixed width and content remaining space.   */
+  gap: 11px;                    /* Separates timeline marker from text. */
+  padding-bottom: 18px;         /* Adds vertical separation between transitions. */
+}
+
+
+.issue-details-history-marker {
+  position: relative;       /* Allows timeline line to extend from marker. */
+  width: 10px;              /* Sets circular timeline marker width. */
+  height: 10px;             /* Matches marker width. */
+  margin-top: 5px;          /* Aligns marker with transition text. */
+  border-radius: 50%;       /* Converts marker into circle. */
+  background: #579dff;    /* Uses workflow blue for transition events. */
+}
+
+.issue-details-history-marker::after {
+  position: absolute;       /* Draws timeline continuation beneath marker. */
+  top: 12px;                /* Starts line immediately beneath marker. */
+  left: 4px;                /* Centers line beneath circular marker. */
+  width: 2px;               /* Keeps timeline visually light. */
+  height: 42px;             /* Connects marker toward next history event. */
+  background: #dfe3e8;    /* Uses subtle timeline connector color. */
+  content: "";              /* Creates decorative pseudo-element. */
+}
+
+.issue-details-history-entry:last-child .issue-details-history-marker::after {
+  display: none;    /* Removes dangling line after final timeline event. */
+}
+
+
+.issue-details-history-content {
+  display: grid;    /* Stacks transition, actor, and timestamp. */
+  gap: 4px;         /* Keeps audit information compact. */
+}
+
+
+.issue-details-history-transition {
+  display: flex;            /* Places From → To workflow states on one line. */
+  flex-wrap: wrap;          /* Allows long workflow labels to wrap on phones. */
+  align-items: center;      /* Vertically aligns workflow labels and arrow. */
+  gap: 7px;                 /* Separates workflow states from arrow. */
+  color: #5e6c84;         /* Keeps former status secondary. */
+  font-size: 0.82rem;       /* Uses compact timeline typography. */
+}
+
+
+.issue-details-history-transition strong {
+  color: #253858;   /* Gives destination status stronger emphasis. */
+}
+
+
+.issue-details-history-content p,
+.issue-details-history-content time {
+  margin: 0;              /* Removes browser spacing from audit metadata. */
+  color: #7a869a;       /* Uses tertiary audit-trail text. */
+  font-size: 0.71rem;     /* Keeps actor/time secondary to transition. */
+}
+
+.issue-details-history-content p strong {
+  color: #505f79;   /* Makes actor identity slightly more noticeable. */
+}
+
+.issue-details-history-empty {
+  display: grid;            /* Stacks empty-history message lines. */
+  justify-items: center;    /* Centers timeline empty state. */
+  gap: 6px;                 /* Adds compact spacing. */
+  padding: 30px 16px 8px;   /* Gives empty state room without oversized panel. */
+  color: #7a869a;         /* Uses restrained empty-state color. */
+  text-align: center;       /* Centers explanatory copy. */
+}
+
+.issue-details-history-empty strong {
+  color: #505f79;    /* Gives empty-state heading moderate emphasis. */
+  font-size: 0.84rem;   /* Keeps message proportionate to section. */
+}
+
+.issue-details-history-empty p {
+  margin: 0;            /* Removes browser paragraph margin. */
+  font-size: 0.75rem;   /* Keeps supporting explanation subtle. */
+}
+
+/* ========================================================================== */
+/* Activity placeholder                                                       */
+/* ========================================================================== */
+.issue-details-activity-coming-soon {
+  display: grid;            /* Stacks upcoming-feature explanation. */
+  justify-items: center;    /* Centers placeholder content. */
+  gap: 7px;                 /* Separates heading from supporting copy. */
+  padding: 34px 18px 12px;  /* Gives future Activity section visible presence. */
+  text-align: center;       /* Centers temporary activity text. */
+}
+
+.issue-details-activity-coming-soon strong {
+  color: #42526e;     /* Gives future feature heading moderate emphasis. */
+  font-size: 0.88rem;   /* Keeps placeholder below actual issue content. */
+}
+
+.issue-details-activity-coming-soon p {
+  max-width: 480px;     /* Prevents placeholder explanation becoming too wide. */
+  margin: 0;            /* Removes default paragraph spacing. */
+  color: #8993a4;     /* Uses deliberately subdued future-feature text. */
+  font-size: 0.77rem;   /* Keeps placeholder visually secondary. */
+  line-height: 1.55;    /* Improves readability. */
+}
+
+
+/* ========================================================================== */
+/* Loading / error states                                                     */
+/* ========================================================================== */
+
+.issue-details-state-card {
+  display: grid;                     /* Stacks loading/error content vertically. */
+  width: min(650px, calc(100% - 32px)); /* Prevents state card becoming overly wide. */
+  justify-items: center;             /* Horizontally centers state content. */
+  gap: 10px;                         /* Adds consistent spacing between state elements. */
+  margin: 70px auto;                 /* Centers state card in workspace. */
+  padding: 46px 28px;                /* Gives state message comfortable whitespace. */
+  border: 1px solid #dfe3e8;       /* Matches standard application surface boundary. */
+  border-radius: 12px;               /* Uses established card geometry. */
+  background: #ffffff;             /* Gives state message clean surface. */
+  text-align: center;                /* Centers state copy. */
+}
+
+.issue-details-state-card h2 {
+  margin: 5px 0 0;    /* Separates heading from spinner. */
+  color: #172b4d;   /* Uses primary heading color. */
+}
+
+.issue-details-state-card p {
+  margin: 0;            /* Removes default paragraph margin. */
+  color: #5e6c84;     /* Uses secondary state-message text. */
+  line-height: 1.55;    /* Improves explanation readability. */
+}
+
+.issue-details-state-card a {
+  margin-top: 7px;          /* Separates return link from state copy. */
+  color: #2368a2;         /* Uses established navigation blue. */
+  font-weight: 700;         /* Makes recovery navigation easy to identify. */
+}
+
+
+.issue-details-state-card--error {
+  border-color: #ffbdad;    /* Clearly identifies page-load failure. */
+  background: #fff8f6;      /* Adds restrained error tint. */
+}
+
+
+.issue-details-spinner {
+  width: 34px;                      /* Sets spinner width. */
+  height: 34px;                     /* Matches spinner height. */
+  border: 4px solid #d9e5f0;      /* Creates inactive spinner track. */
+  border-top-color: #2368a2;      /* Creates visible rotating segment. */
+  border-radius: 50%;               /* Converts bordered square into circle. */
+  animation: issue-details-spin 750ms linear infinite;/* Continuously rotates loading indicator. */
+}
+
+@keyframes issue-details-spin {
+  to {
+    transform: rotate(360deg);  /* Completes one spinner rotation. */
+  }
+}
+
+
+/* ========================================================================== */
+/* Responsive Media Layouts                                                   */
+/* ========================================================================== */
+@media (max-width: 850px) {
+  .issue-details-layout {
+    grid-template-columns: 1fr; /* Stacks metadata below main content on tablets/mobile. */
+  }
+
+  .issue-details-sidebar {
+    grid-row: 2;    /* Keeps metadata after primary issue information.  */
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .issue-details-page {
+    padding: 32px 15px 60px;    /* Reduces workspace margins on phones. */
+  }
+
+  .issue-details-heading {
+    flex-direction: column; /* Places issue actions beneath title on narrow screens. */
+  }
+
+  .issue-details-heading-actions {
+    width: 100%;    /* Lets mobile actions use available width. */
+  }
+
+  .issue-details-watch-button,
+  .issue-details-edit-button {
+    flex: 1;    /* Gives Watch/Edit equal mobile action widths. */
+  }
+
+  .issue-details-panel {
+    padding: 20px 17px; /* Reduces card padding on narrow screens.  */
+  }
+
+  .issue-details-archive-banner {
+    align-items: flex-start;    /* Improves stacked archive-message alignment. */
+    flex-direction: column;     /* Prevents archived notice crowding on phones. */
+  }
+
+}

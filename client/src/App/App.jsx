@@ -21,6 +21,7 @@ import CreateProjectPage   from "../ProtectedPages/CreateProjectPage/CreateProje
 import CurrentProjectPage  from "../ProtectedPages/CurrentProjectPage/CurrentProjectPage.jsx"; // current project management page
 import IssueFormPage       from "../ProtectedPages/IssueFormPage/IssueFormPage.jsx";           // Shared create/edit issue form
 import IssueBoardPage      from "../ProtectedPages/IssueBoardPage/IssueBoardPage.jsx";         // Four-column issues workflow board for ONE project
+import IssueDetailsPage    from "../ProtectedPages/IssueDetailsPage/IssueDetailsPage.jsx"; // Read-first full issue page
 
 const App = () => {
 
@@ -67,6 +68,10 @@ const App = () => {
 
           {/* Edits one existing issue while preserving parent-project context. */}
           <Route path="projects/:projectId/issues/:issueId/edit" element={<IssueFormPage />}/>
+
+          {/* Full read-first page for one existing issue. */}
+          <Route path="projects/:projectId/issues/:issueId" element={<IssueDetailsPage />}/>
+          
         </Route>
       </Route>
 

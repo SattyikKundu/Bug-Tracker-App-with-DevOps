@@ -1,9 +1,8 @@
 // src/PageComponents/DraggableIssueCard/DraggableIssueCard.jsx
 
 import { useDraggable } from "@dnd-kit/react"; // connects issue card to the board drag/drop provider package
-
+import { useNavigate } from "react-router";    // Programmatic Link Opens Issue Details after a normal non-drag click
 import IssueBoardCard from "../IssueBoardCard/IssueBoardCard.jsx";
-
 import "./DraggableIssueCard.css"; // Drag-state styling wrapped around normal issue card
 
 
@@ -14,9 +13,11 @@ const DraggableIssueCard = ({
   projectArchived,   // Prevents dragging archived-project issues
   isTransitioning,   // Prevents another movement while API request is active
   onTransition,      // Existing arrow-button status-change callback
-  editPath           // Route to Edit Issue form
+  detailsPath        // Normal card click opens this full Issue Details route
 }) => {
 
+
+  const navigate = useNavigate(); // Routes a normal card click into Issue Details
 
   /* An issue CAN'T be dragged when:
    *
@@ -34,7 +35,6 @@ const DraggableIssueCard = ({
    */
   const {
     ref,          // Connects whole issue-card wrapper to dnd-kit
-    //handleRef,    // Connects only dedicated grip button to dragging
     isDragSource, // True while THIS issue is active drag source
     isDropping    // True while dnd-kit performs its drop animation
   } = useDraggable({
@@ -55,6 +55,22 @@ const DraggableIssueCard = ({
         isDragSource ? "draggable-issue-card--dragging" : "",
         isDropping ? "draggable-issue-card--dropping" : ""
       ].filter(Boolean).join(" ")}
+
+      onClick={(event) => {
+        // Ignore clicks originating from nested controls/links.
+        if (event.target.closest("button, a, input, select, textarea")) {
+          return;
+        }
+        /* Nested workflow buttons remain their own controls.
+        *
+        * Their handlers stop propagation below, so only a normal click on
+        * non-interactive card body opens Issue Details.
+        */
+        if (isDragSource || isDropping || !detailsPath) {
+          return;
+        }
+        navigate(detailsPath);
+      }}
     >
 
       <IssueBoardCard
@@ -64,7 +80,6 @@ const DraggableIssueCard = ({
         projectArchived={projectArchived}
         isTransitioning={isTransitioning}
         onTransition={onTransition}
-        editPath={editPath}
       />
     </div>
   );

@@ -7,9 +7,6 @@ import {
   STATUS_LABELS        // Converts internal status values into readable labels
 } from "../../utils/issueWorkflow.jsx";
 
-import {
-  Link // Enables clickable URL link in React (used to open dedicated issue-edit route without a full page reload)
-} from "react-router";
 
 
 // More descriptive button text for certain workflow movements.
@@ -43,8 +40,7 @@ const IssueBoardCard = ({
   canTransition,        // Whether current user can modify this issue's status (via arrow-buttons)
   projectArchived,      // Archived projects remain read-only
   isTransitioning,      // Shows temporary loading/disabled state
-  onTransition,         // Callback supplied by IssueBoardPage
-  editPath           // Route to this issue's Edit Issue form
+  onTransition          // Callback supplied by IssueBoardPage
 }) => {
 
 
@@ -116,19 +112,6 @@ const IssueBoardCard = ({
         </span>
       </div>
 
-      {/* Until later Issue Details page exists, permitted users can open
-        * dedicated edit form directly from the board card.
-        *
-        * <a>/<Link> is an interactive element, so it also stays separate
-        * from card's drag behavior.
-        */}
-      {!projectArchived && canTransition && editPath && (
-        <div className="issue-board-card-edit-row">
-          <Link className="issue-board-card-edit-link" to={editPath}>
-            Edit Issue
-          </Link>
-        </div>
-      )}
 
       {/*Archived projects are intentionally read-only.
        *
@@ -148,7 +131,10 @@ const IssueBoardCard = ({
                     type="button"
                     className="issue-board-card-transition-button"
                     disabled={isTransitioning}
-                    onClick={() => onTransition(issue, targetStatus)}
+                    onClick={(event) => {
+                      event.stopPropagation(); // Prevents status-button click from opening Issue Details
+                      onTransition(issue, targetStatus);
+                    }}
                   >
                     {isTransitioning
                       ? "Moving..."

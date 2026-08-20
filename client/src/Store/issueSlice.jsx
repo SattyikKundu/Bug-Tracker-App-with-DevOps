@@ -124,6 +124,39 @@ export const updateIssue = createAsyncThunk(
 );
 
 
+/* POST /issues/:issueId/watch
+ * Adds the logged-in user to the issue's watcher list.
+ */
+export const watchIssue = createAsyncThunk(
+  "issues/watchIssue",
+  async (issueId, thunkAPI) => {
+    try {
+      const response =await api.post(`/issues/${issueId}/watch`);
+      return response.data.issue;
+    }
+    catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error ||"Unable to watch issue.");
+    }
+  }
+);
+
+
+/* DELETE /issues/:issueId/watch
+ * Removes the logged-in user from the issue's watcher list.
+ */
+export const unwatchIssue = createAsyncThunk(
+  "issues/unwatchIssue",
+  async (issueId, thunkAPI) => {
+    try {
+      const response = await api.delete(`/issues/${issueId}/watch`);
+      return response.data.issue;
+    }
+    catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to stop watching issue.");
+    }
+  }
+);
+
 
 // Initial Redux state for project issue board.
 const initialState = {
@@ -134,7 +167,8 @@ const initialState = {
   currentIssue: null,          // Existing issue currently opened for editing
   currentIssueStatus: "idle",  // idle | loading | succeeded | failed
   currentIssueError: null,     // GET /issues/:id failure
-  saveStatus: "idle"           // Tracks create/edit form submission
+  saveStatus: "idle",           // Tracks create/edit form submission
+  watchStatus: "idle"          // idle | loading | succeeded | failed for Watch/Unwatch
 };
 
 const issueSlice = createSlice({
@@ -161,6 +195,7 @@ const issueSlice = createSlice({
       state.currentIssueStatus  = "idle";
       state.currentIssueError   = null;
       state.saveStatus          = "idle";
+      state.watchStatus         = "idle";
     },
 
     // Clears a failed GET /projects/:pid/issues request.
@@ -327,7 +362,6 @@ const issueSlice = createSlice({
         }
       )
       .addCase(transitionIssueStatus.rejected, (state) => {
-
           /* We intentionally DO NOT store another persistent transition error here.
            *
            * Rejected thunk's payload is read directly by IssueBoardPage
@@ -336,6 +370,61 @@ const issueSlice = createSlice({
            */
           state.transitioningIssueId = null;
         }
+      )
+
+      // =====================================================================
+      // Watch issue
+      // =====================================================================
+      .addCase(
+        watchIssue.pending,
+        (state) => {
+          state.watchStatus = "loading"; // Temporarily disables Watch button
+        }
+      )
+      .addCase(
+        watchIssue.fulfilled,
+        (state, action) => {
+          state.watchStatus = "succeeded";
+
+          state.currentIssue = action.payload; // Refresh Details page watcher state/count
+
+          const issueIndex =
+            state.issues.findIndex((issue) => (String(issue._id) === String(action.payload._id)));
+          if (issueIndex !== -1) {
+            state.issues[issueIndex] = action.payload; // Keeps board's cached copy synchronized
+          }
+        }
+      )
+      .addCase(watchIssue.rejected,
+        (state) => {
+          state.watchStatus = "failed";
+        }
+      )
+
+      // =====================================================================
+      // Unwatch issue
+      // =====================================================================
+
+      .addCase(
+        unwatchIssue.pending,
+        (state) => {
+          state.watchStatus = "loading";
+        }
+      )
+      .addCase(
+        unwatchIssue.fulfilled,
+        (state, action) => {
+          state.watchStatus = "succeeded";
+          state.currentIssue = action.payload;
+          const issueIndex = state.issues.findIndex((issue) => (String(issue._id) === String(action.payload._id)));
+          if (issueIndex !== -1) {
+            state.issues[issueIndex] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        unwatchIssue.rejected, 
+        (state) => { state.watchStatus = "failed";}
       );
   }
 

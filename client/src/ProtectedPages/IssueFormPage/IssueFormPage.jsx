@@ -125,7 +125,6 @@ const IssueFormPage = () => {
     dispatch(fetchProjectById(projectId));
   }, [ dispatch, projectId]);
 
-
   
   // Edit mode additionally loads the existing issue.
   useEffect(() => {
@@ -181,7 +180,8 @@ const IssueFormPage = () => {
     return () => {
       requestStillActive = false;
     };
-  }, [ projectId ]);
+  }, [projectId]);
+
 
   // Populate edit mode after GET /issues/:issueId succeeds.
   useEffect(() => {
@@ -195,30 +195,14 @@ const IssueFormPage = () => {
         : currentIssue.assigneeId;
 
     setFormData({
+      title:          currentIssue.title ?? "",
+      description:    currentIssue.description ?? "",
+      type:           currentIssue.type ?? "bug",
+      priority:       String(currentIssue.priority ?? "medium").trim(),
+      severity:       currentIssue.severity ?? "major",
+      assigneeId:     currentAssigneeId ? String(currentAssigneeId) : "",
 
-      title:
-        currentIssue.title ?? "",
-
-      description:
-        currentIssue.description ?? "",
-
-      type:
-        currentIssue.type ?? "bug",
-
-      priority:
-        String(currentIssue.priority ?? "medium").trim(),
-
-      severity:
-        currentIssue.severity ?? "major",
-
-      assigneeId:
-        currentAssigneeId
-          ? String(currentAssigneeId)
-          : "",
-
-      /* Convert stored label array back into an editable comma-separated
-       * text field.
-       */
+      // Convert stored label array back into an editable comma-separated text field.
       labelsText:
         Array.isArray(currentIssue.labels)
           ? currentIssue.labels.join(", ")
@@ -248,10 +232,7 @@ const IssueFormPage = () => {
    *
    * EDIT: only project lead/global admin may assign/reassign/unassign.
    */
-  const canManageAssignee =
-    !isEditMode ||
-    isProjectLead ||
-    isGlobalAdmin;
+  const canManageAssignee = !isEditMode || isProjectLead || isGlobalAdmin;
 
   /* Convert comma-separated labels into the normalized array expected
    * by the backend.
@@ -350,12 +331,7 @@ const IssueFormPage = () => {
       }
 
 
-      if (
-        !ISSUE_SEVERITIES.some(
-          (option) =>
-            option.value === formData.severity
-        )
-      ) {
+      if (!ISSUE_SEVERITIES.some((option) => option.value === formData.severity)) {
         setValidationError("Select a valid severity.");
         return;
       }
@@ -489,7 +465,7 @@ const IssueFormPage = () => {
       if (updateIssue.fulfilled.match(resultAction)) {
         SuccessMessageToast(`${resultAction.payload.key} updated successfully.`);
 
-        navigate(`/projects/${projectId}/board`);
+        navigate(`/projects/${projectId}/issues/${issueId}`); // Return to issue's normal read-first Details page after editing
         return;
       }
 

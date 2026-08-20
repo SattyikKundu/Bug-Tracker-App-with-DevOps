@@ -9,6 +9,14 @@
   will-change: transform;   /* Helps browser prepare for temporary card movement. */
 }
 
+.draggable-issue-card {
+  cursor: pointer;  /* Normal card hover communicates that issue can be opened. */
+}
+
+.draggable-issue-card .issue-board-card {
+  cursor: grab;   /* Mouse movement still communicates drag capability. */
+}
+
 .draggable-issue-card--dragging {
   z-index: 150;     /* Keeps dragged issue above neighboring board elements. */
   opacity: 0.94;    /* Slightly separates active card visually from the lane. */
@@ -26,6 +34,7 @@
 .draggable-issue-card--dropping {
   pointer-events: none;             /* Prevents clicking while 'dnd-kit' completes drop feedback. */
 }
+
 
 
 /* ========================================================================== */

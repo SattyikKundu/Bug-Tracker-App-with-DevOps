@@ -39,20 +39,16 @@ import {
 
 import {
   ErrorMessageToast,   // failure/error toast notification
-  SuccessMessageToast  // successful toast notification
 } from "../../utils/utilityFunctions.jsx";
 
-//import IssueBoardCard from "../../PageComponents/IssueBoardCard/IssueBoardCard.jsx";
 import DraggableIssueCard from "../../PageComponents/DraggableIssueCard/DraggableIssueCard.jsx";
 import IssueDropColumn from "../../PageComponents/IssueDropColumn/IssueDropColumn.jsx";
 import "./IssueBoardPage.css"; // Four-column board styling
 
 import {
   BOARD_COLUMNS,       // Defines the four board lanes and their order
-  STATUS_LABELS,       // Converts target status into readable toast text
   canTransitionStatus  // Validates drag/drop workflow destinations
 } from "../../utils/issueWorkflow.jsx";
-
 
 
 /* Animates a backend-rejected optimistic move back to its ORIGINAL column.
@@ -468,7 +464,6 @@ const IssueBoardPage = () => {
 
     if (transitionIssueStatus.fulfilled.match(resultAction)) {
       const targetColumn = BOARD_COLUMNS.find((column) => column.status === targetStatus);
-      //SuccessMessageToast(`${issue.key} moved to ${targetColumn?.title ?? targetStatus}.`);
       return;
     }
 
@@ -547,7 +542,6 @@ const IssueBoardPage = () => {
     // Backend accepted the drag/drop
     // -------------------------------------------------------------------
     if (transitionIssueStatus.fulfilled.match(resultAction)) {
-      //SuccessMessageToast(`${draggedIssue.key} moved to ${STATUS_LABELS[targetStatus]}.`);
       return;
     }
 
@@ -572,7 +566,6 @@ const IssueBoardPage = () => {
     ErrorMessageToast(resultAction.payload || "The issue could not be moved and was returned to its previous column.");
   };
 
- 
   const handleClearFilters = () => {  // Reset every board filter to default state.
     setSearchText("");
     setPriorityFilter("all");
@@ -580,7 +573,6 @@ const IssueBoardPage = () => {
     setAssigneeFilter("all");
   };
 
-  
   const filtersAreActive =          // Determine whether any filter is currently active.
     searchText.trim() !== "" ||
     priorityFilter !== "all" ||
@@ -778,7 +770,7 @@ const IssueBoardPage = () => {
                             projectArchived={project?.archived === true}
                             isTransitioning={isTransitioning}
                             onTransition={handleTransition}
-                            editPath={`/projects/${projectId}/issues/${issue._id}/edit`}
+                            detailsPath={`/projects/${projectId}/issues/${issue._id}`}
                           />
                         );
                       }
