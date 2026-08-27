@@ -433,26 +433,26 @@
 /* ========================================================================== */
 /* Activity placeholder                                                       */
 /* ========================================================================== */
-.issue-details-activity-coming-soon {
-  display: grid;            /* Stacks upcoming-feature explanation. */
-  justify-items: center;    /* Centers placeholder content. */
-  gap: 7px;                 /* Separates heading from supporting copy. */
-  padding: 34px 18px 12px;  /* Gives future Activity section visible presence. */
-  text-align: center;       /* Centers temporary activity text. */
+/* .issue-details-activity-coming-soon {
+  display: grid;            /* Stacks upcoming-feature explanation. 
+  justify-items: center;    /* Centers placeholder content. 
+  gap: 7px;                 /* Separates heading from supporting copy. 
+  padding: 34px 18px 12px;  /* Gives future Activity section visible presence. 
+  text-align: center;       /* Centers temporary activity text. 
 }
 
 .issue-details-activity-coming-soon strong {
-  color: #42526e;     /* Gives future feature heading moderate emphasis. */
-  font-size: 0.88rem;   /* Keeps placeholder below actual issue content. */
+  color: #42526e;     /* Gives future feature heading moderate emphasis. 
+  font-size: 0.88rem;   /* Keeps placeholder below actual issue content. 
 }
 
 .issue-details-activity-coming-soon p {
-  max-width: 480px;     /* Prevents placeholder explanation becoming too wide. */
-  margin: 0;            /* Removes default paragraph spacing. */
-  color: #8993a4;     /* Uses deliberately subdued future-feature text. */
-  font-size: 0.77rem;   /* Keeps placeholder visually secondary. */
-  line-height: 1.55;    /* Improves readability. */
-}
+  max-width: 480px;     /* Prevents placeholder explanation becoming too wide. 
+  margin: 0;            /* Removes default paragraph spacing. 
+  color: #8993a4;     /* Uses deliberately subdued future-feature text. 
+  font-size: 0.77rem;   /* Keeps placeholder visually secondary. 
+  line-height: 1.55;    /* Improves readability. 
+} */
 
 
 /* ========================================================================== */

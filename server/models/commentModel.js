@@ -12,7 +12,8 @@ const CommentSchema = new Schema( // Comment document schema
     }, 
     authorId:{                      // author of the comment
         type:Schema.Types.ObjectId, // object field type
-        ref:"Users",                // foreign key that refers to 'users' collection
+        //ref:"Users",                // foreign key that refers to 'users' collection
+        ref:"User",                // foreign key that refers to 'users' collection
         required:true,              // required field
         index:true                  // index required
     }, 

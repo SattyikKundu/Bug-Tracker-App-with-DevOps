@@ -31,11 +31,13 @@ import {
 
 import { STATUS_LABELS } from "../../utils/issueWorkflow.jsx"; // converts internal workflow status into readable UI text
 
+import IssueComments from "../../PageComponents/IssueComments/IssueComments.jsx"; // Threaded Activity/comments section
+
 import "./IssueDetailsPage.css"; // Full Issue Details page styling
 
-/* Converts a stored date into a readable issue-tracker timestamp.
- * Example: Aug 19, 2026, 8:42 PM
- */
+
+
+// Converts a stored date into a readable issue-tracker timestamp (Example: Aug 19, 2026, 8:42 PM).
 const formatIssueDate = (dateValue) => {
 
   if (!dateValue) {
@@ -89,9 +91,7 @@ const IssueDetailsPage = () => {
 
   const dispatch = useDispatch(); // Redux dispatcher
 
-  const {
-    user // Current logged-in user used for edit/watch permissions
-  } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth); // Current logged-in user used for edit/watch permissions
 
   const {
     currentProject: project,
@@ -129,7 +129,8 @@ const IssueDetailsPage = () => {
   const currentUserId = user?._id || user?.id; // Normalize logged-in user ID.
 
   // Normalize populated/plain project lead ID.
-  const projectLeadId = (typeof project?.leadUserId === "object") ? project.leadUserId?._id : project?.leadUserId;
+  const projectLeadId = 
+    (typeof project?.leadUserId === "object") ? project.leadUserId?._id : project?.leadUserId;
 
   const isProjectLead = (String(projectLeadId) === String(currentUserId));
   const isGlobalAdmin = (user?.role === "admin");
@@ -262,7 +263,6 @@ const IssueDetailsPage = () => {
         (!isWatching && watchIssue.fulfilled.match(resultAction)
         )
       ) {
-
         SuccessMessageToast(
           isWatching
             ? "You are no longer watching this issue."
@@ -271,7 +271,6 @@ const IssueDetailsPage = () => {
 
         return;
       }
-
       ErrorMessageToast(resultAction.payload || "Unable to update issue watching.");
     };
 
@@ -324,7 +323,6 @@ const IssueDetailsPage = () => {
       {/* -------------------------------------------------------------- */}
       {/* Breadcrumb                                                     */}
       {/* -------------------------------------------------------------- */}
-
       <nav className="issue-details-breadcrumb" aria-label="Issue breadcrumb">
         <Link to="/projects">Projects</Link>
         <span aria-hidden="true">/</span>
@@ -385,7 +383,6 @@ const IssueDetailsPage = () => {
             </button>
           )}
 
-
           {canEditIssue && (
             <Link
               className="issue-details-edit-button"
@@ -424,7 +421,6 @@ const IssueDetailsPage = () => {
           {/* ---------------------------------------------------------- */}
           {/* Status History                                             */}
           {/* ---------------------------------------------------------- */}
-
           <section className="issue-details-panel">
             <div className="issue-details-section-heading">
               <h2>Status History</h2>
@@ -464,7 +460,6 @@ const IssueDetailsPage = () => {
                             </strong>
                           </div>
 
-
                           <p>
                             by{" "}
                             <strong>
@@ -491,28 +486,11 @@ const IssueDetailsPage = () => {
             )}
           </section>
 
-          {/* ---------------------------------------------------------- */}
-          {/* Activity placeholder                                       */}
-          {/* ---------------------------------------------------------- */}
-          <section className="issue-details-panel issue-details-activity-placeholder">
-            <div className="issue-details-section-heading">
-              <h2>Activity</h2>
-              <span>
-                {issue?.commentCount ?? 0}
-                {" "}
-                comments
-              </span>
-            </div>
-
-
-            <div className="issue-details-activity-coming-soon">
-              <strong>Comments and replies</strong>
-              <p>
-                Issue discussion will appear here in the
-                upcoming comments branch.
-              </p>
-            </div>
-          </section>
+          {/* Threaded issue discussion lives directly beneath Status History. */}
+          <IssueComments
+            issueId={issueId}
+            projectArchived={project?.archived === true}
+          />
         </div>
 
         {/* ============================================================ */}
@@ -583,7 +561,6 @@ const IssueDetailsPage = () => {
                   </time>
                 </dd>
               </div>
-
 
               {issue?.closedAt && (
                 <div>

@@ -9,11 +9,15 @@ import projectReducer from "./projectSlice.jsx"; // imports 'projectSlice.reduce
 import issueReducer from "./issueSlice.jsx"; // imports 'issueSlice.reducer' from issueSlice.jsx
                                              // as 'issueReducer'. Used to manage issue-board loading and status transitions
 
+
+import commentReducer from "./commentSlice.jsx"; // manages issue comments, replies, pagination, and comment mutations
+
 const store = configureStore({
   reducer: {
-    auth: authReducer,         // Available through state.auth.
+    auth:     authReducer,     // Available through state.auth.
     projects: projectReducer,  // Available through state.projects.
-    issues: issueReducer       // Available through state.issues (Issue board + workflow transition state)
+    issues:   issueReducer,    // Available through state.issues (Issue board + workflow transition state)
+    comments: commentReducer   // Available though  states.comments (for Threaded issue-comment state)
   }
 });
 

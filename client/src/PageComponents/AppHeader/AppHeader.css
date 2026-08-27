@@ -6,6 +6,7 @@
   top: 0;                               /* Anchors header to top of viewport. */
   right: 0;                             /* Stretches header to right edge. */
   left: 0;                              /* Stretches header to left edge. */
+  height: var(--app-header-height);     /* Defined height of header using imported app-header-height value from BasePageLayout.css .*/
   display: flex;                        /* Places branding and account controls on one row. */
   height: 64px;                         /* Establishes consistent global-header height. */
   align-items: center;                  /* Vertically centers header contents. */
@@ -22,11 +23,11 @@
 }
 
 .app-header-left {
-  gap: 12px; /* Adds space between hamburger and branding. */
+  gap: 12px;          /* Adds space between hamburger and branding. */
 }
 
 .app-header-right {
-  gap: 12px; /* Adds space between notification and user menu. */
+  gap: 12px;          /* Adds space between notification and user menu. */
 }
 
 .app-header-brand {

@@ -1,5 +1,9 @@
 /* src/AppPageLayouts/BasePageLayout/BasePageLayout.css */
 
+:root {
+  --app-header-height: 72px; /* Shared height of the fixed application header (used as a variable in other css pages). */
+}
+
 * {
   box-sizing: border-box;
 }

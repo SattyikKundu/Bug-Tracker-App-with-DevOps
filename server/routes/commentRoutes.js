@@ -55,8 +55,9 @@ const router = express.Router(); // New router for Express app
  *                 type: string
  *                 nullable: true
  *                 description: >
- *                   ID of the comment being replied to. Omit or send null for a
- *                   top-level comment. Replies may be nested up to four levels.
+ *                   ID of the exact comment being replied to. Omit or send null for a
+ *                   top-level comment. Logical replies may continue beyond four levels;
+ *                   the frontend visually caps indentation at four levels.
  *                 example: "64f1a2b3c4d5e6f7a8b9c0d2"
  *     responses:
  *       201: { description: Comment created }

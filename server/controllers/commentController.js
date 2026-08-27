@@ -9,7 +9,8 @@ const isValidId = (id) =>{ // id validator
 }
 
 
-const MAX_COMMENT_DEPTH = 4; // Allow replies to be nested up to four levels
+//const MAX_COMMENT_DEPTH = 4; // Allow replies to be nested up to four levels
+const MAX_COMMENT_DISPLAY_DEPTH = 4; // Visually indent replies up to four levels; deeper logical replies remain allowed
 
 
 const populateCommentUsers = (query) => { // Populate the comment author and the author of the parent comment.
@@ -42,7 +43,12 @@ const formatCommentResponse = (comment) => { // Format comments for the frontend
     depth,
 
     // Visual indentation is capped at four levels.
-    displayDepth: Math.min(depth, MAX_COMMENT_DEPTH),
+    //displayDepth: Math.min(depth, MAX_COMMENT_DEPTH),
+
+    // Actual logical depth may continue beyond four levels,
+    // but the frontend should never visually indent beyond level four.
+    displayDepth: Math.min(depth, MAX_COMMENT_DISPLAY_DEPTH),
+
 
     // Provides the parent author and comment reference for "Replying to..."
     replyingTo: comment.parentId
@@ -141,14 +147,14 @@ export const createComment = async (req,res,next)=>{ // POST /issues/:id/comment
         });
       }
 
-      const replyDepth = (parent.ancestors?.length ?? 0) + 1; // depth of reply
+      //const replyDepth = (parent.ancestors?.length ?? 0) + 1; // depth of reply
 
       // Top-level comments use depth 0; nested replies may reach depth 4.
-      if (replyDepth > MAX_COMMENT_DEPTH) {
-        return res.status(400).json({
-          error: `Comments cannot be nested deeper than ${MAX_COMMENT_DEPTH} reply levels.`
-        });
-      }
+      // if (replyDepth > MAX_COMMENT_DEPTH) {
+      //   return res.status(400).json({
+      //     error: `Comments cannot be nested deeper than ${MAX_COMMENT_DEPTH} reply levels.`
+      //   });
+      // }
 
       ancestors = [
         ...(parent.ancestors ?? []),
@@ -377,7 +383,7 @@ export const deleteComment = async (req,res,next)=>{ // DELETE /comments/:id (so
     }
 
     commentDoc.deleted = true; // set comment as [deleted] to preserve document so its replies remain connected
-    commentDoc.body = "";     // empty out comment body (do this in front-end) to hide deleted comment's original content
+    commentDoc.body = "";      // remove stored body text whilst preserving comment document and reply structure
 
     
     await commentDoc.save(); // save and persist 'deleted' tag change 

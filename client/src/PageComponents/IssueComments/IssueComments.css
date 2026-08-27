@@ -1,0 +1,232 @@
+/* src/PageComponents/IssueComments/IssueComments.css */
+
+/* ========================================================================== */
+/* Activity panel                                                             */
+/* ========================================================================== */
+.issue-comments-panel {
+  min-width: 0;     /* Prevents deeply nested content from widening page layout. */
+}
+
+/* ========================================================================== */
+/* Top-level comment composer                                                 */
+/* ========================================================================== */
+.issue-comments-composer {
+  display: grid;                  /* Stacks label, textarea, and footer controls. */
+  gap: 8px;                       /* Adds consistent composer spacing. */
+  margin-top: 18px;               /* Separates composer from Activity heading. */
+  padding: 14px;                  /* Gives new-comment area comfortable internal whitespace. */
+  border: 1px solid #dfe3e8;    /* Defines primary discussion entry surface. */
+  border-radius: 9px;             /* Matches existing issue-detail geometry. */
+  background: #f8fafc;          /* Distinguishes composer from existing comment cards. */
+}
+
+.issue-comments-composer label {
+  color: #253858;     /* Gives composer label strong readable emphasis. */
+  font-size: 0.78rem;   /* Keeps discussion-form label compact. */
+  font-weight: 760;     /* Makes field purpose easy to scan. */
+}
+
+.issue-comments-composer textarea {
+  width: 100%;                  /* Uses full Activity-panel writing width. */
+  min-height: 100px;            /* Gives users useful initial writing space. */
+  padding: 10px 11px;           /* Adds comfortable text-entry spacing. */
+  border: 1px solid #b7c0cd;  /* Defines editable comment area. */
+  border-radius: 7px;           /* Matches existing project/issue form controls. */
+  outline: none;                /* Replaces browser outline with application focus ring. */
+  background: #ffffff;        /* Keeps writing surface clean and readable. */
+  color: #172b4d;             /* Uses primary editable text color. */
+  font: inherit;                /* Preserves application typography. */
+  font-size: 0.84rem;           /* Keeps comment writing proportional to rendered comments. */
+  line-height: 1.55;            /* Supports multiline discussion comfortably. */
+  resize: vertical;             /* Allows longer comments without horizontal layout changes. */
+}
+
+.issue-comments-composer textarea:focus {
+  border-color: #2368a2;                            /* Highlights active discussion input. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.12);   /* Adds accessible application-style focus indication. */
+}
+
+.issue-comments-composer-footer {
+  display: flex;                    /* Places helper text and Comment button on one row. */
+  align-items: center;              /* Vertically aligns composer footer elements. */
+  justify-content: space-between;   /* Pushes primary Comment action to right edge. */
+  gap: 12px;                        /* Prevents helper text from touching action button. */
+}
+
+.issue-comments-composer-footer small {
+  color: #8993a4;       /* Uses tertiary guidance text. */
+  font-size: 0.69rem;     /* Keeps helper text unobtrusive. */
+  line-height: 1.4;       /* Improves wrapped helper copy. */
+}
+
+.issue-comments-composer-footer button {
+  flex-shrink: 0;               /* Prevents Comment action collapsing beside helper text. */
+  min-height: 36px;             /* Creates comfortable primary action target. */
+  padding: 6px 13px;            /* Adds balanced action-button spacing. */
+  border: 1px solid #2368a2;  /* Defines primary comment action boundary. */
+  border-radius: 7px;           /* Matches existing application buttons. */
+  background: #2368a2;        /* Uses primary application action blue. */
+  color: #ffffff;             /* Gives Comment button strong contrast. */
+  font-size: 0.74rem;           /* Keeps Activity action compact. */
+  font-weight: 760;             /* Makes action easy to identify. */
+  cursor: pointer;              /* Communicates interactivity. */
+}
+
+.issue-comments-composer-footer button:hover:not(:disabled) {
+  background: #195888;      /* Darkens primary discussion action on hover. */
+  border-color: #195888;    /* Keeps button boundary synchronized with hover background. */
+}
+
+.issue-comments-composer-footer button:disabled {
+  cursor: not-allowed;      /* Communicates API request is processing. */
+  opacity: 0.6;             /* Visually indicates temporary disabled state. */
+}
+
+
+/* ========================================================================== */
+/* Archived-project notice                                                    */
+/* ========================================================================== */
+.issue-comments-readonly-notice {
+  margin-top: 17px;             /* Separates read-only notice from Activity heading. */
+  padding: 11px 13px;           /* Gives archived notice comfortable spacing. */
+  border: 1px solid #d8dde5;  /* Defines muted read-only notification. */
+  border-radius: 7px;           /* Matches issue-detail surfaces. */
+  background: #f1f2f4;        /* Uses neutral archived-project background. */
+  color: #5e6c84;             /* Uses subdued read-only text. */
+  font-size: 0.76rem;           /* Keeps notice visually secondary. */
+}
+
+/* ========================================================================== */
+/* Thread                                                                     */
+/* ========================================================================== */
+.issue-comments-thread {
+  display: grid;        /* Stacks top-level discussion branches vertically. */
+  gap: 15px;            /* Separates unrelated top-level comments. */
+  margin-top: 18px;     /* Separates conversation from composer/loading area. */
+}
+
+
+/* ========================================================================== */
+/* Empty / loading / error                                                    */
+/* ========================================================================== */
+.issue-comments-empty,
+.issue-comments-loading {
+  display: grid;            /* Stacks empty/loading content vertically. */
+  justify-items: center;    /* Centers Activity-state contents. */
+  gap: 6px;                 /* Adds compact spacing between state elements. */
+  padding: 34px 16px 14px;  /* Gives states visible presence without oversized whitespace. */
+  color: #8993a4;         /* Uses restrained state text. */
+  text-align: center;       /* Centers supporting copy. */
+}
+
+.issue-comments-empty strong {
+  color: #505f79;     /* Gives empty-state heading moderate emphasis. */
+  font-size: 0.84rem;   /* Keeps heading proportional to Activity panel. */
+}
+
+.issue-comments-empty p,
+.issue-comments-loading span {
+  margin: 0;            /* Removes browser default paragraph spacing. */
+  font-size: 0.74rem;   /* Keeps state explanation visually secondary. */
+}
+
+.issue-comments-spinner {
+  width: 28px;                                           /* Sets compact Activity loading indicator width. */
+  height: 28px;                                          /* Matches spinner width. */
+  border: 3px solid #d9e5f0;                          /* Creates inactive spinner track. */
+  border-top-color: #2368a2;                           /* Creates visible rotating segment. */
+  border-radius: 50%;                                    /* Converts bordered square into circular spinner. */
+  animation: issue-comments-spin 700ms linear infinite;  /* Rotates comment-loading indicator continuously. */
+}
+
+@keyframes issue-comments-spin {
+  to {
+    transform: rotate(360deg);  /* Completes one loading-spinner rotation. */
+  }
+}
+
+.issue-comments-error {
+  display: grid;                    /* Stacks comment-load error contents. */
+  justify-items: start;             /* Keeps recovery information left-aligned. */
+  gap: 7px;                         /* Adds compact error-state spacing. */
+  margin-top: 18px;                 /* Separates failure from Activity heading. */
+  padding: 13px;                    /* Gives error message useful internal whitespace. */
+  border: 1px solid #ffbdad;      /* Defines comment failure state. */
+  border-radius: 7px;               /* Matches application alerts. */
+  background: #fff8f6;            /* Uses restrained error background. */
+  color: #ae2a19;                 /* Uses application error text color. */
+}
+
+.issue-comments-error strong {
+  font-size: 0.79rem;       /* Gives comments error heading readable emphasis. */
+}
+
+.issue-comments-error p {
+  margin: 0;            /* Removes default paragraph spacing. */
+  font-size: 0.73rem;   /* Keeps API-error details compact. */
+}
+
+.issue-comments-error button {
+  min-height: 32px;               /* Gives retry action comfortable target size. */
+  padding: 5px 9px;               /* Adds compact recovery-action spacing. */
+  border: 1px solid #b7c0cd;    /* Defines retry button boundary. */
+  border-radius: 6px;             /* Matches compact application controls. */
+  background: #ffffff;          /* Keeps Retry visually secondary. */
+  color: #42526e;               /* Uses readable secondary action text. */
+  font-size: 0.69rem;             /* Keeps recovery action compact. */
+  font-weight: 730;               /* Makes small action text readable. */
+  cursor: pointer;                /* Communicates retry interactivity. */
+}
+
+
+/* ========================================================================== */
+/* Top-level pagination                                                       */
+/* ========================================================================== */
+.issue-comments-load-more {
+  display: block;                   /* Allows button centering beneath discussion. */
+  margin: 18px auto 0;              /* Centers pagination action below comment branches. */
+  padding: 7px 12px;                /* Gives Load More comfortable click target. */
+  border: 1px solid #b7c0cd;      /* Defines secondary pagination action. */
+  border-radius: 7px;               /* Matches issue-detail controls. */
+  background: #ffffff;            /* Keeps pagination action visually lightweight. */
+  color: #42526e;                 /* Uses readable secondary action text. */
+  font-size: 0.72rem;               /* Keeps Load More compact. */
+  font-weight: 730;                 /* Makes pagination label easy to identify. */
+  cursor: pointer;                  /* Communicates interaction. */
+}
+
+
+.issue-comments-load-more:hover:not(:disabled) {
+  background: #f1f2f4;      /* Gives pagination button familiar hover feedback. */
+}
+
+.issue-comments-load-more:disabled {
+  cursor: wait;         /* Communicates another page is currently loading. */
+  opacity: 0.6;         /* Visually indicates loading state. */
+}
+
+
+/* ========================================================================== */
+/* Background refresh note                                                    */
+/* ========================================================================== */
+.issue-comments-refresh-note {
+  margin: 16px 0 0;     /* Separates polling note from final discussion content. */
+  color: #a0a8b4;     /* Keeps automatic-refresh information deliberately subtle. */
+  font-size: 0.64rem;   /* Prevents polling implementation detail distracting readers. */
+  text-align: center;   /* Centers informational footer beneath Activity. */
+}
+
+
+/* ========================================================================== */
+/* Mobile                                                                     */
+/* ========================================================================== */
+@media (max-width: 650px) {
+  .issue-comments-composer-footer {
+    align-items: stretch;       /* Lets stacked mobile composer controls fill available width. */
+    flex-direction: column;     /* Places Comment action beneath helper guidance. */
+  }
+
+  .issue-comments-composer-footer button {
+    width: 100%;    /* Gives phone users a large top-level Comment action. */
+  }
+}

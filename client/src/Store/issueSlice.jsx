@@ -221,12 +221,28 @@ const issueSlice = createSlice({
     revertOptimisticIssueMove: (state, action) => {
       const {issueId, from} = action.payload;
       const issue = state.issues.find(
-        (currentIssue) =>
-          (String(currentIssue._id) === String(issueId))
+        (currentIssue) => (String(currentIssue._id) === String(issueId))
       );
       if (issue) {
         issue.status = from;
       }
+    },
+
+   /* Adjusts the currently opened Issue Details comment count.
+    *
+    * Used after local comment "creation/soft-delete" so the Activity heading
+    * updates immediately without reloading the full issue.
+    */
+    adjustCurrentIssueCommentCount: (state, action) => {
+
+      if (!state.currentIssue) {
+        return;
+      }
+
+      const delta = Number(action.payload) || 0;
+
+      state.currentIssue.commentCount =
+        Math.max(0, Number(state.currentIssue.commentCount ?? 0 ) + delta);
     }
   },
 
@@ -318,9 +334,7 @@ const issueSlice = createSlice({
           state.saveStatus = "succeeded";
           state.currentIssue = action.payload;
           const issueIndex =
-            state.issues.findIndex(
-              (issue) => (String(issue._id) === String(action.payload._id))
-            );
+            state.issues.findIndex((issue) => (String(issue._id) === String(action.payload._id)));
           if (issueIndex !== -1) {
             state.issues[issueIndex] = action.payload;
           }
@@ -404,7 +418,6 @@ const issueSlice = createSlice({
       // =====================================================================
       // Unwatch issue
       // =====================================================================
-
       .addCase(
         unwatchIssue.pending,
         (state) => {
@@ -431,11 +444,12 @@ const issueSlice = createSlice({
 });
 
 export const { 
-  clearIssueBoard,           // Clears issue board (esp. to prevent "bleeding" into other projects' issue boards)
-  clearIssueBoardError,      // Clears the board error (so it doesn't carry over to other issue boards)
-  clearCurrentIssue,         // Clears existing issue edit-form state
-  optimisticMoveIssue,       // Immediately moves a dragged card locally
-  revertOptimisticIssueMove  // Restores card when backend rejects movement
+  clearIssueBoard,               // Clears issue board (esp. to prevent "bleeding" into other projects' issue boards)
+  clearIssueBoardError,          // Clears the board error (so it doesn't carry over to other issue boards)
+  clearCurrentIssue,             // Clears existing issue edit-form state
+  optimisticMoveIssue,           // Immediately moves a dragged card locally
+  revertOptimisticIssueMove,     // Restores card when backend rejects movement
+  adjustCurrentIssueCommentCount // Keeps Issue Details comment count locally synchronized
 } = issueSlice.actions;
 
 export default issueSlice.reducer;

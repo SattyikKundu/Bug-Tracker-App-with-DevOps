@@ -1,0 +1,371 @@
+/* src/PageComponents/CommentThreadItem/CommentThreadItem.css */
+
+/* ========================================================================== */
+/* Recursive thread wrapper                                                   */
+/* ========================================================================== */
+
+.comment-thread-item {
+  margin-left: calc(var(--comment-indent-steps, 0) * 24px); /* Adds one visual indent per logical reply until depth 4. */
+  scroll-margin-top: calc(var(--app-header-height) + 18px); /* Places scrolled comment safely below fixed header plus gap. */
+}
+
+.comment-thread-children {
+  display: grid;        /* Stacks direct child comments vertically. */
+  gap: 10px;            /* Separates neighboring replies. */
+  margin-top: 10px;     /* Separates replies from their parent card. */
+}
+
+/* ========================================================================== */
+/* Main comment card                                                          */
+/* ========================================================================== */
+
+.comment-thread-card {
+  padding: 15px 16px;                              /* Gives each comment comfortable internal spacing. */
+  border: 1px solid #dfe3e8;                     /* Defines individual comments within Activity panel. */
+  border-radius: 9px;                              /* Matches compact issue-tracker card geometry. */
+  background: #ffffff;                           /* Keeps discussion text readable. */
+  box-shadow: 0 2px 7px rgba(9, 30, 66, 0.035);  /* Adds subtle visual separation between nested comments. */
+}
+
+.comment-thread-item--deleted > .comment-thread-card {
+  background: #f8f9fa;                        /* Gives tombstones a muted read-only surface. */
+  border-style: dashed;                         /* Distinguishes deleted content without removing structure. */
+}
+
+/* ========================================================================== */
+/* Author heading                                                             */
+/* ========================================================================== */
+
+.comment-thread-heading {
+  display: flex;                     /* Places author identity and timestamp on one row. */
+  align-items: flex-start;           /* Keeps both groups aligned near their top edge. */
+  justify-content: space-between;    /* Pushes timestamp information to right. */
+  gap: 14px;                         /* Prevents long author names from touching timestamp. */
+}
+
+.comment-thread-author {
+  display: flex;                /* Places author name and optional role badge together. */
+  flex-wrap: wrap;              /* Allows long identity/badge combinations to wrap. */
+  align-items: center;          /* Vertically aligns author and badge. */
+  gap: 7px;                    /* Adds compact spacing around lead badge. */
+}
+
+.comment-thread-author strong {
+  color: #253858;         /* Gives comment-author identity strong readable emphasis. */
+  font-size: 0.84rem;       /* Keeps discussion metadata compact. */
+}
+
+.comment-thread-role-badge {
+  display: inline-flex;     /* Sizes role pill according to its content. */
+  padding: 3px 7px;         /* Gives Project Lead badge compact spacing. */
+  border-radius: 999px;     /* Gives role indicator a pill shape. */
+  background: #fff0d6;    /* Uses existing project-lead warm accent. */
+  color: #8c5300;         /* Provides readable role text. */
+  font-size: 0.63rem;       /* Keeps role visibly secondary to author name. */
+  font-weight: 750;         /* Ensures tiny role text remains legible. */
+}
+
+.comment-thread-time {
+  display: flex;            /* Places timestamp and edited indicator together. */
+  flex-shrink: 0;           /* Prevents timestamp collapsing beside long names. */
+  align-items: center;      /* Vertically aligns timestamp metadata. */
+  gap: 6px;                 /* Separates date from edited indicator. */
+  color: #8993a4;        /* Uses tertiary discussion metadata color. */
+  font-size: 0.67rem;       /* Keeps time information visually subordinate. */
+}
+
+
+/* ========================================================================== */
+/* Replying-to parent reference                                               */
+/* ========================================================================== */
+
+.comment-thread-reply-context {
+  display: grid;                        /* Stacks parent identity and short body preview. */
+  width: 100%;                          /* Gives deep-thread parent reference an easy click target. */
+  gap: 3px;                             /* Adds compact spacing between context lines. */
+  margin-top: 11px;                     /* Separates reply context from author heading. */
+  padding: 8px 10px;                    /* Gives parent-reference control comfortable spacing. */
+  border: 0;                            /* Removes normal button border. */
+  border-left: 3px solid #85b8ff;     /* Visually connects context to referenced parent. */
+  border-radius: 4px;                   /* Softens reply-context surface. */
+  background: #f6f9fd;                /* Gives reply reference a subtle blue-tinted surface. */
+  color: #505f79;                     /* Uses secondary reply-context text. */
+  font: inherit;                        /* Keeps control typography aligned with application. */
+  text-align: left;                     /* Keeps quoted parent content naturally readable. */
+  cursor: pointer;                      /* Communicates that parent reference can be followed. */
+}
+
+.comment-thread-reply-context:hover {
+  background: #edf5ff;  /* Highlights clickable parent reference on hover. */
+}
+
+.comment-thread-reply-context-title {
+  font-size: 0.72rem;   /* Keeps "Replying to" context compact. */
+}
+
+.comment-thread-reply-context-title strong {
+  color: #2368a2;   /* Makes exact parent-author identity easy to identify. */
+}
+
+.comment-thread-reply-preview {
+  overflow: hidden;             /* Keeps long parent excerpts contained. */
+  color: #7a869a;             /* Uses tertiary quoted-text color. */
+  font-size: 0.69rem;           /* Keeps preview secondary to actual reply body. */
+  text-overflow: ellipsis;      /* Shows truncation if excerpt is wider than available space. */
+  white-space: nowrap;          /* Keeps parent excerpt on a single compact line. */
+}
+
+
+/* ========================================================================== */
+/* Comment body                                                               */
+/* ========================================================================== */
+
+.comment-thread-body {
+  margin-top: 12px;             /* Separates body text from metadata/reply context. */
+  color: #344563;             /* Uses readable discussion body text. */
+  font-size: 0.84rem;           /* Keeps threaded conversation compact but readable. */
+  line-height: 1.62;            /* Improves multiline comment readability. */
+  white-space: pre-wrap;        /* Preserves user-entered paragraph/line breaks. */
+  overflow-wrap: anywhere;      /* Prevents long links/strings breaking layout. */
+}
+
+.comment-thread-body--deleted {
+  color: #8993a4;       /* Gives tombstone text deliberately muted appearance. */
+  font-style: italic;     /* Distinguishes [deleted] from normal discussion content. */
+}
+
+
+/* ========================================================================== */
+/* Reply / Edit / Delete controls                                             */
+/* ========================================================================== */
+
+.comment-thread-actions {
+  display: flex;        /* Places lightweight comment actions on one row. */
+  flex-wrap: wrap;      /* Allows actions to wrap on smaller comment widths. */
+  gap: 5px;             /* Creates small separation between comment actions. */
+  margin-top: 11px;     /* Separates controls from body content. */
+}
+
+.comment-thread-actions button {
+  padding: 4px 7px;         /* Creates compact Jira-like text action targets. */
+  border: 0;                /* Keeps secondary comment actions visually light. */
+  border-radius: 5px;       /* Adds subtle hover/control shape. */
+  background: transparent;  /* Prevents action row from overwhelming discussion. */
+  color: #2368a2;         /* Uses established action blue. */
+  font-size: 0.68rem;       /* Keeps actions visually subordinate to comment body. */
+  font-weight: 730;         /* Makes small action text readable. */
+  cursor: pointer;          /* Communicates interactive controls. */
+}
+
+.comment-thread-actions button:hover:not(:disabled) {
+  background: #f1f2f4;  /* Gives clear but restrained hover feedback. */
+}
+
+.comment-thread-actions .comment-thread-delete-action {
+  color: #ae2a19;   /* Distinguishes destructive soft-delete action. */
+}
+
+.comment-thread-actions button:disabled {
+  cursor: not-allowed;  /* Communicates temporary API-request state. */
+  opacity: 0.55;        /* Visually indicates disabled action. */
+}
+
+
+/* ========================================================================== */
+/* Inline Reply / Edit forms                                                  */
+/* ========================================================================== */
+
+.comment-thread-reply-form,
+.comment-thread-edit-form {
+  display: grid;            /* Stacks label, textarea, and actions. */
+  gap: 8px;                 /* Adds consistent inline-form spacing. */
+  margin-top: 12px;         /* Separates editor/composer from comment body. */
+  padding: 11px;            /* Gives inline form a focused editing area. */
+  border-radius: 7px;       /* Matches compact comment-card controls. */
+  background: #f7f8fa;    /* Distinguishes active form from static discussion. */
+}
+
+.comment-thread-reply-form label {
+  color: #505f79;       /* Uses secondary inline-form label color. */
+  font-size: 0.71rem;     /* Keeps reply target guidance compact. */
+  font-weight: 730;       /* Makes reply target easy to scan. */
+}
+
+.comment-thread-reply-form textarea,
+.comment-thread-edit-form textarea {
+  width: 100%;                      /* Allows editor to fill available comment width. */
+  padding: 9px 10px;                /* Adds comfortable comment-writing spacing. */
+  border: 1px solid #b7c0cd;      /* Defines editable discussion input. */
+  border-radius: 7px;               /* Matches existing application forms. */
+  outline: none;                    /* Replaces browser focus with custom ring. */
+  background: #ffffff;            /* Keeps text-entry surface clean. */
+  color: #172b4d;                 /* Uses primary editable text color. */
+  font: inherit;                    /* Preserves application typography. */
+  font-size: 0.82rem;               /* Keeps inline editor proportional to comment text. */
+  line-height: 1.5;                 /* Supports multiline discussion comfortably. */
+  resize: vertical;                 /* Allows users to expand longer replies/comments. */
+}
+
+
+.comment-thread-reply-form textarea:focus,
+.comment-thread-edit-form textarea:focus {
+  border-color: #2368a2;                            /* Highlights active comment input. */
+  box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.12);   /* Adds accessible application-style focus ring. */
+}
+
+.comment-thread-inline-actions {
+  display: flex;                /* Places Cancel and Save/Reply beside one another. */
+  justify-content: flex-end;    /* Aligns inline form actions to right side. */
+  gap: 7px;                     /* Adds spacing between inline actions. */
+}
+
+.comment-thread-primary-button,
+.comment-thread-secondary-button {
+  min-height: 32px;     /* Creates comfortable compact button height. */
+  padding: 5px 10px;    /* Gives form actions balanced spacing. */
+  border-radius: 6px;   /* Matches other compact UI controls. */
+  font-size: 0.69rem;   /* Keeps inline actions small. */
+  font-weight: 750;     /* Makes compact button text readable. */
+  cursor: pointer;      /* Communicates action interactivity. */
+}
+
+.comment-thread-primary-button {
+  border: 1px solid #2368a2;    /* Defines primary Reply/Save boundary. */
+  background: #2368a2;          /* Uses established application action blue. */
+  color: #ffffff;               /* Gives primary action readable contrast.*/
+}
+
+.comment-thread-secondary-button {
+  border: 1px solid #b7c0cd;    /* Defines lower-priority Cancel action. */
+  background: #ffffff;          /* Keeps Cancel visually secondary. */
+  color: #42526e;               /* Uses secondary action text. */
+}
+
+
+/* ========================================================================== */
+/* Reply-loading controls                                                     */
+/* ========================================================================== */
+
+.comment-thread-load-replies {
+  margin-top: 10px;             /* Separates reply-loading action from other controls. */
+  padding: 4px 7px;             /* Keeps thread expansion control compact. */
+  border: 0;                    /* Avoids making nested discussion visually heavy. */
+  background: transparent;      /* Treats reply loading like a lightweight thread action. */
+  color: #2368a2;             /* Uses normal navigation/action blue. */
+  font-size: 0.68rem;           /* Keeps thread expansion visually secondary. */
+  font-weight: 730;             /* Makes small thread control readable. */
+  cursor: pointer;              /* Communicates that replies can be expanded. */
+}
+
+.comment-thread-load-replies:hover:not(:disabled) {
+  text-decoration: underline;       /* Gives familiar expandable-thread hover feedback. */
+}
+
+.comment-thread-load-replies:disabled {
+  cursor: wait;         /* Communicates replies are currently loading. */
+  opacity: 0.6;         /* Visually indicates temporary loading state. */
+}
+
+.comment-thread-replies-error {
+  margin: 9px 0 0;          /* Separates inline replies error from comment content. */
+  color: #ae2a19;         /* Uses application error red. */
+  font-size: 0.69rem;       /* Keeps branch-specific error compact. */
+}
+
+
+/* ========================================================================== */
+/* Thread expansion / collapse controls                                       */
+/* ========================================================================== */
+
+.comment-thread-expansion-actions {
+  display: flex;        /* Groups one-level and whole-thread controls together. */
+  flex-wrap: wrap;      /* Allows controls to wrap inside deeply indented comments. */
+  align-items: center;  /* Keeps expansion controls vertically aligned. */
+  gap: 9px;             /* Adds clear spacing between thread-navigation actions. */
+  margin-top: 10px;     /* Separates expansion controls from comment actions/content. */
+}
+
+.comment-thread-expansion-actions .comment-thread-load-replies {
+  margin-top: 0;        /* Parent container now controls expansion-row spacing. */
+}
+
+.comment-thread-expand-thread,
+.comment-thread-collapse-thread {
+  padding: 4px 7px;         /* Creates compact discussion-navigation controls. */
+  border: 0;                /* Keeps thread controls visually lightweight. */
+  border-radius: 5px;       /* Adds subtle interactive shape on hover. */
+  background: transparent;  /* Prevents thread controls competing with comment content. */
+  font-size: 0.68rem;       /* Keeps navigation actions visually secondary. */
+  font-weight: 730;         /* Makes small thread-control labels readable. */
+  cursor: pointer;          /* Communicates interactive expansion behavior. */
+}
+
+.comment-thread-expand-thread {
+  color: #505f79;       /* Uses neutral text for broader thread expansion. */
+}
+
+.comment-thread-collapse-thread {
+  color: #7a869a;       /* Makes Collapse slightly less prominent than Expand. */
+}
+
+.comment-thread-expand-thread:hover:not(:disabled),
+.comment-thread-collapse-thread:hover:not(:disabled) {
+  background: #f1f2f4;    /* Gives thread-navigation controls restrained hover feedback. */
+  color: #2368a2;         /* Highlights the currently hovered discussion action. */
+}
+
+.comment-thread-expand-thread:disabled {
+  cursor: wait;             /* Communicates recursive thread loading is underway. */
+  opacity: 0.6;             /* Visually indicates temporary disabled state. */
+}
+
+
+
+/* ========================================================================== */
+/* Scroll-to-parent glow                                                      */
+/* ========================================================================== */
+
+.comment-thread-item--highlighted > .comment-thread-card {
+  animation: comment-parent-highlight 1.45s ease-out;   /* Briefly identifies exact referenced parent comment. */
+}
+
+@keyframes comment-parent-highlight {
+
+  0% {
+    border-color: #579dff;                            /* Starts parent identification with visible blue border. */ 
+    background: #fff9db;                              /* Uses soft warm highlight rather than neon glow. */
+    box-shadow: 0 0 0 4px rgba(87, 157, 255, 0.20);   /* Creates temporary external focus glow. */
+  }
+
+  65% {
+    border-color: #85b8ff;      /* Softens highlight midway through animation. */
+    background: #fffdf1;        /* Gradually fades warm identification background. */
+  }
+
+  100% {
+    border-color: #dfe3e8;                         /* Returns card to normal discussion border. */
+    background: #ffffff;                           /* Returns card to normal white surface. */
+    box-shadow: 0 2px 7px rgba(9, 30, 66, 0.035);  /* Restores normal subtle comment shadow. */
+  }
+}
+
+
+/* ========================================================================== */
+/* Responsive indentation                                                     */
+/* ========================================================================== */
+
+@media (max-width: 650px) {
+
+  .comment-thread-item {
+    margin-left: calc(var(--comment-indent-steps, 0) * 14px);/* Reduces cumulative indentation on narrow phone screens. */
+  }
+
+  .comment-thread-heading {
+    flex-direction: column;     /* Prevents author/timestamp crowding on narrow replies. */
+    gap: 4px;                   /* Keeps stacked metadata compact. */
+  }
+
+  .comment-thread-time {
+    flex-shrink: 1;             /* Lets timestamp wrap naturally on mobile. */
+  }
+}
