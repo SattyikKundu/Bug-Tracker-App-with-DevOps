@@ -4,6 +4,48 @@ import mongoose from "mongoose"; // Import Mongoose to define schemas/models
 
 // File ultimately used as supporting file for authModel.js
 
+
+// -----------------------------------------------------------------------------
+// User notification preferences
+// -----------------------------------------------------------------------------
+// All notification categories default to enabled.
+//
+// "_id: false" prevents Mongoose from creating an unnecessary ObjectId
+// for this embedded preferences object.
+// -----------------------------------------------------------------------------
+const NotificationPreferencesSchema =
+  new mongoose.Schema(
+    {
+      issueAssignments: {           // Notifications for issue assignments in projects user is part of
+        type: Boolean,
+        default: true
+      },
+      issueStatusChanges: {         // Notifications for status changes of issues/bugs in projects user is part of
+        type: Boolean,
+        default: true
+      },
+      commentReplies: {             // Notifications for comments replies to an issue in projects user is part of
+        type: Boolean,
+        default: true
+      },
+      projectMembershipChanges: {   // Notifications for membership changes to projects user is part of
+        type: Boolean,
+        default: true
+      },
+      projectLeadershipChanges: {   // Notifications for leadership changes for projects user is part of
+        type: Boolean,
+        default: true
+      },
+      watchedIssueActivity: {       //  Notifications for important activity on issues the user is watching
+        type: Boolean,
+        default: true
+      }
+    },
+    { _id: false}
+  );
+
+
+
 const UserSchema = new mongoose.Schema(                // Create a new schema for the users collection
   {
     firstName: {                                      // First name field
@@ -51,6 +93,10 @@ const UserSchema = new mongoose.Schema(                // Create a new schema fo
       type:    String,                                 // Stored as string
       enum:    ["admin", "user"],                      // Allowed values only
       default: "user"                                  // Default role for new accounts
+    },    
+    notificationPreferences: {              // Current user's category-level notification preferences.
+      type: NotificationPreferencesSchema,  // Causes all defaults from embedded schema to be applied whenever new user is created.
+      default: () => ({})
     }
   },
   { timestamps: true }                                 // Auto-add createdAt/updatedAt

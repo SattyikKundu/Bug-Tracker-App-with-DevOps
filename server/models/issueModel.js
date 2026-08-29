@@ -47,7 +47,7 @@ const StatusHopSchema = new Schema( // Status audit entry
         },    
         by:{ // which user changed the issue status
             type:Schema.Types.ObjectId,
-            ref:"Users",
+            ref:"User",
             required:true
         }, 
         at:{ // time stamp of issue
@@ -61,7 +61,7 @@ const IssueSchema = new Schema(  // Main Issue schema
     {                  
         projectId:{ // Project (Id) with the issue
             type:Schema.Types.ObjectId,
-            ref:"Projects",
+            ref:"Project",
             required:true,
             index:true
         }, 
@@ -104,13 +104,13 @@ const IssueSchema = new Schema(  // Main Issue schema
         },    
         reporterId:{ // Issue reporter's Id
             type:Schema.Types.ObjectId,
-            ref:"Users",
+            ref:"User",
             required:true,
             index:true
         },   
         assigneeId:{ // ID of the project member currently responsible for the issue
             type:Schema.Types.ObjectId,
-            ref:"Users",
+            ref:"User",
             default:null,
             index:true
         },     
@@ -125,11 +125,11 @@ const IssueSchema = new Schema(  // Main Issue schema
             default: [],
             index: true
         },    
-        watchers:{ // users watching and receiving issue notifications
+        watchers:{ // user watching and receiving issue notifications
             type: [
                 {
                     type: Schema.Types.ObjectId,
-                    ref: "Users"
+                    ref: "User"
                 }
             ],
             default: [],

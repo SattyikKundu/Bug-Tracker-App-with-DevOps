@@ -148,9 +148,9 @@ router.get(
  * @swagger
  * /comments/{id}:
  *   patch:
- *   summary: Edit the authenticated user's own comment
- *   description: >
- *     Only the original author may edit a non-deleted comment.
+ *     summary: Edit the authenticated user's own comment
+ *     description: >
+ *       Only the original author may edit a non-deleted comment.
  *     tags: [Comments]
  *     parameters:
  *       - in: path

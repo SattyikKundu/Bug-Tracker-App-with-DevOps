@@ -22,12 +22,13 @@ import connectDB from "./database/database.js"; // default import from database.
 import './auth/passportConfig.js'; // Side-effect that loads and registers passport strategies globally (MUST come before routes!)
 //import passport from 'passport';   // single passport import (Core authentication framework)
 
-import authRoutes       from "./routes/authRoutes.js";        // Import auth routes
-import projectRoutes    from "./routes/projectRoutes.js";     // Import project routes
-import issueRoutes      from "./routes/issueRoutes.js";       // Import issues routes
-import commentRoutes    from "./routes/commentRoutes.js";     // Import comments routes
-import userSearchRoutes from "./routes/userSearchRoutes.js";  // Import user search routes
-import userRoutes       from "./routes/userRoutes.js";        // Import user profile/account-management routes
+import authRoutes         from "./routes/authRoutes.js";          // Import auth routes
+import projectRoutes      from "./routes/projectRoutes.js";       // Import project routes
+import issueRoutes        from "./routes/issueRoutes.js";         // Import issues routes
+import commentRoutes      from "./routes/commentRoutes.js";       // Import comments routes
+import userSearchRoutes   from "./routes/userSearchRoutes.js";    // Import user search routes
+import userRoutes         from "./routes/userRoutes.js";          // Import user profile/account-management routes
+import notificationRoutes from "./routes/notificationRoutes.js";  // Import user notification management routes 
 
 import swaggerUi   from "swagger-ui-express";   // Import Swagger UI middleware
 import swaggerSpec from "./swaggerConfig.js";
@@ -48,12 +49,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // Swagger 
 await connectDB(process.env.MONGO_URI);
 
 
-// Get connection info!
-
-//import mongoose from "mongoose";
-//import User from "./models/user.js";
-//console.log("[Mongo] DB name:", mongoose.connection.name);
-//console.log("[Mongo] User collection:", User.collection.name);
 
 // ==============================================================================
 // Middleware
@@ -111,9 +106,10 @@ app.use("/api/projects", userSearchRoutes); /* Mount at root; mounts user search
                                              * GET /api/projects/:id/member-search
                                              */
 
-app.use("/", projectRoutes);    // Mount at root; paths start with /projects
-app.use("/", issueRoutes);      // Mount issues endpoints
-app.use("/", commentRoutes);    // Mount comments endpoints
+app.use("/", projectRoutes);      // Mounts at root; paths start with /projects
+app.use("/", issueRoutes);        // Mounts issues endpoints
+app.use("/", commentRoutes);      // Mounts comments endpoints
+app.use("/", notificationRoutes); // Mounts notifications endpoints
 
 // ==============================================================================
 // Start Server

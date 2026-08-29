@@ -4,6 +4,11 @@ import { ObjectId } from "mongodb";                   // needed for ObjectId() i
 import   Project    from "../models/projectModel.js"; // Import Project model
 import   User       from "../models/user.js";         // Import User model to validate IDs
 
+import { 
+  createNotifications, 
+  getUserDisplayName } from "../utils/notificationService.js"; // needed for creating notifications from project changes
+
+
 const isValidId = (id) => { // Helper to validate ObjectId strings
     return mongoose.Types.ObjectId.isValid(id);  
 } 
@@ -403,8 +408,39 @@ export const updateProject = async (req, res, next) => {  // Controller: update 
       });
     }
 
-    return res.json({ project: updated }); // Respond with updated project
+    // -----------------------------------------------------------------------------
+    // Project leadership transfer notifications
+    // -----------------------------------------------------------------------------
+    if (leadUserId !== undefined) {
+      const actorName = getUserDisplayName( req.authUser);
 
+      const newLeadName = getUserDisplayName(updated.leadUserId);
+
+      // req.project still contains the ORIGINAL project, therefore this is the previous lead.
+      const previousLeadId = req.project.leadUserId;
+
+      await createNotifications({ // Notify the NEW project lead
+        recipientIds:   [leadUserId],
+        actorId:        req.authUser._id,
+        preferenceKey:  "projectLeadershipChanges",
+        type:           "project_leadership_changed",
+        title:          "Project leadership changed",
+        message:        `Project leadership for ${updated.name} was transferred to you.`,
+        projectId:      updated._id
+      });
+
+      await createNotifications({ // Notify previous lead when applicable
+        recipientIds:   [previousLeadId],
+        actorId:        req.authUser._id,
+        preferenceKey:  "projectLeadershipChanges",
+        type:           "project_leadership_changed",
+        title:          "Project leadership changed",
+        message:        `${actorName} transferred leadership of ${updated.name} to ${newLeadName}.`,
+        projectId:      updated._id
+      });
+    }
+
+    return res.json({ project: updated }); // Respond with updated project
   } 
   catch (err) {                                                                           
     next(err);
@@ -548,20 +584,40 @@ export const updateMembers = async (req, res, next) => {   // Controller: add/re
 
     await Project.updateOne( // update project's membership
       { _id: req.project._id },
-      {
-        $set: {
-          members: finalMemberIds
-        }
-      },
-      {
-        runValidators: true
-      }
+      { $set: { members: finalMemberIds }},
+      { runValidators: true }
     );
 
-
     const refreshed = await Project.findById(req.project._id).lean();    // Reload updated project, as plain object
-    return res.json({ project: refreshed });                        // Respond with updated project
 
+    const actorName =getUserDisplayName(req.authUser);
+
+
+    if (addIds.length > 0) { // Users added to project
+      await createNotifications({
+        recipientIds:   addIds,
+        actorId:        req.authUser._id,
+        preferenceKey:  "projectMembershipChanges",
+        type:           "project_member_added",
+        title:          "Added to project",
+        message:        `${actorName} added you to ${refreshed.name}.`,
+        projectId:      refreshed._id
+      });
+    }
+
+    if (removeIds.length > 0) { // Users removed from project
+      await createNotifications({
+        recipientIds:   removeIds,
+        actorId:        req.authUser._id,
+        preferenceKey:  "projectMembershipChanges",
+        type:           "project_member_removed",
+        title:          "Removed from project",
+        message:        `${actorName} removed you from ${refreshed.name}.`,
+        projectId:      refreshed._id
+      });
+    }
+
+    return res.json({ project: refreshed });                             // Respond with updated project
   } 
   catch (err) { // Catch and handle any errors
     next(err);                                                                               

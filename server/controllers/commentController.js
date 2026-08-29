@@ -2,14 +2,18 @@
 import mongoose from "mongoose"; 
 import Comment  from "../models/commentModel.js"; 
 import Issue    from "../models/issueModel.js"; 
-import Project  from "../models/projectModel.js"; // imports
+import Project  from "../models/projectModel.js"; 
+
+import {
+  createNotifications,
+  getUserDisplayName
+} from "../utils/notificationService.js"; // imports for enabling notifications regarding comment creation/editing
 
 const isValidId = (id) =>{ // id validator
   return mongoose.Types.ObjectId.isValid(String(id)); 
 }
 
 
-//const MAX_COMMENT_DEPTH = 4; // Allow replies to be nested up to four levels
 const MAX_COMMENT_DISPLAY_DEPTH = 4; // Visually indent replies up to four levels; deeper logical replies remain allowed
 
 
@@ -125,7 +129,6 @@ export const createComment = async (req,res,next)=>{ // POST /issues/:id/comment
          return res.status(400).json({error:"Invalid parentId."}); 
       }
       
-
       parent = await Comment.findById(parentId).lean(); // get parent Id from comment as normalized object
 
       if (!parent) {
@@ -147,20 +150,10 @@ export const createComment = async (req,res,next)=>{ // POST /issues/:id/comment
         });
       }
 
-      //const replyDepth = (parent.ancestors?.length ?? 0) + 1; // depth of reply
-
-      // Top-level comments use depth 0; nested replies may reach depth 4.
-      // if (replyDepth > MAX_COMMENT_DEPTH) {
-      //   return res.status(400).json({
-      //     error: `Comments cannot be nested deeper than ${MAX_COMMENT_DEPTH} reply levels.`
-      //   });
-      // }
-
       ancestors = [
         ...(parent.ancestors ?? []),
         parent._id
       ];
-
     }
 
     const comment = await Comment.create({ // create comment object
@@ -175,11 +168,66 @@ export const createComment = async (req,res,next)=>{ // POST /issues/:id/comment
       {_id:issue._id},
       { $inc:{ commentCount:1 } }
     ); 
-    
-    // Populate the comment author and the author of the parent comment.
-    const populatedComment = await populateCommentUsers( 
-      Comment.findById(comment._id)
-    ).lean();
+
+    // -----------------------------------------------------------------------------
+    // Comment / reply notifications
+    // -----------------------------------------------------------------------------
+    const actorName = getUserDisplayName(user);
+
+
+    // If this is a reply, the direct parent comment's author gets the specific "reply" notification.
+    const directReplyRecipientId = (parent?.authorId) ?? null;
+
+    if (directReplyRecipientId) { // Direct reply notification
+      await createNotifications({
+        recipientIds:   [directReplyRecipientId],
+        actorId:        user._id,
+        preferenceKey:  "commentReplies",
+        type:           "comment_reply",
+        title:          "New reply",
+        message:        `${actorName} replied to your comment on ${issue.key}.`,
+        projectId:      project._id,
+        issueId:        issue._id,
+        commentId:      comment._id
+      });
+    }
+
+    // -----------------------------------------------------------------------------
+    // Watched issue notification
+    // -----------------------------------------------------------------------------
+    // Other watchers are informed that a comment was added.
+    //
+    // IMPORTANT:
+    //
+    // If the direct parent author is ALSO watching the issue,
+    // exclude that person here.
+    //
+    // They should receive:
+    //
+    // "Sarah replied to your comment..."
+    //
+    // NOT both:
+    //
+    // "Sarah replied to your comment..."
+    // AND
+    // "Sarah commented on watched issue..."
+    // -----------------------------------------------------------------------------
+    await createNotifications({
+
+      recipientIds:           issue.watchers ?? [],
+      actorId:                user._id,
+      excludeRecipientIds:    (directReplyRecipientId) ? [directReplyRecipientId] : [],
+      preferenceKey:          "watchedIssueActivity",
+      type:                   "watched_issue_activity",
+      title:                  "New comment on watched issue",
+      message:                `${actorName} commented on ${issue.key}.`,
+      projectId:              project._id,
+      issueId:                issue._id,
+      commentId:              comment._id
+    });
+
+    // Populate comment author and author of the parent comment.
+    const populatedComment = await populateCommentUsers(Comment.findById(comment._id)).lean();
 
     return res.status(201).json({ // return new comment
       comment: formatCommentResponse(populatedComment)
