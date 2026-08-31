@@ -1,10 +1,10 @@
 // src/PageComponents/CommentThreadItem/CommentThreadItem.jsx
 
-import { useState } from "react"; // Stores inline Reply/Edit UI state for one comment
+import { useState } from "react"; // stores inline Reply/Edit UI state for one comment
 
 import {
-  useDispatch, // Sends comment actions to Redux
-  useSelector  // For reading auth/project/comment state
+  useDispatch, // sends comment actions to Redux
+  useSelector  // for reading auth/project/comment state
 } from "react-redux";
 
 import {
@@ -12,10 +12,10 @@ import {
   deleteComment,       // soft-deletes a comment
   expandCommentThread, // used to recursively load entire descendant branch
   fetchCommentReplies, // load comment's direct children
-  updateComment        // Edits author's own comment
+  updateComment        // edits author's own comment
 } from "../../Store/commentSlice.jsx";
 
-import { adjustCurrentIssueCommentCount } from "../../Store/issueSlice.jsx"; // Used to update Activity comment count immediately
+import { adjustCurrentIssueCommentCount } from "../../Store/issueSlice.jsx"; // used to update Activity comment count immediately
 
 import {
   ErrorMessageToast,
@@ -70,35 +70,29 @@ const getCommentAuthorName = (author) => {
 };
 
 
-const scrollToCommentBelowHeader = (element) => { // Simple helper for auto-scrolling
-
+const scrollToCommentBelowHeader = (element) => { // simple helper for auto-scrolling
   if (!element) {
     return;
   }
 
   element.scrollIntoView({
-    behavior: "smooth", // Smoothly moves the viewport to the parent comment
-    block: "start"      // Places the target near the top of the scroll area
+    behavior: "smooth", // smoothly moves the viewport to the parent comment
+    block: "start"      // places the target near the top of the scroll area
   });
 };
 
-
 const CommentThreadItem = ({
-  comment,                  // Current comment/reply being rendered
-  issueId,                  // Parent issue ID used when posting replies
-  projectArchived,          // Archived projects are fully read-only
-  parentDisplayDepth = 0    // Visual depth of this comment's immediate parent
+  comment,                  // current comment/reply being rendered
+  issueId,                  // parent issue ID used when posting replies
+  projectArchived,          // archived projects are fully read-only
+  parentDisplayDepth = 0    // visual depth of this comment's immediate parent
 }) => {
 
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-
   const { currentProject: project } = useSelector((state) => state.projects);
-
-  const { 
-    repliesByParent, mutationStatusById, createStatus
-  } = useSelector((state) => state.comments);
+  const { repliesByParent, mutationStatusById, createStatus } = useSelector((state) => state.comments);
 
   const replyEntry      = repliesByParent[comment._id];
   const replies         = replyEntry?.items ?? [];
@@ -108,13 +102,13 @@ const CommentThreadItem = ({
   const replyLoadError  = replyEntry?.error;
   const mutationStatus  = mutationStatusById[ comment._id] ?? "idle";
 
-  const [replyComposerOpen, setReplyComposerOpen] = useState(false); // Inline reply form state.
+  const [replyComposerOpen, setReplyComposerOpen] = useState(false); // inline reply form state.
   const [replyBody,         setReplyBody]         = useState("");
 
-  // Tracks whether recursive "Expand thread" loading is currently running.
+  // tracks whether recursive "Expand thread" loading is currently running.
   const [expandingThread, setExpandingThread] = useState(false);
 
-  // Controls whether already-loaded descendants are currently hidden.
+  // controls whether already-loaded descendants are currently hidden.
   const [threadCollapsed, setThreadCollapsed] = useState(false);
 
   const [editMode, setEditMode]  = useState(false); // Inline editing state.
@@ -136,17 +130,17 @@ const CommentThreadItem = ({
   const isProjectLead = (String(leadUserId) === String(currentUserId));
   const isGlobalAdmin = (user?.role === "admin");
 
-  // Backend permits editing only by the original author.
+  // backend permits editing only by the original author.
   const canEdit = !projectArchived && !comment.deleted && isAuthor;
 
-  // Backend permits soft-delete by author, lead, or global admin.
+  // backend permits soft-delete by author, lead, or global admin.
   const canDelete =
     !projectArchived &&
     !comment.deleted &&
     (isAuthor || isProjectLead || isGlobalAdmin);
 
 
-  // Deleted comments remain tombstones and cannot receive new replies.
+  // deleted comments remain tombstones and cannot receive new replies.
   const canReply = !projectArchived && !comment.deleted;
 
 
@@ -188,7 +182,7 @@ const CommentThreadItem = ({
     parentElement.classList.remove("comment-thread-item--highlighted"); // Restart the identification animation.
     void parentElement.offsetWidth;
 
-    // Small delay lets the smooth scroll get underway before the glow begins, making it easier to notice on arrival.
+    // small delay lets the smooth scroll get underway before the glow begins, making it easier to notice on arrival.
     window.setTimeout(() => { parentElement.classList.add("comment-thread-item--highlighted"); }, 250);
     window.setTimeout(() => { parentElement.classList.remove("comment-thread-item--highlighted"); }, 1750);
 
@@ -228,12 +222,11 @@ const CommentThreadItem = ({
     }
   };
 
-  // Hides the loaded descendant branch without removing it from Redux.
-  // Expanding again is therefore instant if the thread was already loaded.
+  // Hides loaded descendant branch without removing it from Redux.
+  // expanding again is therefore instant if thread was already loaded.
   const handleCollapseThread = () => {
     setThreadCollapsed(true);
   };
-
 
 
   const handleReplySubmit = async (event) => {
@@ -250,7 +243,7 @@ const CommentThreadItem = ({
         await dispatch(
           createComment({
             issueId,
-            body: trimmedBody,
+            body:     trimmedBody,
             parentId: comment._id
           })
         );
@@ -288,7 +281,7 @@ const CommentThreadItem = ({
       await dispatch(
         updateComment({
           commentId: comment._id,
-          body: trimmedBody
+          body:      trimmedBody
           })
       );
 
@@ -365,9 +358,9 @@ const CommentThreadItem = ({
         {/* ------------------------------------------------------------ */}
         {comment.replyingTo && (
           <button
-            className="comment-thread-reply-context"
-            type="button"
-            onClick={handleScrollToParent}
+            className = "comment-thread-reply-context"
+            type      = "button"
+            onClick   = {handleScrollToParent}
           >
             <span className="comment-thread-reply-context-title">
               ↳ Replying to{" "}
@@ -387,25 +380,24 @@ const CommentThreadItem = ({
         {/* ------------------------------------------------------------ */}
         {/* Comment body / inline editor                                 */}
         {/* ------------------------------------------------------------ */}
-
         {editMode ? (
           <form 
             className = "comment-thread-edit-form"
             onSubmit  = {handleEditSubmit}
           >
             <textarea
-              value={editBody}
-              onChange={ (event) => setEditBody(event.target.value) }
-              rows="4"
-              maxLength="5000"
+              value     = {editBody}
+              onChange  = { (event) => setEditBody(event.target.value) }
+              rows      = "4"
+              maxLength = "5000"
               autoFocus
             />
 
             <div className="comment-thread-inline-actions">
               <button
-                type="button"
-                className="comment-thread-secondary-button"
-                onClick={() => {
+                type      = "button"
+                className = "comment-thread-secondary-button"
+                onClick   = {() => {
                   setEditMode(false);
                   setEditBody(comment.body ?? "");
                 }}
@@ -414,9 +406,9 @@ const CommentThreadItem = ({
               </button>
 
               <button
-                type="submit"
-                className="comment-thread-primary-button"
-                disabled={ mutationStatus === "loading"}
+                type      = "submit"
+                className = "comment-thread-primary-button"
+                disabled  = { mutationStatus === "loading"}
               >
                 {mutationStatus === "loading" ? "Saving..." : "Save"}
               </button>
@@ -442,8 +434,8 @@ const CommentThreadItem = ({
           <div className="comment-thread-actions">
             {canReply && (
               <button
-                type="button"
-                onClick={() => { setReplyComposerOpen((current) => !current); }}
+                type    = "button"
+                onClick = {() => { setReplyComposerOpen((current) => !current); }}
               >
                 Reply
               </button>
@@ -451,8 +443,8 @@ const CommentThreadItem = ({
 
             {canEdit && (
               <button
-                type="button"
-                onClick={() => {
+                type    = "button"
+                onClick = {() => {
                   setEditBody(comment.body ?? "");
                   setEditMode(true);
                 }}
@@ -463,10 +455,10 @@ const CommentThreadItem = ({
 
             {canDelete && (
               <button
-                type="button"
-                className="comment-thread-delete-action"
-                onClick={handleDelete}
-                disabled={mutationStatus === "loading"}
+                type      = "button"
+                className = "comment-thread-delete-action"
+                onClick   = {handleDelete}
+                disabled  = {mutationStatus === "loading"}
               >
                 Delete
               </button>
@@ -489,20 +481,20 @@ const CommentThreadItem = ({
               </label>
 
               <textarea
-                id={`reply-${comment._id}`}
-                value={replyBody}
-                onChange={(event) => setReplyBody(event.target.value)}
-                rows="3"
-                maxLength="5000"
-                placeholder="Write a reply..."
+                id          = {`reply-${comment._id}`}
+                value       = {replyBody}
+                onChange    = {(event) => setReplyBody(event.target.value)}
+                rows        = "3"
+                maxLength   = "5000"
+                placeholder = "Write a reply..."
                 autoFocus
               />
 
               <div className="comment-thread-inline-actions">
                 <button
-                  type="button"
-                  className="comment-thread-secondary-button"
-                  onClick={() => {
+                  type      = "button"
+                  className = "comment-thread-secondary-button"
+                  onClick   = {() => {
                     setReplyComposerOpen(false);
                     setReplyBody("");
                   }}
@@ -511,9 +503,9 @@ const CommentThreadItem = ({
                 </button>
 
                 <button
-                  type="submit"
-                  className="comment-thread-primary-button"
-                  disabled={createStatus === "loading"}
+                  type      = "submit"
+                  className = "comment-thread-primary-button"
+                  disabled  = {createStatus === "loading"}
                 >
                   {createStatus === "loading" ? "Posting..." : "Reply"}
                 </button>
@@ -536,10 +528,10 @@ const CommentThreadItem = ({
           {/* -------------------------------------------------------------- */}
           {(!repliesLoaded || hasMoreReplies) && (
             <button
-              type="button"
-              className="comment-thread-load-replies"
+              type      = "button"
+              className = "comment-thread-load-replies"
               onClick={() => {
-                // Make descendants visible again if this comment had previously been collapsed.
+                // make descendants visible again if this comment had previously been collapsed.
                 setThreadCollapsed(false);
                 handleLoadReplies();
               }}
@@ -558,10 +550,10 @@ const CommentThreadItem = ({
           {/* -------------------------------------------------------------- */}
           {!threadCollapsed && (
             <button
-              type="button"
-              className="comment-thread-expand-thread"
-              onClick={handleExpandThread}
-              disabled={expandingThread}
+              type      = "button"
+              className = "comment-thread-expand-thread"
+              onClick   = {handleExpandThread}
+              disabled  = {expandingThread}
             >
               {expandingThread ? "Expanding..." : "Expand thread"}
             </button>
@@ -573,9 +565,9 @@ const CommentThreadItem = ({
           {!threadCollapsed &&
             replies.length > 0 && (
               <button
-                type="button"
-                className="comment-thread-collapse-thread"
-                onClick={handleCollapseThread}
+                type      = "button"
+                className = "comment-thread-collapse-thread"
+                onClick   = {handleCollapseThread}
               >
                 Collapse thread
               </button>
@@ -587,10 +579,10 @@ const CommentThreadItem = ({
           {threadCollapsed &&
             replies.length > 0 && (
               <button
-                type="button"
-                className="comment-thread-expand-thread"
+                type      = "button"
+                className = "comment-thread-expand-thread"
                 onClick={() => {
-                  //The replies are still cached in Redux, so reopening does not require another API request.
+                  //the replies are still cached in Redux, so reopening does not require another API request.
                   setThreadCollapsed(false);
                 }}
               >
@@ -603,18 +595,16 @@ const CommentThreadItem = ({
       {/* -------------------------------------------------------------- */}
       {/* Recursive direct children                                     */}
       {/* -------------------------------------------------------------- */}
-
-      {/* {replies.length > 0 && ( */}
       {!threadCollapsed && replies.length > 0 && (
         <div className="comment-thread-children">
           {replies.map(
             (reply) => (
               <CommentThreadItem
-                key={reply._id}
-                comment={reply}
-                issueId={issueId}
-                projectArchived={projectArchived}
-                parentDisplayDepth={visualDepth}
+                key                = {reply._id}
+                comment            = {reply}
+                issueId            = {issueId}
+                projectArchived    = {projectArchived}
+                parentDisplayDepth = {visualDepth}
               />
             )
           )}

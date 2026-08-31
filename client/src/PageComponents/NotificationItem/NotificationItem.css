@@ -1,0 +1,110 @@
+/* src/PageComponents/NotificationItem/NotificationItem.css */
+
+.notification-item {
+  display: grid;                              /* Separates unread marker from notification content. */
+  grid-template-columns: 14px minmax(0, 1fr); /* Keeps marker narrow while content uses remaining width. */
+  width: 100%;                                /* Allows row to fill its parent list. */
+  padding: 15px 16px 15px 12px;               /* Gives each notification comfortable click space. */
+  border: 0;                                  /* Parent list supplies row separators. */
+  background: #ffffff;                      /* Read notifications use neutral surface. */
+  color: #172b4d;                           /* Uses application primary text colour. */
+  text-align: left;                           /* Keeps notification copy naturally aligned. */
+  transition: background 0.16s ease;          /* Softens hover/read-state transitions. */
+}
+
+.notification-item--unread {
+  background: #f1f7ff;  /* Gives unread notifications a clear but subtle cue. */
+}
+
+.notification-item--clickable {
+  cursor: pointer;        /* Communicates that related project/issue can be opened. */
+}
+
+.notification-item--clickable:hover,
+.notification-item:focus-visible {
+  background: #e9f2ff;                /* Highlights keyboard/hover interaction. */
+  outline: none;                        /* Replaces browser outline with visible inset ring below. */
+  box-shadow: inset 3px 0 0 #2368a2;  /* Preserves strong focus indication. */
+}
+
+.notification-item--compact {
+  padding-top: 13px;        /* Keeps drawer rows slightly denser. */
+  padding-bottom: 13px;     /* Keeps drawer rows slightly denser. */
+}
+
+.notification-item-status-column {
+  display: flex;              /* Centers unread marker in its narrow column. */
+  justify-content: center;    /* Horizontally centers marker. */
+  padding-top: 6px;           /* Aligns marker with notification title text. */
+}
+
+.notification-item-unread-dot {
+  width: 7px;               /* Creates compact unread indicator. */
+  height: 7px;              /* Keeps indicator circular. */
+  border-radius: 50%;       /* Rounds marker into a dot. */
+  background: #0c66e4;    /* Uses Jira-inspired blue attention colour. */
+}
+
+.notification-item-content {
+  min-width: 0;           /* Allows long messages to wrap instead of widening drawer. */
+}
+
+.notification-item-title-row {
+  display: flex;                  /* Places title and optional delete button on one row. */
+  align-items: flex-start;        /* Keeps button aligned with first title line. */
+  justify-content: space-between; /* Pushes delete control to far edge. */
+  gap: 12px;                      /* Prevents title from touching delete control. */
+}
+
+.notification-item-title-row h3 {
+  margin: 0;            /* Removes heading browser margin. */
+  color: #172b4d;     /* Uses strong notification heading text. */
+  font-size: 0.91rem;   /* Keeps rows compact. */
+  font-weight: 600;     /* Read notifications remain easy to scan. */
+  line-height: 1.35;    /* Supports wrapped titles. */
+}
+
+.notification-item--unread .notification-item-title-row h3 {
+  font-weight: 800;     /* Adds stronger email-like unread emphasis. */
+}
+
+.notification-item-message {
+  margin: 5px 0 0;          /* Separates message from title. */
+  color: #44546f;         /* Uses secondary readable text. */
+  font-size: 0.86rem;       /* Keeps supporting copy below title hierarchy. */
+  line-height: 1.45;        /* Supports multi-line messages. */
+  overflow-wrap: anywhere;  /* Prevents long project/issue names from overflowing. */
+}
+
+.notification-item-meta {
+  display: flex;        /* Allows timestamp and optional access note side-by-side. */
+  flex-wrap: wrap;      /* Lets metadata wrap on narrow screens. */
+  gap: 7px 12px;        /* Separates metadata values. */
+  margin-top: 7px;      /* Separates metadata from message. */
+  color: #6b778c;     /* Uses subdued metadata colour. */
+  font-size: 0.75rem;   /* Keeps metadata visually secondary. */
+  line-height: 1.35;    /* Maintains readable wrapped metadata. */
+}
+
+.notification-item-delete-button {
+  flex: 0 0 auto;           /* Prevents delete button from shrinking. */
+  display: grid;            /* Centers × glyph. */
+  width: 28px;              /* Provides usable target without dominating row. */
+  height: 28px;             /* Matches button width. */
+  place-items: center;      /* Centers glyph vertically/horizontally. */
+  margin-top: -4px;         /* Visually aligns button with title baseline. */
+  border: 0;                /* Removes default browser border. */
+  border-radius: 6px;       /* Matches application control shape. */
+  background: transparent;  /* Keeps destructive action subtle until hover. */
+  color: #6b778c;         /* Uses muted default icon colour. */
+  font-size: 1.2rem;        /* Makes the  '×' easy to recognize. */
+  line-height: 1;           /* Prevents glyph vertical drift. */
+  cursor: pointer;          /* Communicates interactivity. */
+}
+
+.notification-item-delete-button:hover,
+.notification-item-delete-button:focus-visible {
+  background: #ffebe6;    /* Gives destructive action clear hover state. */
+  color: #ae2a19;         /* Uses application error colour. */
+  outline: none;            /* Uses background/color as visible focus treatment. */
+}

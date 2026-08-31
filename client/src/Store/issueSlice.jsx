@@ -1,11 +1,11 @@
 // src/Store/issueSlice.jsx
 
 import {
-  createAsyncThunk, // Creates Redux actions for asynchronous issue API requests
-  createSlice       // Creates issue state, reducers, and generated Redux actions
+  createAsyncThunk, // creates Redux actions for asynchronous issue API requests
+  createSlice       // creates issue state, reducers, and generated Redux actions
 } from "@reduxjs/toolkit";
 
-import api from "../api/axios.js"; // Shared Axios client that already sends auth cookies
+import api from "../api/axios.js"; // shared Axios client that already sends auth cookies
 
 
 /* GET /projects/:pid/issues
@@ -45,8 +45,8 @@ export const transitionIssueStatus = createAsyncThunk(
   "issues/transitionIssueStatus",
   async (
     {
-      issueId, // Issue being transitioned
-      to       // Destination status
+      issueId, // issue being transitioned
+      to       // destination status
     },
     thunkAPI
   ) => {
@@ -55,10 +55,10 @@ export const transitionIssueStatus = createAsyncThunk(
       const response = await api.post( 
         `/issues/${issueId}/transition`,
         {
-          to // Backend's official transition request property
+          to // backend's official transition request property
         }
       );
-      return response.data.issue; // Return updated issue to Redux
+      return response.data.issue; // return updated issue to Redux
     }
     catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to change issue status.");
@@ -107,8 +107,7 @@ export const fetchIssueById = createAsyncThunk(
 
 
 /* PATCH /issues/:issueId
- * Partially updates an existing issue.
- * The form sends ONLY changed fields.
+ * Partially updates an existing issue. The form sends ONLY changed fields.
  */
 export const updateIssue = createAsyncThunk(
   "issues/updateIssue",
@@ -160,19 +159,19 @@ export const unwatchIssue = createAsyncThunk(
 
 // Initial Redux state for project issue board.
 const initialState = {
-  issues: [],                  // All issues belonging to currently opened project
+  issues: [],                  // all issues belonging to currently opened project
   status: "idle",              // idle | loading | succeeded | failed
-  error: null,                 // Full-board loading error
-  transitioningIssueId: null,  // Tracks which issue currently shows transition loading state
-  currentIssue: null,          // Existing issue currently opened for editing
+  error: null,                 // full-board loading error
+  transitioningIssueId: null,  // tracks which issue currently shows transition loading state
+  currentIssue: null,          // existing issue currently opened for editing
   currentIssueStatus: "idle",  // idle | loading | succeeded | failed
   currentIssueError: null,     // GET /issues/:id failure
-  saveStatus: "idle",           // Tracks create/edit form submission
+  saveStatus: "idle",          // tracks create/edit form submission
   watchStatus: "idle"          // idle | loading | succeeded | failed for Watch/Unwatch
 };
 
 const issueSlice = createSlice({
-  name: "issues", // Redux state becomes available through state.issues
+  name: "issues", // redux state becomes available through state.issues
   initialState: initialState,
   reducers: {
 
@@ -182,10 +181,10 @@ const issueSlice = createSlice({
      * while Project B's board is loading!
      */
     clearIssueBoard: (state) => {
-      state.issues = [];                 // Remove previous project's issues
-      state.status = "idle";             // Allows new board to fetch normally
-      state.error = null;                // Remove stale load failures
-      state.transitioningIssueId = null; // Clear temporary transition state
+      state.issues = [];                 // remove previous project's issues
+      state.status = "idle";             // allows new board to fetch normally
+      state.error = null;                // remove stale load failures
+      state.transitioningIssueId = null; // clear temporary transition state
     },
 
     // Clears one previously edited issue.
@@ -216,8 +215,7 @@ const issueSlice = createSlice({
         issue.status = to;
       }
     },
-    // Restore an issue to its previous workflow status when backend
-    // rejects an optimistic drag/drop transition.
+    // Restore an issue to its previous workflow status when backend rejects an optimistic drag/drop transition.
     revertOptimisticIssueMove: (state, action) => {
       const {issueId, from} = action.payload;
       const issue = state.issues.find(
@@ -392,7 +390,7 @@ const issueSlice = createSlice({
       .addCase(
         watchIssue.pending,
         (state) => {
-          state.watchStatus = "loading"; // Temporarily disables Watch button
+          state.watchStatus = "loading"; // temporarily disables Watch button
         }
       )
       .addCase(
@@ -400,7 +398,7 @@ const issueSlice = createSlice({
         (state, action) => {
           state.watchStatus = "succeeded";
 
-          state.currentIssue = action.payload; // Refresh Details page watcher state/count
+          state.currentIssue = action.payload; // refresh Details page watcher state/count
 
           const issueIndex =
             state.issues.findIndex((issue) => (String(issue._id) === String(action.payload._id)));
@@ -444,12 +442,12 @@ const issueSlice = createSlice({
 });
 
 export const { 
-  clearIssueBoard,               // Clears issue board (esp. to prevent "bleeding" into other projects' issue boards)
-  clearIssueBoardError,          // Clears the board error (so it doesn't carry over to other issue boards)
-  clearCurrentIssue,             // Clears existing issue edit-form state
-  optimisticMoveIssue,           // Immediately moves a dragged card locally
-  revertOptimisticIssueMove,     // Restores card when backend rejects movement
-  adjustCurrentIssueCommentCount // Keeps Issue Details comment count locally synchronized
+  clearIssueBoard,               // clears issue board (esp. to prevent "bleeding" into other projects' issue boards)
+  clearIssueBoardError,          // clears the board error (so it doesn't carry over to other issue boards)
+  clearCurrentIssue,             // clears existing issue edit-form state
+  optimisticMoveIssue,           // immediately moves a dragged card locally
+  revertOptimisticIssueMove,     // restores card when backend rejects movement
+  adjustCurrentIssueCommentCount // keeps Issue Details comment count locally synchronized
 } = issueSlice.actions;
 
 export default issueSlice.reducer;

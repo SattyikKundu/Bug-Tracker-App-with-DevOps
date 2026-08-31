@@ -3,8 +3,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../api/axios.js";
 
-export const registerUser = createAsyncThunk( // Register a new local account. 
-                                              // (Registration does not automatically log the user in.)
+export const registerUser = createAsyncThunk( // register a new local account. 
+                                              // (registration does not automatically log the user in.)
   "auth/registerUser",
   async (formData, thunkAPI) => {
     try {
@@ -20,12 +20,11 @@ export const registerUser = createAsyncThunk( // Register a new local account.
   }
 );
 
-export const loginUser = createAsyncThunk( // Log in with username and password.
+export const loginUser = createAsyncThunk( // log in with username and password.
   "auth/loginUser",
   async (credentials, thunkAPI) => {
     try {
       const response = await api.post("/auth/login", credentials);
-      console.log(`Reponse: ${response}`);
       return response.data;
     }
     catch (error) {
@@ -37,7 +36,7 @@ export const loginUser = createAsyncThunk( // Log in with username and password.
   }
 );
 
-export const checkAuth = createAsyncThunk( // Restore the session using the server's HTTP-only cookie.
+export const checkAuth = createAsyncThunk( // restore the session using the server's HTTP-only cookie.
   "auth/checkAuth",
   async (_, thunkAPI) => {
     try {
@@ -50,7 +49,7 @@ export const checkAuth = createAsyncThunk( // Restore the session using the serv
   }
 );
 
-export const logoutUser = createAsyncThunk( // Log out and clear the server-side authentication cookie.
+export const logoutUser = createAsyncThunk( // log out and clear the server-side authentication cookie.
   "auth/logoutUser",
   async (_, thunkAPI) => {
     try {
@@ -74,8 +73,8 @@ export const fetchMyProfile = createAsyncThunk(
   "auth/fetchMyProfile",
   async (_, thunkAPI) => {
     try {
-      const response = await api.get("/users/me"); // Dedicated complete-profile endpoint
-      return response.data.user;                   // Return safe full profile object
+      const response = await api.get("/users/me"); // dedicated complete-profile endpoint
+      return response.data.user;                   // return safe full profile object
     }
     catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to load profile.");
@@ -84,8 +83,8 @@ export const fetchMyProfile = createAsyncThunk(
 );
 
 
-export const updateProfile = createAsyncThunk( //Update the authenticated user's editable profile fields.
-                                              //The backend validates uniqueness and returns the updated user object.
+export const updateProfile = createAsyncThunk( // Update the authenticated user's editable profile fields.
+                                               // The backend validates uniqueness and returns the updated user object.
   "auth/updateProfile",
   async (profileData, thunkAPI) => {
     try {
@@ -99,7 +98,8 @@ export const updateProfile = createAsyncThunk( //Update the authenticated user's
 );
 
 
-export const changePassword = createAsyncThunk( // Change current LOCAL user's password; Google-only users are rejected by backend.
+export const changePassword = createAsyncThunk( // change current LOCAL user's password; Google-only users 
+                                                // are rejected by backend
   "auth/changePassword",
   async (passwordData, thunkAPI) => {
     try {
@@ -113,23 +113,23 @@ export const changePassword = createAsyncThunk( // Change current LOCAL user's p
 );
 
 
-const initialState = {    // Initial Slice State
+const initialState = {    // initial Slice State
   user:            null,  // user state/id
-  isAuthenticated: false, // Is user authenticated?
+  isAuthenticated: false, // is user authenticated?
 
   // Various statuses of user ("idle" means the initial session check has not run yet.)
   authStatus:           "idle",   // user's authenticating state ('loading', 'succeeded', or 'failed')
-  loginStatus:          "idle",   // Is user logged in?
-  registerStatus:       "idle",   // Is user registered with an account?
-  logoutStatus:         "idle",   // Is user logged out?
-  profileUpdateStatus:  "idle",   // What is the user's profile update status?
-  passwordChangeStatus: "idle",   // What is the user's password update status?
-  profileLoadStatus:    "idle",   // Status of the user profile's loading state
+  loginStatus:          "idle",   // is user logged in?
+  registerStatus:       "idle",   // is user registered with an account?
+  logoutStatus:         "idle",   // is user logged out?
+  profileUpdateStatus:  "idle",   // what is user's profile update status?
+  passwordChangeStatus: "idle",   // what is user's password update status?
+  profileLoadStatus:    "idle",   // status of user profile's loading state
   error:                 null
 };
 
 
-const authSlice = createSlice({ // Authentication Slice
+const authSlice = createSlice({ // authentication Slice
   name:         "auth",         // slice name
   initialState: initialState,   // slice's initial state
   reducers: {
@@ -150,7 +150,7 @@ const authSlice = createSlice({ // Authentication Slice
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.authStatus = "succeeded";
         state.isAuthenticated = true;
-        state.user = action.payload.user || action.payload; // Supports either { user: {...} } or a direct user response.
+        state.user = action.payload.user || action.payload; // supports either { user: {...} } or a direct user response.
       })
       .addCase(checkAuth.rejected, (state) => {
         state.authStatus = "failed";
@@ -166,7 +166,7 @@ const authSlice = createSlice({ // Authentication Slice
       .addCase(registerUser.fulfilled, (state) => {
         state.registerStatus = "succeeded";
         state.error = null;
-        state.isAuthenticated = false; // Registration DOES NOT authenticate the user.
+        state.isAuthenticated = false; // registration DOES NOT authenticate the user.
         state.user = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -212,10 +212,11 @@ const authSlice = createSlice({ // Authentication Slice
 
       // FULL PROFILE RETRIEVAL
       .addCase(fetchMyProfile.pending, (state) => {
-        state.profileLoadStatus = "loading"; // Full profile is being retrieved
+        state.profileLoadStatus = "loading"; // full profile is being retrieved
       })
       .addCase(fetchMyProfile.fulfilled, (state, action) => {
-        state.profileLoadStatus = "succeeded"; // Profile request succeeded
+        state.profileLoadStatus = "succeeded"; // profile request succeeded
+
         /* Replace the minimal login object with the complete MongoDB profile.
          * Example: { id, username }
          * becomes: { _id, firstName, lastName, username, email, role, authProvider, ... }
@@ -230,31 +231,31 @@ const authSlice = createSlice({ // Authentication Slice
 
       // PROFILE UPDATE
       .addCase(updateProfile.pending, (state) => {
-        state.profileUpdateStatus = "loading"; // Profile save is underway
-        state.error = null;                    // Clear previous profile errors
+        state.profileUpdateStatus = "loading"; // profile save is underway
+        state.error = null;                    // clear previous profile errors
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        state.profileUpdateStatus = "succeeded";  // Profile update success status
-        state.user = action.payload;              // Immediately update header/sidebar identity
-        state.error = null;                       // Remove older errors
+        state.profileUpdateStatus = "succeeded";  // profile update success status
+        state.user = action.payload;              // immediately update header/sidebar identity
+        state.error = null;                       // remove older errors
       })
       .addCase(updateProfile.rejected, (state, action) => {
-        state.profileUpdateStatus = "failed";                         // Profile update failure status
-        state.error = action.payload || "Unable to update profile.";  // Profile update error msg
+        state.profileUpdateStatus = "failed";                         // profile update failure status
+        state.error = action.payload || "Unable to update profile.";  // profile update error msg
       })
 
       // PASSWORD UPDATE
       .addCase(changePassword.pending, (state) => {
-        state.passwordChangeStatus = "loading"; // Password request is underway
-        state.error = null;                     // Remove previous account errors
+        state.passwordChangeStatus = "loading"; // password request is underway
+        state.error = null;                     // remove previous account errors
       })
       .addCase(changePassword.fulfilled, (state) => {
-        state.passwordChangeStatus = "succeeded"; // Password update completed
-        state.error = null;                       // Clear stale errors
+        state.passwordChangeStatus = "succeeded"; // password update completed
+        state.error = null;                       // clear stale errors
       })
       .addCase(changePassword.rejected, (state, action) => {
-        state.passwordChangeStatus = "failed";                        // Password update failed
-        state.error = action.payload || "Unable to update password."; // Password update failure message
+        state.passwordChangeStatus = "failed";                        // password update failed
+        state.error = action.payload || "Unable to update password."; // password update failure message
       });
   }
 });

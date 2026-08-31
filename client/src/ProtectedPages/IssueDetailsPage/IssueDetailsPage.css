@@ -378,12 +378,10 @@
   display: none;    /* Removes dangling line after final timeline event. */
 }
 
-
 .issue-details-history-content {
   display: grid;    /* Stacks transition, actor, and timestamp. */
   gap: 4px;         /* Keeps audit information compact. */
 }
-
 
 .issue-details-history-transition {
   display: flex;            /* Places From → To workflow states on one line. */

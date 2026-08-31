@@ -1,15 +1,12 @@
 // src/PageComponents/AppSidebar/AppSidebar.jsx
 
-import { NavLink } from "react-router"; // Used for clickable navigation links in menus/bars
-
-import "./AppSidebar.css"; // Sidebar styling
-
+import { NavLink } from "react-router"; // used for clickable navigation links in menus/bars
+import "./AppSidebar.css";              // sidebar styling
 
 const AppSidebar = ({
   sidebarOpen,   // for controlling mobile sidebar visibility
   onCloseSidebar // for closing mobile drawer after navigation
 }) => {
-
 
    // React Router supplies 'isActive' to NavLink.
    // 'isActive' used to visually highlight the current destination.
@@ -29,19 +26,6 @@ const AppSidebar = ({
           </NavLink>
 
           <div className="app-sidebar-divider" />
-
-          {/* <p className="app-sidebar-section-label">Projects</p>
-           // Project creation belongs to the next project-management branch,
-          // so this control is visible but intentionally disabled for now.
-          <button
-            className="app-sidebar-disabled-action"
-            type="button"
-            disabled
-            title="Project creation will be added in the project-management branch"
-          >
-            <span aria-hidden="true">＋</span>
-            Create Project
-          </button> */}
 
           <p className="app-sidebar-section-label">Projects</p>
 
@@ -69,10 +53,10 @@ const AppSidebar = ({
       </aside>
       {sidebarOpen && (
         <button
-          className="app-sidebar-overlay"
-          type="button"
-          onClick={onCloseSidebar}
-          aria-label="Close navigation menu"
+          className  = "app-sidebar-overlay"
+          type       = "button"
+          onClick    = {onCloseSidebar}
+          aria-label = "Close navigation menu"
         />
       )}
     </>

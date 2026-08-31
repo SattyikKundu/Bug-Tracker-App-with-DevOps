@@ -1,0 +1,141 @@
+/* src/PageComponents/NotificationDrawer/NotificationDrawer.css */
+
+.notification-drawer {
+  position: absolute;                     /* Anchors drawer to notification-bell wrapper. */
+  z-index: 120;                           /* Places drawer above fixed header/page content. */
+  top: calc(100% + 10px);                 /* Adds a small gap below bell. */
+  right: 0;                               /* Aligns drawer with right edge of bell wrapper. */
+  width: min(390px, calc(100vw - 24px));  /* Keeps drawer usable on desktop and narrow phones. */
+  overflow: hidden;                       /* Keeps rounded corners around scrolling children. */
+  border: 1px solid #dfe3e8;            /* Defines drawer edge against page. */
+  border-radius: 10px;                    /* Matches Jira-inspired cards/dropdowns. */
+  background: #ffffff;                  /* Uses clean foreground surface. */
+  box-shadow: 0 12px 30px rgba(9, 30, 66, 0.18); /* Elevates drawer above workspace. */
+}
+
+.notification-drawer-header {
+  display: flex;                        /* Places heading and close button on one row. */
+  align-items: flex-start;              /* Aligns close button with heading top. */
+  justify-content: space-between;       /* Pushes close button to far right. */
+  gap: 16px;                            /* Prevents heading from touching close control. */
+  padding: 16px 17px 13px;              /* Gives drawer heading comfortable spacing. */
+  border-bottom: 1px solid #ebecf0;   /* Separates heading from actions/list. */
+}
+
+.notification-drawer-eyebrow {
+  margin: 0 0 3px;              /* Separates small label from heading. */
+  color: #6b778c;             /* Uses subdued section-label colour. */
+  font-size: 0.68rem;           /* Keeps eyebrow visually secondary. */
+  font-weight: 800;             /* Gives uppercase label definition. */
+  letter-spacing: 0.08em;       /* Adds compact interface-label spacing. */
+  text-transform: uppercase;    /* Matches other settings/page eyebrows. */
+}
+
+.notification-drawer-header h2 {
+  margin: 0;            /* Removes default heading margin. */
+  color: #172b4d;     /* Uses primary heading colour. */
+  font-size: 1.05rem;   /* Keeps drawer heading compact. */
+}
+
+.notification-drawer-close-button {
+  display: grid;              /* Centers close glyph. */
+  width: 30px;                /* Provides comfortable close target. */
+  height: 30px;               /* Matches close target width. */
+  place-items: center;        /* Centers glyph. */
+  border: 0;                  /* Removes browser border. */
+  border-radius: 6px;         /* Matches application controls. */
+  background: transparent;    /* Keeps close control subtle. */
+  color: #44546f;           /* Uses secondary icon colour. */
+  font-size: 1.25rem;         /* Makes close glyph easy to identify. */
+  cursor: pointer;            /* Communicates interaction. */
+}
+
+.notification-drawer-close-button:hover,
+.notification-drawer-close-button:focus-visible {
+  background: #f1f2f4;    /* Highlights close control. */
+  outline: none;            /* Visible background replaces browser outline. */
+}
+
+.notification-drawer-action-row {
+  display: flex;                        /* Places unread summary and action on one row. */
+  align-items: center;                  /* Vertically aligns action content. */
+  justify-content: space-between;       /* Separates summary from button. */
+  gap: 12px;                            /* Prevents overlap on narrow drawer. */
+  padding: 10px 16px;                   /* Keeps action bar compact. */
+  border-bottom: 1px solid #ebecf0;   /* Separates controls from scrolling list. */
+  background: #fafbfc;                /* Gives action strip subtle contrast. */
+  color: #6b778c;                     /* Uses secondary summary text. */
+  font-size: 0.78rem;                   /* Keeps summary compact. */
+}
+
+.notification-drawer-action-row button,
+.notification-drawer-footer button {
+  border: 0;                /* Removes browser button border. */
+  background: transparent;  /* Keeps utility actions lightweight. */
+  color: #0c66e4;         /* Uses application link/action blue. */
+  font: inherit;            /* Inherits compact interface typography. */
+  font-weight: 700;         /* Makes action discoverable. */
+  cursor: pointer;          /* Communicates interaction. */
+}
+
+.notification-drawer-action-row button:disabled {
+  color: #a5adba;     /* Visually disables unnecessary action. */
+  cursor: default;      /* Removes pointer when no unread items exist. */
+}
+
+.notification-drawer-list {
+  max-height: 450px;              /* Prevents long notifications from extending past viewport. */
+  overflow-y: auto;               /* Scrolls only notification rows. */
+  overscroll-behavior: contain;   /* Prevents drawer scroll from immediately moving page. */
+}
+
+.notification-drawer-list .notification-item + .notification-item {
+  border-top: 1px solid #ebecf0;    /* Separates notification rows. */
+}
+
+.notification-drawer-state {
+  display: flex;              /* Stacks empty/loading copy cleanly. */
+  min-height: 150px;          /* Prevents tiny drawer when list is empty. */
+  flex-direction: column;     /* Places message lines vertically. */
+  align-items: center;        /* Centers state message horizontally. */
+  justify-content: center;    /* Centers state message vertically. */
+  gap: 5px;                   /* Adds breathing room between state lines. */
+  padding: 24px;              /* Keeps copy away from drawer edges. */
+  color: #6b778c;           /* Uses secondary empty/loading text. */
+  font-size: 0.86rem;         /* Keeps state message compact. */
+  text-align: center;         /* Centers multi-line copy. */
+}
+
+.notification-drawer-state strong {
+  color: #172b4d;   /* Gives empty-state title more hierarchy. */
+}
+
+.notification-drawer-state--error {
+  color: #ae2a19;   /* Uses application error colour for request failure. */
+}
+
+.notification-drawer-footer {
+  padding: 11px 16px;               /* Gives bottom navigation action comfortable height. */
+  border-top: 1px solid #ebecf0;  /* Keeps footer fixed visually below scroll list. */
+  background: #ffffff;            /* Ensures footer remains separate from scrolling rows. */
+  text-align: center;               /* Centers View all link. */
+}
+
+.notification-drawer-footer button {
+  width: 100%;          /* Makes full footer an easy navigation target. */
+  padding: 4px;         /* Enlarges target without increasing footer heavily. */
+}
+
+@media (max-width: 520px) {
+  .notification-drawer {
+    position: fixed;        /* Uses viewport positioning on narrow phones. */
+    top: 68px;              /* Places drawer directly below fixed app header. */
+    right: 8px;             /* Leaves small viewport edge gap. */
+    left: 8px;              /* Allows drawer to use available mobile width. */
+    width: auto;            /* Lets left/right positioning determine width. */
+  }
+
+  .notification-drawer-list {
+    max-height: min(450px, calc(100vh - 210px));  /* Keeps action/footer visible on short phones. */
+  }
+}

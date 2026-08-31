@@ -3,7 +3,6 @@
 /* ========================================================================== */
 /* Valid drop-target feedback                                                 */
 /* ========================================================================== */
-
 .issue-board-column {
   transition:               /* Smooths lane feedback as issue crosses columns. */
     border-color 150ms ease,
@@ -15,7 +14,7 @@
   border-color: #579dff;                              /* Clearly identifies the currently valid destination. */
   background: #e7f1ff;                                /* Gives target lane a visible but restrained blue tint. */
   box-shadow: inset 0 0 0 2px rgba(40, 44, 49, 0.18);
-                                                      /* Adds internal highlight without changing lane geometry. */
+                                                        /* Adds internal highlight without changing lane geometry. */
 }
 
 .issue-board-column--drop-target .issue-board-column-heading {
@@ -27,9 +26,12 @@
   color: #0c66e4;           /* Reinforces active destination state. */
 }
 
-/* Reduce transition movements for users who request reduced motion. */
+
+/*****************************************************************************************/
+/*   Reduce transition movements for users who request reduced motion.                   */
+/*****************************************************************************************/
 @media (prefers-reduced-motion: reduce) {
   .issue-board-column {
-    transition: none;       /* Removes animated lane-state changes. */
+    transition: none;         /* Removes animated lane-state changes. */
   }
 }

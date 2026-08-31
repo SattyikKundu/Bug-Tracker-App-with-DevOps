@@ -8,10 +8,10 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 
 import {
-  clearCommentThread,          // Clears old issue comments when route changes
-  createComment,               // Creates top-level issue comments
-  fetchIssueComments,          // Initial/load-more top-level retrieval
-  refreshVisibleCommentThread  // Silent 30-second discussion refresh
+  clearCommentThread,          // clears old issue comments when route changes
+  createComment,               // creates top-level issue comments
+  fetchIssueComments,          // initial/load-more top-level retrieval
+  refreshVisibleCommentThread  // silent 30-second discussion refresh
 } from "../../Store/commentSlice.jsx";
 
 import {adjustCurrentIssueCommentCount} from "../../Store/issueSlice.jsx";
@@ -22,8 +22,8 @@ import "./IssueComments.css";
 
 
 const IssueComments = ({
-  issueId,          // Issue whose Activity discussion is displayed
-  projectArchived   // Archived issue comments become completely read-only
+  issueId,          // issue whose Activity discussion is displayed
+  projectArchived   // archived issue comments become completely read-only
 }) => {
 
   const dispatch = useDispatch();
@@ -41,9 +41,7 @@ const IssueComments = ({
   const [newCommentBody, setNewCommentBody] = useState("");
 
   /* Initial comment load.
-   *
-   * Clearing first prevents comments from the previously visited issue
-   * briefly appearing inside the new Issue Details page.
+   * Clearing first prevents comments from previously visited issue briefly appearing inside new Issue Details page.
    */
   useEffect(() => {
 
@@ -70,7 +68,7 @@ const IssueComments = ({
 
     const intervalId = window.setInterval(() => {
 
-          // Avoid background API traffic while this browser tab is hidden.
+          // avoid background API traffic while this browser tab is hidden.
           if (document.visibilityState !== "visible") {
             return;
           }
@@ -86,7 +84,7 @@ const IssueComments = ({
   }, [dispatch, issueId]);
 
 
-  // When the user returns to a previously hidden tab, refresh immediately rather than waiting another full 30 seconds.
+  // when user returns to a previously hidden tab, refresh immediately rather than waiting another full 30 seconds.
   useEffect(() => {
 
     const handleVisibilityChange = () => {
@@ -177,12 +175,12 @@ const IssueComments = ({
           </label>
 
           <textarea
-            id="newIssueComment"
-            value={newCommentBody}
-            onChange={(event) => setNewCommentBody(event.target.value)}
-            rows="4"
-            maxLength="5000"
-            placeholder="Share an update, question, test result, or implementation note..."
+            id          = "newIssueComment"
+            value       = {newCommentBody}
+            onChange    = {(event) => setNewCommentBody(event.target.value)}
+            rows        = "4"
+            maxLength   = "5000"
+            placeholder = "Share an update, question, test result, or implementation note..."
           />
 
           <div className="issue-comments-composer-footer">
@@ -237,9 +235,9 @@ const IssueComments = ({
       {/* -------------------------------------------------------------- */}
       {/* Threaded discussion                                            */}
       {/* -------------------------------------------------------------- */}
-      {topLevelStatus !== "failed" &&
-       topLevelComments.length === 0 &&
-       topLevelStatus !== "loading" && (
+      {topLevelStatus          !== "failed"  &&
+       topLevelComments.length === 0         &&
+       topLevelStatus          !== "loading" && (
 
         <div className="issue-comments-empty">
           <strong>No comments yet</strong>
@@ -252,11 +250,11 @@ const IssueComments = ({
           {topLevelComments.map(
             (comment) => (
               <CommentThreadItem
-                key={comment._id}
-                comment={comment}
-                issueId={issueId}
-                projectArchived={projectArchived}
-                parentDisplayDepth={0}
+                key                = {comment._id}
+                comment            = {comment}
+                issueId            = {issueId}
+                projectArchived    = {projectArchived}
+                parentDisplayDepth = {0}
               />
             )
           )}
@@ -268,10 +266,10 @@ const IssueComments = ({
       {/* -------------------------------------------------------------- */}
       {topLevelHasMore && (
         <button
-          className="issue-comments-load-more"
-          type="button"
-          onClick={handleLoadMoreComments}
-          disabled={topLevelStatus === "loading"}
+          className = "issue-comments-load-more"
+          type      = "button"
+          onClick   = {handleLoadMoreComments}
+          disabled  = {topLevelStatus === "loading"}
         >
           {topLevelStatus === "loading" ? "Loading..." : "Load more comments"}
         </button>

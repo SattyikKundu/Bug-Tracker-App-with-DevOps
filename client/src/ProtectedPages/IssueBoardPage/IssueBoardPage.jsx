@@ -1,53 +1,52 @@
 // src/ProtectedPages/IssueBoardPage/IssueBoardPage.jsx
 
 import {
-  useEffect, // Loads project/issue data and performs route cleanup
-  useMemo,   // Calculates filtered/grouped issues efficiently
-  useState   // Stores local board filter selections
+  useEffect, // loads project/issue data and performs route cleanup
+  useMemo,   // calculates filtered/grouped issues efficiently
+  useState   // stores local board filter selections
 } from "react";
 
 import {
-  Link,      // Provides link navigation back to  selected project
-  useParams  // Used to read project {:id} from /projects/:id/board
+  Link,      // provides link navigation back to  selected project
+  useParams  // used to read project {:id} from /projects/:id/board
 } from "react-router";
 
 import {
-  useDispatch, // Sends project/issue Redux actions
-  useSelector  // Reads project, issue, and auth states
+  useDispatch, // sends project/issue Redux actions
+  useSelector  // reads project, issue, and auth states
 } from "react-redux";
 
-import { DragDropProvider } from "@dnd-kit/react"; // Used for coordinating draggable cards and workflow-column targets
+import { DragDropProvider } from "@dnd-kit/react"; // used for coordinating draggable cards and workflow-column targets
 
 import {
-  PointerActivationConstraints,  // Controls how far/long pointer must move before drag begins
-  PointerSensor                  // Handles mouse, pen, and touch dragging
+  PointerActivationConstraints,  // controls how far/long pointer must move before drag begins
+  PointerSensor                  // handles mouse, pen, and touch dragging
 } from "@dnd-kit/dom";
 
 import {
-  clearCurrentProject, // Removes stale project after leaving board
-  fetchProjectById     // Loads selected project's name, members, archive state
+  clearCurrentProject, // removes stale project after leaving board
+  fetchProjectById     // loads selected project's name, members, archive state
 } from "../../Store/projectSlice.jsx";
 
 import {
-  clearIssueBoard,          // Clears old project issues 4-column board state when leaving board
-  fetchProjectIssues,       // Loads current project issues via "GET /projects/:pid/issues"
-  optimisticMoveIssue,      // Moves drag/drop issue immediately in Redux
-  revertOptimisticIssueMove,// Restores issue after rejected backend request
-  transitionIssueStatus,    // Persists workflow movement through existing backend endpoint
-                            // via "POST /issues/:id/transition"
+  clearIssueBoard,          // clears old project issues 4-column board state when leaving board
+  fetchProjectIssues,       // loads current project issues via "GET /projects/:pid/issues"
+  optimisticMoveIssue,      // moves drag/drop issue immediately in Redux
+  revertOptimisticIssueMove,// restores issue after rejected backend request
+  transitionIssueStatus,    // persists workflow movement through existing backend endpoint via "POST /issues/:id/transition"
 } from "../../Store/issueSlice.jsx";
 
 import {
   ErrorMessageToast,   // failure/error toast notification
 } from "../../utils/utilityFunctions.jsx";
 
-import DraggableIssueCard from "../../PageComponents/DraggableIssueCard/DraggableIssueCard.jsx";
-import IssueDropColumn from "../../PageComponents/IssueDropColumn/IssueDropColumn.jsx";
-import "./IssueBoardPage.css"; // Four-column board styling
+import DraggableIssueCard   from "../../PageComponents/DraggableIssueCard/DraggableIssueCard.jsx";
+import IssueDropColumn      from "../../PageComponents/IssueDropColumn/IssueDropColumn.jsx";
+import "./IssueBoardPage.css";  // Four-column board styling
 
 import {
-  BOARD_COLUMNS,       // Defines the four board lanes and their order
-  canTransitionStatus  // Validates drag/drop workflow destinations
+  BOARD_COLUMNS,       // defines four board lanes and their order
+  canTransitionStatus  // validates drag/drop workflow destinations
 } from "../../utils/issueWorkflow.jsx";
 
 
@@ -85,11 +84,11 @@ const animateRejectedIssueBack = (issueId, rejectedPosition) => {
 
       const restoredPosition = restoredCard.getBoundingClientRect();
 
-      // Calculates how far  DOM card moved when Redux restored its original workflow status.
+      // calculates how far  DOM card moved when Redux restored its original workflow status.
       const translateX = rejectedPosition.left - restoredPosition.left;
       const translateY = rejectedPosition.top - restoredPosition.top;
 
-      // Web Animations API draws the card from its rejected location back toward its now-restored DOM position.
+      // web Animations API draws the card from its rejected location back toward its now-restored DOM position.
       restoredCard.animate(
         [
           {
@@ -104,7 +103,7 @@ const animateRejectedIssueBack = (issueId, rejectedPosition) => {
           }
         ],
         {
-          duration: 300, // Short enough to feel responsive but visibly floats home
+          duration: 300, // short enough to feel responsive but visibly floats home
           easing:   "cubic-bezier(0.22, 0.8, 0.3, 1)"
         }
       );
@@ -118,15 +117,15 @@ const animateRejectedIssueBack = (issueId, rejectedPosition) => {
  * Mouse/pen: pointer must move 8px before a drag begins.
  * Touch:     hold briefly before dragging, while allowing a little finger movement.
  *
- * This makes normal clicks and scrolling less likely to accidentally turn into drag operations.
+ * this makes normal clicks and scrolling less likely to accidentally turn into drag operations.
  */
 const issueBoardSensors = (defaultSensors) => [
 
-  // Remove default immediately-activating PointerSensor.
+  // removes default immediately-activating PointerSensor.
   // KeyboardSensor and any other defaults remain untouched.
   ...defaultSensors.filter((sensor) => sensor !== PointerSensor),
 
-  // Add our customized pointer behavior back.
+  // add our customized pointer behavior back.
   PointerSensor.configure({ activationConstraints: (event) => {
 
       // Touchscreens need a different compromise since 
@@ -134,8 +133,8 @@ const issueBoardSensors = (defaultSensors) => [
       if (event.pointerType === "touch") {
         return [
           new PointerActivationConstraints.Delay({
-            value:     220,  // Finger must remain down for ~0.22 sec before drag starts
-            tolerance: 8     // Small natural finger movement is tolerated
+            value:     220,  // finger must remain down for ~0.22 sec before drag starts
+            tolerance: 8     // small natural finger movement is tolerated
           })
         ];
       }
@@ -157,21 +156,19 @@ const issueBoardSensors = (defaultSensors) => [
 //=================================================================================================
 const IssueBoardPage = () => {
 
-  const { id: projectId } = useParams(); // Current project's MongoDB ID from /projects/:id/board.
-
-  const dispatch =useDispatch(); // Redux dispatcher
-
-  const {user} = useSelector((state) => state.auth); // Logged-in user determines board transition permissions.
+  const { id: projectId } = useParams();          // current project's MongoDB ID from /projects/:id/board.
+  const dispatch          = useDispatch();        // redux dispatcher
+  const {user}            = useSelector((state) => state.auth); // logged-in user determines board transition permissions.
 
 
-  // Selected project provides project name, members, lead, and archive state.
+  // selected project provides project name, members, lead, and archive state.
   const {
     currentProject: project,
     currentProjectStatus,
     currentProjectError
   } = useSelector((state) => state.projects);
 
-  // Issue-board Redux state.
+  // issue-board redux state.
   const {
     issues,
     status: issueStatus,
@@ -179,13 +176,10 @@ const IssueBoardPage = () => {
     transitioningIssueId
   } = useSelector((state) => state.issues);
 
-  
-  const [searchText, setSearchText] = useState(""); // Free-text board search.
 
-  const [priorityFilter, setPriorityFilter] = useState("all"); // Priority quick filter.
-
-  const [typeFilter, setTypeFilter] = useState("all");   // Issue-type quick filter.
-
+  const [searchText     , setSearchText     ] = useState("");    // free-text board search.
+  const [priorityFilter , setPriorityFilter ] = useState("all"); // priority quick filter.
+  const [typeFilter     , setTypeFilter     ] = useState("all"); // issue-type quick filter.
 
   /* Assignment filter:
    * all        → every issue
@@ -215,21 +209,18 @@ const IssueBoardPage = () => {
     };
   }, [dispatch, projectId]);
 
+  const currentUserId = user?._id || user?.id;   // normalize authenticated user ID.
 
-  const currentUserId = user?._id || user?.id;   // Normalize authenticated user ID.
-
-
-  // Normalize populated or plain project lead ID.
-  const projectLeadId =
+  const projectLeadId =   // normalize populated or plain project lead ID.
     (typeof project?.leadUserId === "object")
       ? project.leadUserId?._id
       : project?.leadUserId;
 
 
-  const isGlobalAdmin = (user?.role === "admin");   // Determine global application role.
+  const isGlobalAdmin = (user?.role === "admin");  // determine global application role.
 
 
-  // Determine selected-project leadership.
+  // determine selected-project leadership.
   const isProjectLead = (String(projectLeadId) === String(currentUserId));
 
 
@@ -267,18 +258,17 @@ const IssueBoardPage = () => {
     };
 
 
-    // Register lead separately in case lead is not duplicated in members array.
+    // register lead separately in case lead is not duplicated in members array.
     registerUser(project?.leadUserId);
 
-    // Register every populated project member.
+    // register every populated project member.
     (Array.isArray(project?.members) ? project.members : []).forEach(registerUser);
 
     return userMap;
   }, [project]);
 
 
-  // Resolve one issue's assignee into readable UI text.
-  const getAssigneeName = (issue) => {
+  const getAssigneeName = (issue) => { // resolve one issue's assignee into readable UI text.
     if (!issue.assigneeId) {
       return "Unassigned";
     }
@@ -309,7 +299,7 @@ const IssueBoardPage = () => {
    * + project lead; OR
    * + member who is reporter/assignee.
    *
-   * Backend still makes final decision.
+   * backend still makes final decision.
    */
   const userCanTransitionIssue = (issue) => {
     if (project?.archived === true) {
@@ -365,17 +355,14 @@ const IssueBoardPage = () => {
             .join(" ")
             .toLowerCase();
 
-
           if (!searchableText.includes(normalizedSearch)) {
             return false;
           }
         }
 
-
         // ---------------------------------------------------------------
         // Priority filter
         // ---------------------------------------------------------------
-
         const normalizedPriority = String(issue.priority ?? "").trim().toLowerCase();
 
         if (priorityFilter !== "all" && normalizedPriority !== priorityFilter) {
@@ -423,8 +410,7 @@ const IssueBoardPage = () => {
   ]);
 
 
-  // Group filtered collection into four workflow columns.
-  const issuesByStatus = useMemo(() => {
+  const issuesByStatus = useMemo(() => {   // group filtered collection into four workflow columns.
 
     const grouped = {
       open: [],
@@ -432,7 +418,6 @@ const IssueBoardPage = () => {
       ready_for_review: [],
       closed: []
     };
-
 
     filteredIssues.forEach((issue) => {
         if (grouped[issue.status]) {
@@ -447,9 +432,7 @@ const IssueBoardPage = () => {
 
 
   /* Explicit status-change handler.
-   *
-   * Drag-and-drop will later call this same Redux thunk 
-   * rather than inventing a second transition system.
+   * Drag-and-drop will later call this same Redux thunk rather than inventing a second transition system.
    */
   const handleTransition = async (issue, targetStatus) => {
 
@@ -474,12 +457,12 @@ const IssueBoardPage = () => {
  /* Handles mouse/touch/keyboard drag/drop workflow movement.
   *
   * Existing arrow controls remain available, so drag/drop is a
-  * progressive enhancement rather than the only way to move an issue.
+  * progressive enhancement rather than only way to move an issue.
   */
   const handleDragEnd = async (event) => {
     const { operation, canceled } = event;
 
-    if (canceled) {   // Escape/cancelled drag naturally returns the card home.
+    if (canceled) {   // escape/cancelled drag naturally returns card home.
       return;
     }
 
@@ -489,7 +472,7 @@ const IssueBoardPage = () => {
     * + outside the board; OR
     * + over an invalid workflow column.
     *
-    * We DO NOT change Redux.
+    * We DON'T change Redux.
     * dnd-kit therefore performs its normal drop-back animation and the
     * card visually floats back into its original location.
     */
@@ -508,7 +491,7 @@ const IssueBoardPage = () => {
     const targetStatus = target.data?.status || String(target.id).replace("issue-column:", "");
 
 
-    if (fromStatus === targetStatus) {  // Dropping back into same column is simply a no-op.
+    if (fromStatus === targetStatus) {  // dropping back into same column is simply a no-op.
       return;
     }
 
@@ -523,19 +506,17 @@ const IssueBoardPage = () => {
     }
 
     // Don't trust drag/drop alone for permissions:
-    // Backend will check again, but avoiding an unnecessary request
-    // gives users faster feedback.
+    // Backend will check again, but avoiding an unnecessary request gives users faster feedback.
     if (!userCanTransitionIssue(draggedIssue)) {
       ErrorMessageToast("You do not have permission to move this issue.");
       return;
     }
 
     // OPTIMISTIC UPDATE:
-    // Move the card immediately so the board feels responsive.
+    // move the card immediately so the board feels responsive.
     dispatch(optimisticMoveIssue({ issueId, to: targetStatus }));
 
-    // Persist the SAME transition through backend endpoint 
-    // already used by your arrow buttons.
+    // persist the SAME transition through backend endpoint already used by your arrow buttons.
     const resultAction = await dispatch(transitionIssueStatus({ issueId, to: targetStatus }));
 
     // -------------------------------------------------------------------
@@ -551,7 +532,7 @@ const IssueBoardPage = () => {
     // -------------------------------------------------------------------
     
     // At this point, optimistic card is visually sitting inside target column.
-    // Measure THAT position before Redux restores the original status.
+    // measure THAT position before Redux restores the original status.
     const rejectedCard     = document.querySelector(`[data-issue-card-id="${issueId}"]`);
     const rejectedPosition = rejectedCard ? rejectedCard.getBoundingClientRect() : null;
 
@@ -566,22 +547,21 @@ const IssueBoardPage = () => {
     ErrorMessageToast(resultAction.payload || "The issue could not be moved and was returned to its previous column.");
   };
 
-  const handleClearFilters = () => {  // Reset every board filter to default state.
+  const handleClearFilters = () => {  // reset every board filter to default state.
     setSearchText("");
     setPriorityFilter("all");
     setTypeFilter("all");
     setAssigneeFilter("all");
   };
 
-  const filtersAreActive =          // Determine whether any filter is currently active.
+  const filtersAreActive =          // determine whether any filter is currently active.
     searchText.trim() !== "" ||
     priorityFilter !== "all" ||
     typeFilter !== "all" ||
     assigneeFilter !== "all";
 
 
-  // Loading project and issues together prevents board 
-  // from showing incomplete header/permission information.
+  // loading project and issues together prevents board from showing incomplete header/permission information.
   if (
     currentProjectStatus === "idle" ||
     currentProjectStatus === "loading" ||
@@ -690,25 +670,25 @@ const IssueBoardPage = () => {
             value={priorityFilter}
             onChange={(event) => setPriorityFilter(event.target.value)}
           >
-            <option value="all">All priorities</option>
-            <option value="critical">Critical</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value = "all">All priorities</option>
+            <option value = "critical">Critical</option>
+            <option value = "high">High</option>
+            <option value = "medium">Medium</option>
+            <option value = "low">Low</option>
           </select>
         </div>
 
         <div className="issue-board-filter">
           <label htmlFor="issue-type-filter">Type</label>
           <select
-            id="issue-type-filter"
-            value={typeFilter}
-            onChange={(event) => setTypeFilter(event.target.value)}
+            id       = "issue-type-filter"
+            value    = {typeFilter}
+            onChange = {(event) => setTypeFilter(event.target.value)}
           >
-            <option value="all">All types</option>
-            <option value="bug">Bugs</option>
-            <option value="task">Tasks</option>
-            <option value="story">Stories</option>
+            <option value = "all"  >All types</option>
+            <option value = "bug"  >Bugs</option>
+            <option value = "task" >Tasks</option>
+            <option value = "story">Stories</option>
           </select>
         </div>
 
@@ -719,9 +699,9 @@ const IssueBoardPage = () => {
             value={assigneeFilter}
             onChange={(event) => setAssigneeFilter(event.target.value)}
           >
-            <option value="all">All issues</option>
-            <option value="mine">Only my issues</option>
-            <option value="unassigned">Unassigned</option>
+            <option value = "all"       >All issues</option>
+            <option value = "mine"      >Only my issues</option>
+            <option value = "unassigned">Unassigned</option>
           </select>
         </div>
 
@@ -736,14 +716,14 @@ const IssueBoardPage = () => {
         )}
       </section>
 
-      {/* Horizontal Kanban-style workflow board. */}
+      {/* horizontal Kanban-style workflow board. */}
       <DragDropProvider
-        sensors={issueBoardSensors} // Adds click-vs-drag activation thresholds
-        onDragEnd={handleDragEnd}   // Persists or reverts the completed movement
+        sensors   = {issueBoardSensors} // adds click-vs-drag activation thresholds
+        onDragEnd = {handleDragEnd}   // persists or reverts the completed movement
       >
         <section
-          className="issue-board-scroll-container"
-          aria-label="Issue workflow board"
+          className  = "issue-board-scroll-container"
+          aria-label = "Issue workflow board"
         >
           <div className="issue-board-columns">
             {BOARD_COLUMNS.map(
@@ -758,19 +738,19 @@ const IssueBoardPage = () => {
                     filtersAreActive={filtersAreActive}
                   >
                     {columnIssues.map((issue) => {
-                        const canTransition = userCanTransitionIssue(issue);
+                        const canTransition   = userCanTransitionIssue(issue);
                         const isTransitioning = (String(transitioningIssueId) === String(issue._id));
 
                         return (
                           <DraggableIssueCard
-                            key={issue._id}
-                            issue={issue}
-                            assigneeName={getAssigneeName(issue)}
-                            canTransition={canTransition}
-                            projectArchived={project?.archived === true}
-                            isTransitioning={isTransitioning}
-                            onTransition={handleTransition}
-                            detailsPath={`/projects/${projectId}/issues/${issue._id}`}
+                            key             = {issue._id}
+                            issue           = {issue}
+                            assigneeName    = {getAssigneeName(issue)}
+                            canTransition   = {canTransition}
+                            projectArchived = {project?.archived === true}
+                            isTransitioning = {isTransitioning}
+                            onTransition    = {handleTransition}
+                            detailsPath     = {`/projects/${projectId}/issues/${issue._id}`}
                           />
                         );
                       }

@@ -115,20 +115,20 @@
 }
 
 .projects-sort-control select {
-  min-height: 38px; /* Creates accessible dropdown height. */
-  padding: 7px 34px 7px 11px; /* Adds internal spacing around option text. */
-  border: 1px solid #b7c0cd; /* Defines select boundary. */
-  border-radius: 7px; /* Matches existing application controls. */
-  outline: none; /* Removes browser outline in favor of custom focus. */
-  background: #ffffff; /* Keeps dropdown easy to read. */
-  color: #253858; /* Uses primary control text colour. */
-  font-size: 0.85rem; /* Keeps option text compact. */
-  font-weight: 650; /* Improves readability. */
-  cursor: pointer; /* Communicates dropdown interactivity. */
+  min-height: 38px;             /* Creates accessible dropdown height. */
+  padding: 7px 34px 7px 11px;   /* Adds internal spacing around option text. */
+  border: 1px solid #b7c0cd;  /* Defines select boundary. */
+  border-radius: 7px;           /* Matches existing application controls. */
+  outline: none;                /* Removes browser outline in favor of custom focus. */
+  background: #ffffff;        /* Keeps dropdown easy to read. */
+  color: #253858;             /* Uses primary control text colour. */
+  font-size: 0.85rem;           /* Keeps option text compact. */
+  font-weight: 650;             /* Improves readability. */
+  cursor: pointer;              /* Communicates dropdown interactivity. */
 }
 
 .projects-sort-control select:focus {
-  border-color: #2368a2; /* Highlights keyboard/focus interaction. */
+  border-color: #2368a2;          /* Highlights keyboard/focus interaction. */
   box-shadow: 0 0 0 3px rgba(35, 104, 162, 0.14); /* Accessible focus ring. */
 }
 

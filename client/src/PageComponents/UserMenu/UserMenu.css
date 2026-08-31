@@ -138,12 +138,10 @@
 /*********************************************************/
 /*************** Mobile device stylings ******************/
 /*********************************************************/
-
 @media (max-width: 600px) {
   .user-menu-trigger-text {
     display: none; /* Shows only avatar/arrow when header space is limited. */
   }
-
   .user-menu-dropdown {
     width: min(290px, calc(100vw - 30px)); /* Keeps dropdown inside phone viewport. */
   }

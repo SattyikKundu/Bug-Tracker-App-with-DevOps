@@ -1,17 +1,15 @@
 // src/PageComponents/IssueDropColumn/IssueDropColumn.jsx
 
-import { useDroppable } from "@dnd-kit/react"; // Makes one workflow column a drop destination
-
-import { canTransitionStatus } from "../../utils/issueWorkflow.jsx"; // Ensures only sensible workflow destinations highlight
-
-import "./IssueDropColumn.css"; // Visual feedback for valid drop targets
+import { useDroppable }        from "@dnd-kit/react";                // makes one workflow column a drop destination
+import { canTransitionStatus } from "../../utils/issueWorkflow.jsx"; // ensures only sensible workflow destinations highlight
+import "./IssueDropColumn.css";                                      // visual feedback for valid drop targets
 
 
 const IssueDropColumn = ({
   column,          // BOARD_COLUMNS entry for this workflow lane
-  issueCount,      // Number displayed inside column heading
-  filtersAreActive,// Changes empty-state wording
-  children         // Issue cards rendered inside the lane
+  issueCount,      // number displayed inside column heading
+  filtersAreActive,// changes empty-state wording
+  children         // issue cards rendered inside the lane
 }) => {
 
 
@@ -28,12 +26,10 @@ const IssueDropColumn = ({
       if (source.type !== "issue-card") {
         return false;
       }
-
       return canTransitionStatus(source.data?.fromStatus, column.status);
     },
     data: { status: column.status }
   });
-
 
   return (
     <section
@@ -52,8 +48,8 @@ const IssueDropColumn = ({
         </div>
 
         <span
-          className="issue-board-column-count"
-          aria-label={`${issueCount} issues`}
+          className  = "issue-board-column-count"
+          aria-label = {`${issueCount} issues`}
         >
           {issueCount}
         </span>

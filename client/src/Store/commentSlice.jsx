@@ -5,24 +5,24 @@ import {
   createSlice       // creates comment reducers/state/actions
 } from "@reduxjs/toolkit";
 
-import api from "../api/axios.js"; // Shared Axios client with JWT cookie support
+import api from "../api/axios.js"; // shared Axios client with JWT cookie support
 
 
-const TOP_LEVEL_PAGE_SIZE = 20; // Number of top-level comments loaded at a time
-const REPLY_PAGE_SIZE     = 10; // Number of direct    replies loaded at a time
+const TOP_LEVEL_PAGE_SIZE = 20; // number of top-level comments loaded at a time
+const REPLY_PAGE_SIZE     = 10; // number of direct    replies loaded at a time
 
 
-const createReplyEntry = () => ({ // Creates default replies-state entry for one parent comment.
+const createReplyEntry = () => ({ // creates default replies-state entry for one parent comment.
 
-  items: [],             // Direct child comments currently loaded
+  items: [],             // direct child comments currently loaded
   status: "idle",        // idle | loading | succeeded | failed
-  error: null,           // Reply-list loading error
-  loaded: false,         // True once this parent has actually been queried
-  hasMore: false         // True when another reply page is available
+  error: null,           // reply-list loading error
+  loaded: false,         // true once this parent has actually been queried
+  hasMore: false         // true when another reply page is available
 });
 
 
-// Removes duplicate comments whilst preserving chronological order.
+// removes duplicate comments whilst preserving chronological order.
 const mergeUniqueComments = ( existingComments, incomingComments) => {
 
   const commentsById = new Map();
@@ -38,7 +38,7 @@ const mergeUniqueComments = ( existingComments, incomingComments) => {
 };
 
 
-// Replaces one comment anywhere inside the currently loaded comment state.
+// replaces one comment anywhere inside the currently loaded comment state.
 const replaceLoadedComment = (state, updatedComment) => {
 
   const topLevelIndex =
@@ -69,7 +69,7 @@ const replaceLoadedComment = (state, updatedComment) => {
 };
 
 
-// Soft-deletes one already-loaded comment locally.
+// soft-deletes one already-loaded comment locally.
 const markLoadedCommentDeleted = (state, commentId) => {
 
   const markDeleted = (comment) => {
@@ -134,42 +134,31 @@ export const fetchIssueComments = createAsyncThunk(
       const currentLength = state.topLevelComments.length;
       const skip = append ? currentLength : 0;
 
-
       /* Normal page:
        * fetch 20 + 1.
        *
-       * The extra row lets us know whether another page exists
-       * without requiring a separate total-count endpoint.
+       * The extra row lets us know whether another page exists without requiring a separate total-count endpoint.
        */
       let requestedVisibleCount = TOP_LEVEL_PAGE_SIZE;
 
 
-      /* Background polling refreshes everything currently visible,
-       * plus room for another page of newly arrived comments.
-       */
+      // background polling refreshes everything currently visible,plus room for another page of newly arrived comments.
       if (refresh) {
-
         requestedVisibleCount =
           Math.min(
             Math.max( currentLength + TOP_LEVEL_PAGE_SIZE, TOP_LEVEL_PAGE_SIZE), 99
           );
       }
 
-
       const apiLimit = requestedVisibleCount + 1;
-
 
       const response =
         await api.get(
           `/issues/${issueId}/comments`,
-          {
-            params: { skip, limit: apiLimit }
-          }
+          { params: { skip, limit: apiLimit } }
         );
 
-
       const receivedComments = response.data.comments ?? [];
-
 
       return {
         comments: receivedComments.slice(0,requestedVisibleCount),
@@ -271,8 +260,7 @@ export const createComment = createAsyncThunk(
 
 /* PATCH /comments/:id
  *
- * Backend permits only the original author to edit
- * a non-deleted comment.
+ * Backend permits only the original author to edit a non-deleted comment.
  */
 export const updateComment = createAsyncThunk(
   "comments/updateComment",
@@ -362,11 +350,11 @@ export const refreshVisibleCommentThread = ({ issueId }) => async (dispatch, get
  */
 export const expandCommentThread =
   ({
-    parentId // Comment whose entire descendant branch should be expanded
+    parentId // comment whose entire descendant branch should be expanded
   }) =>
   async (
-    dispatch, // Used to dispatch reply-loading actions recursively
-    getState  // Used to inspect already-loaded reply state
+    dispatch, // used to dispatch reply-loading actions recursively
+    getState  // used to inspect already-loaded reply state
   ) => {
 
   let replyEntry = getState().comments.repliesByParent[parentId];
@@ -404,13 +392,13 @@ export const expandCommentThread =
 
 
 const initialState = {
-  topLevelComments: [],   // Root comments currently loaded
+  topLevelComments: [],   // root comments currently loaded
   topLevelStatus: "idle", // idle | loading | succeeded | failed
-  topLevelError: null,    // Initial/top-level load error
-  topLevelHasMore: false, // More root comments available
-  repliesByParent: {},    // Direct replies indexed by parent comment ID
-  createStatus: "idle",   // Tracks top-level/reply creation
-  mutationStatusById: {}  // Tracks edit/delete operations per comment
+  topLevelError: null,    // initial/top-level load error
+  topLevelHasMore: false, // more root comments available
+  repliesByParent: {},    // direct replies indexed by parent comment ID
+  createStatus: "idle",   // tracks top-level/reply creation
+  mutationStatusById: {}  // tracks edit/delete operations per comment
 };
 
 
@@ -418,7 +406,7 @@ const commentSlice = createSlice({
   name: "comments",
   initialState,
   reducers: {
-    clearCommentThread: (state) => { // Clears one Issue Details page's entire comment thread.
+    clearCommentThread: (state) => { // clears one Issue Details page's entire comment thread.
       state.topLevelComments   = [];
       state.topLevelStatus     = "idle";
       state.topLevelError      = null;
@@ -476,10 +464,8 @@ const commentSlice = createSlice({
             state.repliesByParent[parentId].status ="loading";
             state.repliesByParent[parentId].error = null;
           }
-
         }
       )
-
       .addCase(fetchCommentReplies.fulfilled, (state, action) => {
           const {parentId, replies, hasMore, append} = action.payload;
 

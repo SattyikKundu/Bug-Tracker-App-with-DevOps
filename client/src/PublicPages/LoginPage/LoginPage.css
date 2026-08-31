@@ -1,336 +1,377 @@
 /* src/PublicPages/LoginPage/LoginPage.css */
 
+/***********************************************************/
+/********************** Login layout ***********************/
+/***********************************************************/
 .login-page {
-  display: grid;
-  grid-template-columns: minmax(320px, 1.05fr) minmax(420px, 0.95fr);
-  min-height: 100vh;
-  background: #f7f8fa;
+  min-height: 100vh;                          /* Keeps login experience at least full-screen height. */
+  background: #f7f8fa;                      /* Provides a soft neutral background behind both panels. */
+  display: grid;                              /* Splits public login screen into brand and form panels. */
+  grid-template-columns: minmax(320px, 1.05fr) minmax(420px, 0.95fr); /* Gives brand panel slightly more desktop width. */
 }
 
+
+/*********************************************************/
+/******************* Login success toast *****************/
+/*********************************************************/
 .login-success-toast {
-  position: fixed;
-  z-index: 20;
-  top: 22px;
-  right: 22px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  width: min(calc(100% - 28px), 460px);
-  gap: 11px;
-  padding: 13px 14px;
-  border: 1px solid #7bc99b;
-  border-radius: 9px;
-  background: #e9f8ef;
-  color: #1f6f43;
-  box-shadow: 0 12px 34px rgba(9, 30, 66, 0.18);
-  font-size: 0.92rem;
-  font-weight: 650;
+  position: fixed;                          /* Keeps toast visible above login page while content scrolls. */
+  z-index: 20;                              /* Places toast above cards/panels. */
+  top: 22px;                                /* Offsets toast from top viewport edge. */
+  right: 22px;                              /* Anchors toast to upper-right corner. */
+
+  display: grid;                            /* Aligns status icon, message, and close button in one row. */
+  grid-template-columns: auto 1fr auto;     /* Gives message remaining horizontal space. */
+  align-items: center;                      /* Vertically centers all toast contents. */
+
+  width: min(calc(100% - 28px), 460px);     /* Keeps toast responsive while limiting desktop width. */
+  gap: 11px;                                /* Separates icon, message, and close button. */
+  padding: 13px 14px;                       /* Creates compact but readable toast spacing. */
+
+  border: 1px solid #7bc99b;              /* Adds a success-colored outline. */
+  border-radius: 9px;                       /* Softens toast corners. */
+  background: #e9f8ef;                    /* Uses a light success background. */
+  color: #1f6f43;                         /* Uses accessible dark-green success text. */
+
+  box-shadow: 0 12px 34px rgba(9, 30, 66, 0.18);   /* Separates floating toast from page. */
+  font-size: 0.92rem;                                /* Keeps toast message compact. */
+  font-weight: 650;                                  /* Gives success message stronger emphasis. */
 }
 
 .login-success-icon {
-  display: grid;
-  width: 25px;
-  height: 25px;
-  place-items: center;
-  border-radius: 50%;
-  background: #27864f;
-  color: #ffffff;
-  font-size: 0.8rem;
+  display: grid;          /* Makes centering success glyph simple. */
+  width: 25px;            /* Sets circular icon width. */
+  height: 25px;           /* Matches icon width for a perfect circle. */
+  place-items: center;    /* Centers glyph horizontally and vertically. */
+  border-radius: 50%;     /* Creates circular success badge. */
+  background: #27864f;  /* Uses a darker success-green fill. */
+  color: #ffffff;       /* Keeps glyph readable against green. */
+  font-size: 0.8rem;      /* Keeps glyph proportional to badge. */
 }
 
 .login-success-toast button {
-  border: 0;
-  background: transparent;
-  color: #356b4c;
-  font-size: 1.3rem;
-  line-height: 1;
+  border: 0;                /* Removes default browser button border. */
+  background: transparent;  /* Lets toast background remain visible. */
+  color: #356b4c;         /* Uses a muted green close icon. */
+  font-size: 1.3rem;        /* Gives close control an easy-to-see size. */
+  line-height: 1;           /* Prevents extra vertical space around close symbol. */
 }
 
+
+/***********************************************************/
+/********************* Brand-side panel ********************/
+/***********************************************************/
 .login-brand-panel {
-  display: flex;
-  flex-direction: column;
-  padding: 36px clamp(32px, 5vw, 76px);
-  color: #ffffff;
+  display: flex;                        /* Lets logo sit at top while brand copy centers vertically. */
+  flex-direction: column;               /* Stacks logo and brand content vertically. */
+  padding: 36px clamp(32px, 5vw, 76px); /* Scales side spacing with viewport width. */
+  color: #ffffff;                     /* Establishes white text across dark brand panel. */
+
   background:
     radial-gradient(
       circle at 18% 18%,
       rgba(123, 201, 155, 0.22),
       transparent 32%
-    ),
+    ), /* Adds a subtle green highlight near upper-left brand area. */
     linear-gradient(
       145deg,
       #16385f 0%,
       #1f527f 58%,
       #2d729e 100%
-    );
+    ); /* Creates main blue brand gradient. */
 }
 
 .login-brand {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  gap: 12px;
-  color: #ffffff;
-  font-weight: 700;
-  text-decoration: none;
+  display: inline-flex;   /* Keeps logo mark and product name on one row. */
+  align-items: center;    /* Vertically centers brand mark and text. */
+  align-self: flex-start; /* Prevents brand link from stretching full width. */
+  gap: 12px;              /* Separates logo mark from brand text. */
+
+  color: #ffffff;       /* Keeps brand link white. */
+  font-weight: 700;       /* Gives product name strong emphasis. */
+  text-decoration: none;  /* Removes browser link underline. */
 }
 
 .login-brand-mark {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.12);
-  font-size: 0.87rem;
+  display: grid;          /* Makes BT initials easy to center. */
+  width: 40px;            /* Sets logo-mark width. */
+  height: 40px;           /* Matches width for square logo proportions. */
+  place-items: center;    /* Centers initials. */
+  font-size: 0.87rem;     /* Keeps initials proportional to mark. */
+  border-radius: 11px;    /* Gives mark rounded product-logo corners. */
+
+  border: 1px solid rgba(255, 255, 255, 0.42); /* Adds a translucent light outline. */
+  background: rgba(255, 255, 255, 0.12);       /* Adds subtle translucent fill. */
 }
 
 .login-brand-content {
-  max-width: 650px;
-  margin: auto 0;
-  padding: 80px 0;
+  max-width: 650px; /* Prevents hero copy from stretching too wide. */
+  margin: auto 0;   /* Vertically centers brand copy within available panel space. */
+  padding: 80px 0;  /* Preserves breathing room above/below hero copy. */
 }
 
 .login-eyebrow {
-  margin: 0 0 14px;
-  color: #cbe9f6;
-  font-size: 0.78rem;
-  font-weight: 750;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  margin: 0 0 14px;          /* Separates eyebrow text from main heading. */
+  color: #cbe9f6;          /* Uses a soft light-blue accent. */
+  font-size: 0.78rem;        /* Keeps eyebrow visually secondary. */
+  font-weight: 750;          /* Gives small uppercase text enough presence. */
+  letter-spacing: 0.13em;    /* Adds tracking appropriate for uppercase eyebrow text. */
+  text-transform: uppercase; /* Establishes compact product-eyebrow treatment. */
 }
 
 .login-brand-content h1 {
-  max-width: 660px;
-  margin: 0;
-  font-size: clamp(2.55rem, 5vw, 5.35rem);
-  line-height: 0.99;
-  letter-spacing: -0.052em;
+  max-width: 660px;           /* Controls heading line length. */
+  margin: 0;                  /* Removes default heading spacing. */
+  font-size: clamp(2.55rem, 5vw, 5.35rem); /* Responsively scales hero heading. */
+  line-height: 0.99;          /* Creates a compact display-heading rhythm. */
+  letter-spacing: -0.052em;   /* Tightens large headline lettering. */
 }
 
 .login-brand-content > p:last-child {
-  max-width: 550px;
-  margin: 27px 0 0;
-  color: #d9ecf6;
-  font-size: 1.05rem;
-  line-height: 1.7;
+  max-width: 550px;     /* Keeps supporting copy comfortably readable. */
+  margin: 27px 0 0;     /* Adds spacing beneath hero heading. */
+  color: #d9ecf6;     /* Uses softer text than white heading. */
+  font-size: 1.05rem;   /* Gives supporting copy readable prominence. */
+  line-height: 1.7;     /* Improves multi-line readability. */
 }
 
+
+
+/***********************************************************/
+/********************* Login form panel ********************/
+/***********************************************************/
 .login-form-panel {
-  display: grid;
-  place-items: center;
-  padding: 44px 28px;
+  display: grid;        /* Provides simple card centering. */
+  place-items: center;  /* Centers login card horizontally and vertically. */
+  padding: 44px 28px;   /* Keeps card away from viewport edges. */
 }
 
 .login-card {
-  width: min(100%, 450px);
-  padding: clamp(31px, 5vw, 48px);
-  border: 1px solid #dfe3e8;
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 18px 50px rgba(9, 30, 66, 0.1);
+  width: min(100%, 450px);         /* Keeps card fluid while limiting desktop width. */
+  padding: clamp(31px, 5vw, 48px); /* Scales internal card spacing responsively. */
+  border: 1px solid #dfe3e8;     /* Defines card against page background. */
+  border-radius: 18px;             /* Gives authentication card soft rounded corners. */
+  background: #ffffff;           /* Uses a clean form surface. */
+  box-shadow: 0 18px 50px rgba(9, 30, 66, 0.1); /* Adds restrained depth around form card. */
 }
 
 .login-card-header h2 {
-  margin: 0;
-  color: #172b4d;
-  font-size: 1.9rem;
-  letter-spacing: -0.025em;
+  margin: 0;                /* Removes browser default heading margin. */
+  color: #172b4d;         /* Uses primary application heading color. */
+  font-size: 1.9rem;        /* Establishes card heading hierarchy. */
+  letter-spacing: -0.025em; /* Slightly tightens card heading. */
 }
 
 .login-card-header p {
-  margin: 10px 0 0;
-  color: #5e6c84;
-  line-height: 1.6;
+  margin: 10px 0 0;     /* Separates supporting text from heading. */
+  color: #5e6c84;     /* Uses secondary text color. */
+  line-height: 1.6;     /* Improves readability. */
 }
 
 .login-form {
-  display: grid;
-  gap: 19px;
-  margin-top: 30px;
+  display: grid;    /* Stacks login controls vertically. */
+  gap: 19px;        /* Provides consistent spacing between fields/actions. */
+  margin-top: 30px; /* Separates form controls from card header. */
 }
 
 .login-field {
-  display: grid;
-  gap: 8px;
+  display: grid; /* Stacks each field label above its input. */
+  gap: 8px;      /* Separates label and control. */
 }
 
 .login-field label {
-  color: #253858;
-  font-size: 0.87rem;
-  font-weight: 700;
+  color: #253858;     /* Uses strong secondary-blue label text. */
+  font-size: 0.87rem;   /* Keeps field labels compact. */
+  font-weight: 700;     /* Makes labels easy to scan. */
 }
 
 .login-field input {
-  width: 100%;
-  min-height: 44px;
-  padding: 10px 12px;
-  border: 1px solid #b7c0cd;
-  border-radius: 7px;
-  outline: none;
-  background: #fafbfc;
-  color: #172b4d;
+  width: 100%;                  /* Lets inputs fill their form column. */
+  min-height: 44px;             /* Provides a comfortable interactive target. */
+  padding: 10px 12px;           /* Creates readable internal input spacing. */
+  border: 1px solid #b7c0cd;  /* Establishes default input boundary. */
+  border-radius: 7px;           /* Matches other application form controls. */
+  outline: none;                /* Replaces browser outline with custom focus styling. */
+  background: #fafbfc;        /* Gives idle inputs a subtle neutral tint. */
+  color: #172b4d;             /* Uses primary application text color. */
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease,
-    background-color 150ms ease;
+    background-color 150ms ease; /* Smooths hover/focus visual changes. */
 }
 
 .login-field input:hover {
-  background: #ffffff;
+  background: #ffffff;      /* Brightens field when pointer hovers. */
 }
 
 .login-field input:focus {
-  border-color: #2b6fba;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(43, 111, 186, 0.16);
+  border-color: #2b6fba;                          /* Highlights active field with primary blue. */
+  background: #ffffff;                            /* Keeps focused input crisp. */
+  box-shadow: 0 0 0 3px rgba(43, 111, 186, 0.16); /* Adds an accessible custom focus ring. */
 }
 
+
+/***********************************************************/
+/**************** Error and submit controls ****************/
+/***********************************************************/
 .login-error {
-  padding: 11px 13px;
-  border: 1px solid #ffbdad;
-  border-radius: 7px;
-  background: #ffebe6;
-  color: #ae2a19;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  padding: 11px 13px;          /* Gives error copy enough breathing room. */
+  border: 1px solid #ffbdad; /* Adds a soft error-colored boundary. */
+  border-radius: 7px;          /* Matches form-control corner radius. */
+  background: #ffebe6;       /* Uses a light error background. */
+  color: #ae2a19;            /* Uses dark accessible error text. */
+  font-size: 0.9rem;           /* Keeps validation text compact. */
+  line-height: 1.5;            /* Supports multi-line error messages. */
 }
 
 .login-submit-button,
 .google-login-button {
-  min-height: 46px;
-  border-radius: 7px;
-  font-weight: 750;
+  min-height: 46px;   /* Gives both authentication actions consistent height. */
+  border-radius: 7px; /* Matches rest of the form controls. */
+  font-weight: 750;   /* Gives primary/secondary actions strong emphasis. */
   transition:
     background-color 150ms ease,
     border-color 150ms ease,
-    transform 150ms ease;
+    transform 150ms ease; /* Smooths interactive button feedback. */
 }
 
 .login-submit-button {
-  border: 0;
-  background: #2368a2;
-  color: #ffffff;
+  border: 0;             /* Removes default browser button border. */
+  background: #2368a2; /* Uses application primary blue for main action. */
+  color: #ffffff;      /* Keeps button text high contrast. */
 }
 
 .login-submit-button:hover:not(:disabled) {
-  background: #17558b;
-  transform: translateY(-1px);
+  background: #17558b;        /* Darkens primary action on hover. */
+  transform: translateY(-1px);  /* Adds subtle lift feedback. */
 }
 
 .login-submit-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.68;
+  cursor: not-allowed;    /* Communicates unavailable submit state. */
+  opacity: 0.68;          /* Visually de-emphasizes disabled action. */
 }
 
+/***********************************************************/
+/********************* Google sign-in **********************/
+/***********************************************************/
+
 .login-divider {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin: 25px 0;
-  color: #7a869a;
-  font-size: 0.82rem;
+  display: flex;        /* Places divider lines around central text. */
+  align-items: center;  /* Vertically centers text with divider lines. */
+  gap: 13px;            /* Separates text from lines. */
+
+  margin: 25px 0;       /* Separates standard login from Google login. */
+  color: #7a869a;     /* Uses subtle secondary divider text. */
+  font-size: 0.82rem;    /* Keeps divider label understated. */
 }
 
 .login-divider::before,
 .login-divider::after {
-  flex: 1;
-  height: 1px;
-  background: #dfe3e8;
-  content: "";
+  flex: 1;                /* Makes both divider lines consume remaining width evenly. */
+  height: 1px;            /* Keeps separator line thin. */
+  background: #dfe3e8;  /* Uses neutral border color. */
+  content: "";            /* Generates decorative divider lines. */
 }
 
 .google-login-button {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border: 1px solid #b7c0cd;
-  background: #ffffff;
-  color: #253858;
+  display: flex;            /* Aligns Google mark and button text on one row. */
+  width: 100%;              /* Makes secondary sign-in action full-width. */
+  align-items: center;      /* Vertically centers button contents. */
+  justify-content: center;  /* Horizontally centers button contents. */
+  gap: 10px;                /* Separates Google mark and label. */
+
+  border: 1px solid #b7c0cd; /* Gives secondary action a neutral outline. */
+  background: #ffffff;       /* Uses white secondary-action surface. */
+  color: #253858;            /* Uses strong neutral-blue action text. */
 }
 
 .google-login-button:hover {
-  border-color: #8993a4;
-  background: #f7f8fa;
-  transform: translateY(-1px);
+  border-color: #8993a4;      /* Darkens outline on hover. */
+  background: #f7f8fa;         /* Adds subtle hover fill. */
+  transform: translateY(-1px);   /* Adds subtle lift feedback. */
 }
 
 .google-letter {
-  display: grid;
-  width: 22px;
-  height: 22px;
-  place-items: center;
-  border-radius: 50%;
-  color: #2867b2;
-  font-weight: 850;
+  display: grid;        /* Centers Google letter mark. */
+  width: 22px;          /* Sets mark width. */
+  height: 22px;         /* Matches width for circular proportions. */
+  place-items: center;  /* Centers letter inside mark. */
+  border-radius: 50%;   /* Gives mark circular shape. */
+  color: #2867b2;     /* Uses recognizable blue accent. */
+  font-weight: 850;     /* Gives single letter enough visual weight. */
 }
 
+
+/*********************************************************/
+/**************** Registration navigation ****************/
+/*********************************************************/
 .login-register-link {
-  margin: 25px 0 0;
-  color: #5e6c84;
-  text-align: center;
+  margin: 25px 0 0;     /* Separates registration prompt from sign-in actions. */
+  color: #5e6c84;     /* Uses secondary text for prompt copy. */
+  text-align: center;   /* Centers account-creation prompt. */
 }
 
 .login-register-link a {
-  color: #1d5f9a;
-  font-weight: 700;
-  text-decoration: none;
+  color: #1d5f9a;      /* Uses primary-link blue. */
+  font-weight: 700;      /* Emphasizes actionable portion. */
+  text-decoration: none; /* Removes default browser underline. */
 }
 
 .login-register-link a:hover {
-  text-decoration: underline;
+  text-decoration: underline; /* Restores underline as hover affordance. */
 }
 
+/***********************************************************/
+/******************** Route loading state ******************/
+/***********************************************************/
 .route-loading-screen {
-  display: grid;
-  min-height: 100vh;
-  place-items: center;
-  background: #f4f5f7;
-  color: #5e6c84;
+  display: grid;        /* Provides straightforward loading-copy centering. */
+  min-height: 100vh;    /* Keeps loading screen full viewport height. */
+  place-items: center;  /* Centers loading content horizontally and vertically. */
+
+  background: #f4f5f7; /* Matches application background. */
+  color: #5e6c84;      /* Uses subdued loading text. */
 }
 
+
+/***********************************************************/
+/******************** Tablet responsiveness ****************/
+/***********************************************************/
 @media (max-width: 900px) {
   .login-page {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;   /* Stacks brand and form panels vertically. */
   }
-
   .login-brand-panel {
-    min-height: 330px;
+    min-height: 330px;            /* Preserves enough visual brand presence on tablets. */
   }
-
   .login-brand-content {
-    padding: 68px 0 24px;
+    padding: 68px 0 24px;         /* Tightens hero vertical spacing after stacking. */
   }
-
   .login-brand-content h1 {
-    font-size: clamp(2.4rem, 8vw, 4.25rem);
+    font-size: clamp(2.4rem, 8vw, 4.25rem); /* Keeps heading responsive in single-column layout. */
   }
 }
 
+/***********************************************************/
+/******************** Mobile responsiveness ****************/
+/***********************************************************/
 @media (max-width: 560px) {
   .login-success-toast {
-    top: 14px;
-    right: 14px;
+    top: 14px;    /* Moves toast closer to mobile viewport edge. */
+    right: 14px;  /* Keeps equal compact side spacing. */
   }
-
   .login-brand-panel {
-    min-height: 270px;
-    padding: 26px 22px;
+    min-height: 270px;  /* Reduces brand-panel height on phones. */
+    padding: 26px 22px; /* Tightens horizontal/vertical mobile spacing. */
   }
-
   .login-brand-content {
-    padding: 50px 0 12px;
+    padding: 50px 0 12px; /* Reduces hero spacing on small screens. */
   }
-
   .login-form-panel {
-    padding: 22px 14px 32px;
+    padding: 22px 14px 32px; /* Gives form card safe mobile gutters. */
   }
-
   .login-card {
-    padding: 27px 20px;
-    border-radius: 13px;
+    padding: 27px 20px;   /* Tightens card interior on phones. */
+    border-radius: 13px; /* Slightly reduces corner radius at small size. */
   }
 }

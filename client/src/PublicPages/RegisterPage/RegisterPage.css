@@ -1,245 +1,270 @@
 /* src/PublicPages/RegisterPage/RegisterPage.css */
 
+/*********************************************************/
+/******************* Registration layout *****************/
+/*********************************************************/
 .register-page {
-  display: grid;
-  grid-template-columns: minmax(320px, 0.9fr) minmax(460px, 1.1fr);
-  min-height: 100vh;
-  background: #f7f8fa;
+  min-height: 100vh;        /* Keeps registration experience at least full-screen height. */
+  background: #f7f8fa;    /* Provides shared neutral authentication background. */
+  display: grid;            /* Splits registration into brand and form panels on desktop. */
+  grid-template-columns: minmax(320px, 0.9fr) minmax(460px, 1.1fr); /* Gives larger registration form slightly more space. */
+
 }
 
+/*********************************************************/
+/******************* Brand-side panel ********************/
+/*********************************************************/
 .register-brand-panel {
-  display: flex;
-  flex-direction: column;
-  padding: 36px clamp(32px, 5vw, 76px);
-  color: #ffffff;
+  display: flex;                        /* Lets logo remain at top while brand copy centers vertically. */
+  flex-direction: column;               /* Stacks logo and hero copy. */
+  padding: 36px clamp(32px, 5vw, 76px); /* Scales panel gutters with viewport width. */
+  color: #ffffff;                     /* Establishes white text across blue panel. */
+
   background:
     radial-gradient(
       circle at 20% 20%,
       rgba(124, 184, 255, 0.28),
       transparent 36%
-    ),
+    ), /* Adds a soft highlight around upper-left brand area. */
     linear-gradient(
       145deg,
       #173f7a 0%,
       #245ca5 55%,
       #2b6fba 100%
-    );
+    ); /* Creates main registration brand gradient. */
 }
 
 .register-brand {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  gap: 12px;
-  color: #ffffff;
-  font-weight: 700;
-  text-decoration: none;
+  display: inline-flex;     /* Keeps brand mark and product name on one row. */
+  align-items: center;      /* Vertically centers mark and text. */
+  align-self: flex-start;   /* Prevents link from stretching across panel. */
+  gap: 12px;                /* Separates brand mark and product name. */
+  color: #ffffff;         /* Keeps brand link white. */
+  font-weight: 700;         /* Gives product name strong emphasis. */
+  text-decoration: none;    /* Removes default link underline. */
 }
 
 .register-brand-mark {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.12);
-  font-size: 0.87rem;
+  display: grid;            /* Makes BT initials easy to center. */
+  width: 40px;              /* Sets logo-mark width. */
+  height: 40px;             /* Matches width for square proportions. */
+  place-items: center;      /* Centers mark text. */
+  font-size: 0.87rem;       /* Keeps initials proportional to mark size. */
+  border-radius: 11px;      /* Gives mark rounded product-logo corners. */
+  border: 1px solid rgba(255, 255, 255, 0.42); /* Adds translucent light outline. */
+  background: rgba(255, 255, 255, 0.12); /* Adds subtle translucent fill. */
 }
 
 .register-brand-content {
-  max-width: 560px;
-  margin: auto 0;
-  padding: 72px 0;
+  max-width: 560px;     /* Restricts hero copy to a readable line length. */
+  margin: auto 0;       /* Vertically centers brand copy within panel. */
+  padding: 72px 0;      /* Adds breathing room around centered hero copy. */
 }
 
 .register-eyebrow {
-  margin: 0 0 14px;
-  color: #cde3ff;
-  font-size: 0.78rem;
-  font-weight: 750;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  margin: 0 0 14px;           /* Separates eyebrow from main heading. */
+  color: #cde3ff;           /* Uses a soft light-blue accent. */
+  font-size: 0.78rem;         /* Keeps eyebrow visually secondary. */
+  font-weight: 750;           /* Gives small uppercase text enough presence. */
+  letter-spacing: 0.13em;     /* Adds display-style tracking. */
+  text-transform: uppercase;  /* Establishes eyebrow hierarchy. */
 }
 
 .register-brand-content h1 {
-  max-width: 580px;
-  margin: 0;
-  font-size: clamp(2.3rem, 4.3vw, 4.8rem);
-  line-height: 1.02;
-  letter-spacing: -0.045em;
+  max-width: 580px;           /* Controls heading line length. */
+  margin: 0;                  /* Removes default heading spacing. */
+  line-height: 1.02;          /* Creates compact display-heading rhythm. */
+  letter-spacing: -0.045em;   /* Tightens large headline lettering. */
+  font-size: clamp(2.3rem, 4.3vw, 4.8rem); /* Responsively scales hero heading. */
 }
 
 .register-brand-content > p:last-child {
-  max-width: 520px;
-  margin: 25px 0 0;
-  color: #dbeaff;
-  font-size: 1.05rem;
-  line-height: 1.7;
+  max-width: 520px;     /* Keeps supporting text comfortably readable. */
+  margin: 25px 0 0;     /* Separates description from hero heading. */
+  color: #dbeaff;     /* Uses softer text than white heading. */
+  font-size: 1.05rem;   /* Gives description readable prominence. */
+  line-height: 1.7;     /* Improves multi-line readability. */
 }
 
+/*********************************************************/
+/**************** Registration form panel ****************/
+/*********************************************************/
 .register-form-panel {
-  display: grid;
-  place-items: center;
-  padding: 44px 28px;
+  display: grid;        /* Provides simple registration-card centering. */
+  place-items: center;  /* Centers card horizontally and vertically. */
+  padding: 44px 28px;   /* Keeps card away from viewport edges. */
 }
 
 .register-card {
-  width: min(100%, 540px);
-  padding: clamp(30px, 5vw, 48px);
-  border: 1px solid #dfe3e8;
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 18px 50px rgba(9, 30, 66, 0.1);
+  width: min(100%, 540px);          /* Allows wider registration form while staying responsive. */
+  padding: clamp(30px, 5vw, 48px);  /* Scales card interior spacing responsively. */
+  border: 1px solid #dfe3e8;      /* Defines card from neutral page background. */
+  border-radius: 18px;              /* Gives card soft rounded corners. */
+  background: #ffffff;            /* Creates a clean form surface. */
+
+  box-shadow: 0 18px 50px rgba(9, 30, 66, 0.1); /* Adds restrained card depth. */
 }
 
 .register-card-header h2 {
-  margin: 0;
-  color: #172b4d;
-  font-size: 1.9rem;
-  letter-spacing: -0.025em;
+  margin: 0;                /* Removes browser default heading margin. */
+  color: #172b4d;         /* Uses primary application heading color. */
+  font-size: 1.9rem;        /* Establishes card-title hierarchy. */
+  letter-spacing: -0.025em; /* Slightly tightens card heading. */
 }
 
 .register-card-header p {
-  margin: 10px 0 0;
-  color: #5e6c84;
-  line-height: 1.6;
+  margin: 10px 0 0;   /* Separates explanatory copy from card title. */
+  color: #5e6c84;   /* Uses secondary text color. */
+  line-height: 1.6;   /* Improves readability. */
 }
 
 .register-form {
-  display: grid;
-  gap: 18px;
-  margin-top: 30px;
+  display: grid;      /* Stacks registration controls vertically. */
+  gap: 18px;          /* Creates consistent spacing between form groups. */
+  margin-top: 30px;   /* Separates form controls from card header. */
 }
 
 .register-name-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  display: grid;    /* Places first and last name fields side-by-side. */
+  gap: 16px;        /* Separates name fields. */
+  grid-template-columns: 1fr 1fr; /* Gives both name fields equal width. */
 }
 
 .register-field {
-  display: grid;
-  gap: 8px;
+  display: grid;  /* Stacks each field label above its input. */
+  gap: 8px;       /* Separates field label and control. */
 }
 
 .register-field label {
-  color: #253858;
-  font-size: 0.87rem;
-  font-weight: 700;
+  color: #253858;   /* Uses strong secondary-blue label text. */
+  font-size: 0.87rem; /* Keeps labels compact. */
+  font-weight: 700;   /* Makes field labels easy to scan. */
 }
 
 .register-field input {
-  width: 100%;
-  min-height: 44px;
-  padding: 10px 12px;
-  border: 1px solid #b7c0cd;
-  border-radius: 7px;
-  outline: none;
-  background: #fafbfc;
-  color: #172b4d;
+  width: 100%;        /* Lets input fill its grid column. */
+  min-height: 44px;   /* Provides a comfortable interactive target. */
+  padding: 10px 12px; /* Creates readable internal spacing. */
+
+  border: 1px solid #b7c0cd; /* Establishes default input boundary. */
+  border-radius: 7px;          /* Matches other application form controls. */
+  outline: none;               /* Replaces browser outline with custom focus styling. */
+  background: #fafbfc;       /* Gives idle inputs subtle neutral tint. */
+  color: #172b4d;            /* Uses primary application text color. */
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease,
-    background-color 150ms ease;
+    background-color 150ms ease; /* Smooths hover/focus state changes. */
 }
-
 .register-field input:hover {
-  background: #ffffff;
+  background: #ffffff;        /* Brightens field on pointer hover. */
 }
-
 .register-field input:focus {
-  border-color: #2b6fba;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(43, 111, 186, 0.16);
+  border-color: #2b6fba;        /* Highlights active field with application blue. */
+  background: #ffffff;          /* Keeps focused field crisp. */
+  box-shadow: 0 0 0 3px rgba(43, 111, 186, 0.16); /* Adds accessible custom focus ring. */
 }
 
+/*********************************************************/
+/**************** Error and submit controls **************/
+/*********************************************************/
 .register-error {
-  padding: 11px 13px;
-  border: 1px solid #ffbdad;
-  border-radius: 7px;
-  background: #ffebe6;
-  color: #ae2a19;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  padding: 11px 13px;     /* Gives error copy enough breathing room. */
+  border: 1px solid #ffbdad; /* Adds soft error-colored boundary. */
+  border-radius: 7px;     /* Matches surrounding controls. */
+  background: #ffebe6;  /* Uses light error background. */
+  color: #ae2a19;       /* Uses accessible dark error text. */
+  font-size: 0.9rem;      /* Keeps validation message compact. */
+  line-height: 1.5;       /* Supports multi-line errors. */
 }
 
 .register-submit-button {
-  min-height: 46px;
-  border: 0;
-  border-radius: 7px;
-  background: #2368a2;
-  color: #ffffff;
-  font-weight: 750;
+  min-height: 46px;       /* Gives primary registration action comfortable height. */
+  border: 0;              /* Removes default browser button border. */
+  border-radius: 7px;     /* Matches input corner radius. */
+  background: #2368a2;  /* Uses application primary blue. */
+  color: #ffffff;       /* Keeps action label high contrast. */
+  font-weight: 750;       /* Gives primary action strong emphasis. */
   transition:
     background-color 150ms ease,
-    transform 150ms ease;
+    transform 150ms ease; /* Smooths hover feedback. */
 }
 
 .register-submit-button:hover:not(:disabled) {
-  background: #17558b;
-  transform: translateY(-1px);
+  background: #17558b;       /* Darkens primary action on hover. */
+  transform: translateY(-1px); /* Adds subtle lift feedback. */
 }
 
 .register-submit-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.68;
+  cursor: not-allowed;    /* Communicates unavailable submit state. */
+  opacity: 0.68;          /* Visually de-emphasizes disabled action. */
 }
 
+
+/*********************************************************/
+/******************** Login navigation *********************/
+/*********************************************************/
 .register-login-link {
-  margin: 24px 0 0;
-  color: #5e6c84;
-  text-align: center;
+  margin: 24px 0 0;     /* Separates login prompt from registration form. */
+  color: #5e6c84;     /* Uses secondary prompt text. */
+  text-align: center;   /* Centers account-login prompt. */
 }
-
 .register-login-link a {
-  color: #1d5f9a;
-  font-weight: 700;
-  text-decoration: none;
+  color: #1d5f9a;       /* Uses application link blue. */
+  font-weight: 700;       /* Emphasizes actionable link text. */
+  text-decoration: none;  /* Removes default browser underline. */
 }
-
 .register-login-link a:hover {
-  text-decoration: underline;
+  text-decoration: underline; /* Restores underline as hover affordance. */
 }
 
+/*********************************************************/
+/******************** Tablet responsiveness **************/
+/*********************************************************/
 @media (max-width: 900px) {
+
   .register-page {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;   /* Stacks brand and form panels vertically. */
   }
 
   .register-brand-panel {
-    min-height: 310px;
+    min-height: 310px;          /* Preserves visible brand presence on tablet layouts. */
   }
 
   .register-brand-content {
-    padding: 64px 0 20px;
+    padding: 64px 0 20px;       /* Tightens hero vertical spacing once stacked. */
   }
 
   .register-brand-content h1 {
-    font-size: clamp(2.2rem, 8vw, 4rem);
+    font-size: clamp(2.2rem, 8vw, 4rem); /* Keeps hero heading responsive in single-column layout. */
   }
 }
 
+/*********************************************************/
+/******************** Mobile responsiveness **************/
+/*********************************************************/
 @media (max-width: 560px) {
+
   .register-brand-panel {
-    min-height: 260px;
-    padding: 26px 22px;
+    min-height: 260px;        /* Reduces brand-panel height on phones. */
+    padding: 26px 22px;       /* Tightens mobile panel gutters. */
   }
 
   .register-brand-content {
-    padding: 48px 0 10px;
+    padding: 48px 0 10px;     /* Reduces hero spacing on narrow screens. */
   }
 
   .register-form-panel {
-    padding: 22px 14px 32px;
+    padding: 22px 14px 32px;  /* Gives registration card safe mobile gutters. */
   }
 
   .register-card {
-    padding: 26px 20px;
-    border-radius: 13px;
+    padding: 26px 20px;       /* Tightens card interior on phones. */
+    border-radius: 13px;      /* Slightly reduces corner radius at small size. */
   }
 
   .register-name-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stacks first/last name fields on narrow phones. */
   }
+
 }

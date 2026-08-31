@@ -1,50 +1,50 @@
 /* src/AppPageLayouts/BasePageLayout/BasePageLayout.css */
 
 :root {
-  --app-header-height: 72px; /* Shared height of the fixed application header (used as a variable in other css pages). */
+  --app-header-height: 72px; /* Shared fixed-header height REUSED by protected-page layouts/components. */
 }
 
 * {
-  box-sizing: border-box;
+  box-sizing: border-box;    /* Includes padding/borders inside declared element widths and heights. */
 }
 
 html {
-  min-width: 320px;
-  min-height: 100%;
+  min-width: 320px; /* Prevents document from collapsing below supported mobile width. */
+  min-height: 100%; /* Lets body/root layouts expand against full document height. */
 }
 
 body {
-  min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
+  min-width: 320px;   /* Matches document's minimum supported viewport width. */
+  min-height: 100vh;  /* Ensures application always fills at least visible viewport height. */
+  margin: 0;          /* Removes browser's default body spacing. */
   font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  color: #172b4d;
-  background: #f4f5f7;
+    Inter,                /* Preferred application font when available. */
+    ui-sans-serif,        /* Uses platform's UI sans-serif fallback. */
+    system-ui,            /* Falls back to operating system's standard interface font. */
+    -apple-system,        /* Supports Apple's system font on older Safari versions. */
+    BlinkMacSystemFont,   /* Supports Chromium-based macOS system font rendering. */
+    "Segoe UI",           /* Uses Windows' standard UI font when needed. */
+    sans-serif;           /* FINAL generic fallback option. */
+  color: #172b4d;       /* Establishes application's default JIRA-inspired text color. */
+  background: #f4f5f7;  /* Establishes application's default neutral page background. */
 }
 
 button, input { 
-    font: inherit; 
+    font: inherit;  /* Keeps form controls consistent with surrounding application typography. */
 }
 
 button { 
-    cursor: pointer; 
+    cursor: pointer;  /* Gives enabled buttons expected interactive pointer cursor. */
 }
 
 a { 
-    color: inherit; 
+    color: inherit;  /* Lets individual components control link color instead of browser defaults. */
 }
 
 #root { 
-    min-height: 100vh; 
+    min-height: 100vh;  /* Ensures React root can always fill full viewport. */
 }
 
 .app-body { 
-    min-height: 100vh;
+    min-height: 100vh; /* Keeps main application wrapper full-height across routes. */
 }

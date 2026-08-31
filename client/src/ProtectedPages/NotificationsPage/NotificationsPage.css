@@ -1,0 +1,248 @@
+/* src/ProtectedPages/NotificationsPage/NotificationsPage.css */
+
+.notifications-page {
+  width: min(1080px, 100%);     /* Keeps inbox readable on wide monitors. */
+  margin: 0 auto;               /* Centers page inside protected workspace. */
+  padding: 48px 34px 72px;      /* Matches spacious authenticated-page rhythm. */
+}
+
+.notifications-page-heading {
+  display: flex;                    /* Places page title and settings shortcut side-by-side. */
+  align-items: flex-end;            /* Aligns settings action with lower heading area. */
+  justify-content: space-between;   /* Pushes settings action to page edge. */
+  gap: 24px;                        /* Prevents heading/action collision. */
+  margin-bottom: 24px;              /* Separates heading from inbox panel. */
+}
+
+.notifications-page-eyebrow {
+  margin: 0 0 6px;              /* Separates small label from title. */
+  color: #6b778c;             /* Uses secondary section-label colour. */
+  font-size: 0.72rem;           /* Keeps eyebrow compact. */
+  font-weight: 800;             /* Gives uppercase label definition. */
+  letter-spacing: 0.08em;       /* Adds clean interface-label spacing. */
+  text-transform: uppercase;    /* Matches profile/dashboard section treatment. */
+}
+
+.notifications-page-heading h1 {
+  margin: 0;                                /* Removes browser heading margin. */
+  color: #172b4d;                         /* Uses primary application heading colour. */
+  font-size: clamp(1.8rem, 3vw, 2.35rem);   /* Scales heading smoothly across screens. */
+  line-height: 1.15;                        /* Keeps title compact. */
+}
+
+.notifications-page-heading p:not(.notifications-page-eyebrow) {
+  margin: 8px 0 0;        /* Separates description from heading. */
+  color: #5e6c84;       /* Uses secondary descriptive text. */
+  line-height: 1.55;      /* Improves long description readability. */
+}
+
+.notifications-settings-link {
+  flex: 0 0 auto;               /* Prevents settings action from shrinking. */
+  padding: 9px 12px;            /* Creates compact secondary action target. */
+  border: 1px solid #c1c7d0;  /* Defines button against workspace background. */
+  border-radius: 7px;           /* Matches application controls. */
+  background: #ffffff;        /* Uses neutral secondary-action surface. */
+  color: #0c66e4;             /* Uses application action blue. */
+  font-weight: 700;             /* Keeps shortcut easy to discover. */
+  cursor: pointer;              /* Communicates interactivity. */
+}
+
+.notifications-settings-link:hover,
+.notifications-settings-link:focus-visible {
+  background: #f4f5f7;      /* Adds subtle interaction state. */
+  outline: none;              /* Uses border/background as focus treatment. */
+  border-color: #85b8ff;    /* Gives keyboard/hover state stronger outline. */
+}
+
+.notifications-panel {
+  overflow: hidden;               /* Keeps list rows within rounded card corners. */
+  border: 1px solid #dfe3e8;    /* Defines notification inbox card. */
+  border-radius: 10px;            /* Matches other Jira-inspired page cards. */
+  background: #ffffff;          /* Uses clean foreground card surface. */
+  box-shadow: 0 1px 2px rgba(9, 30, 66, 0.08);  /* Adds very light card elevation. */
+}
+
+.notifications-toolbar {
+  display: flex;                        /* Places filters and Mark all action on one row. */
+  align-items: center;                  /* Vertically aligns controls. */
+  justify-content: space-between;       /* Separates filter group and action. */
+  gap: 18px;                            /* Prevents controls from touching. */
+  padding: 12px 18px;                   /* Gives toolbar comfortable spacing. */
+  border-bottom: 1px solid #ebecf0;   /* Separates controls from notification list. */
+  background: #fafbfc;                /* Gives toolbar subtle visual distinction. */
+}
+
+.notifications-filter-tabs {
+  display: flex;        /* Places All/Unread filters horizontally. */
+  align-items: center;  /* Vertically aligns filter buttons. */
+  gap: 4px;             /* Keeps tabs grouped without touching. */
+}
+
+.notifications-filter-tab {
+  display: inline-flex;     /* Allows unread badge beside label. */
+  align-items: center;      /* Vertically aligns label and count. */
+  gap: 7px;                 /* Separates label from unread count. */
+  padding: 8px 11px;        /* Gives each filter a comfortable target. */
+  border: 0;                /* Uses fill instead of border for tab state. */
+  border-radius: 6px;       /* Matches compact application controls. */
+  background: transparent;  /* Inactive filters remain lightweight. */
+  color: #44546f;         /* Uses secondary inactive text. */
+  font-weight: 700;         /* Keeps filters easy to scan. */
+  cursor: pointer;          /* Communicates interaction. */
+}
+
+.notifications-filter-tab:hover {
+  background: #ebecf0;     /* Adds subtle hover cue. */
+}
+
+.notifications-filter-tab--active {
+  background: #e9f2ff;    /* Gives selected filter clear active surface. */
+  color: #0c66e4;         /* Uses primary action colour for selection. */
+}
+
+.notifications-filter-tab span {
+  display: grid;          /* Centers unread count. */
+  min-width: 20px;        /* Supports single/multi-digit count. */
+  height: 20px;           /* Keeps count compact. */
+  place-items: center;    /* Centers count text. */
+  padding: 0 5px;         /* Allows larger counts. */
+  border-radius: 999px;   /* Creates count pill. */
+  background: #de350b;  /* Uses attention red. */
+  color: #ffffff;       /* Maintains high contrast. */
+  font-size: 0.67rem;     /* Fits compact count badge. */
+}
+
+.notifications-mark-all-button {
+  padding: 8px 10px;        /* Creates compact toolbar action. */
+  border: 0;                /* Keeps utility action lightweight. */
+  border-radius: 6px;       /* Matches filter controls. */
+  background: transparent;  /* Does not compete with primary page content. */
+  color: #0c66e4;         /* Uses action blue. */
+  font-weight: 700;         /* Makes action discoverable. */
+  cursor: pointer;          /* Communicates interaction. */
+}
+
+.notifications-mark-all-button:hover:not(:disabled) {
+  background: #e9f2ff;    /* Highlights available utility action. */
+}
+
+.notifications-mark-all-button:disabled {
+  color: #a5adba;       /* Shows no unread work remains. */
+  cursor: default;        /* Removes pointer from disabled action. */
+}
+
+.notifications-list .notification-item + .notification-item {
+  border-top: 1px solid #ebecf0;  /* Separates inbox rows. */
+}
+
+.notifications-page-state {
+  display: flex;            /* Stacks status copy. */
+  min-height: 260px;        /* Gives empty/loading state meaningful presence. */
+  flex-direction: column;   /* Places title and support text vertically. */
+  align-items: center;      /* Centers content horizontally. */
+  justify-content: center;  /* Centers content vertically. */
+  gap: 6px;                 /* Separates state lines. */
+  padding: 40px 24px;       /* Keeps text away from panel edges. */
+  color: #6b778c;         /* Uses secondary state text. */
+  text-align: center;       /* Centers multi-line messages. */
+}
+
+.notifications-page-state strong {
+  color: #172b4d;     /* Gives empty-state heading hierarchy. */
+  font-size: 1rem;      /* Keeps state title restrained. */
+}
+
+.notifications-page-state--error,
+.notifications-page-state--error strong {
+  color: #ae2a19;       /* Uses application error colour. */
+}
+
+.notifications-pagination-footer {
+  display: flex;                    /* Places count summary and controls on one row. */
+  align-items: center;              /* Vertically aligns footer content. */
+  justify-content: space-between;   /* Separates summary from pagination. */
+  gap: 18px;                        /* Prevents overlap. */
+  padding: 14px 18px;               /* Gives pagination footer comfortable spacing. */
+  border-top: 1px solid #ebecf0;  /* Separates pagination from final notification. */
+  background: #fafbfc;            /* Gives footer subtle visual separation. */
+}
+
+.notifications-pagination-footer p {
+  margin: 0;            /* Removes paragraph browser margin. */
+  color: #6b778c;     /* Uses secondary count text. */
+  font-size: 0.8rem;    /* Keeps count summary compact. */
+}
+
+.notifications-pagination {
+  display: flex;              /* Places pagination controls horizontally. */
+  flex-wrap: wrap;            /* Allows controls to wrap on smaller widths. */
+  justify-content: flex-end;  /* Keeps controls aligned toward page edge. */
+  gap: 5px;                   /* Separates controls. */
+}
+
+.notifications-pagination button {
+  min-width: 34px;                /* Keeps numeric buttons easy to click. */
+  height: 34px;                   /* Gives consistent pagination control height. */
+  padding: 0 9px;                 /* Supports First/Prev/Next/Last text. */
+  border: 1px solid #c1c7d0;    /* Defines controls on toolbar background. */
+  border-radius: 6px;             /* Matches application button shape. */
+  background: #ffffff;          /* Uses neutral inactive page surface. */
+  color: #44546f;               /* Uses readable control text. */
+  font-size: 0.78rem;             /* Keeps pagination compact. */
+  font-weight: 700;               /* Improves small control readability. */
+  cursor: pointer;                /* Communicates interaction. */
+}
+
+.notifications-pagination button:hover:not(:disabled),
+.notifications-pagination button:focus-visible {
+  border-color: #85b8ff;    /* Gives hover/focus blue boundary. */
+  background: #e9f2ff;      /* Gives hover/focus fill. */
+  outline: none;              /* Uses border/background as focus treatment. */
+}
+
+.notifications-pagination .notifications-page-number--active {
+  border-color: #0c66e4;  /* Defines current page strongly. */
+  background: #0c66e4;    /* Uses application primary blue. */
+  color: #ffffff;         /* Gives active page high contrast. */
+}
+
+.notifications-pagination button:disabled {
+  opacity: 0.45;                  /* Indicates unavailable previous/next action. */
+  cursor: default;                /* Removes pointer from disabled controls. */
+}
+
+@media (max-width: 720px) {
+  .notifications-page {
+    padding: 34px 16px 60px;      /* Reduces workspace padding on tablets/phones. */
+  }
+
+  .notifications-page-heading {
+    align-items: flex-start;      /* Better aligns stacked content. */
+    flex-direction: column;       /* Stacks title and settings shortcut. */
+  }
+
+  .notifications-toolbar,
+  .notifications-pagination-footer {
+    align-items: stretch;           /* Allows stacked controls to use available width. */
+    flex-direction: column;         /* Prevents narrow horizontal crowding. */
+  }
+
+  .notifications-pagination {
+    justify-content: flex-start;    /* Keeps wrapped page buttons easy to follow. */
+  }
+}
+
+@media (max-width: 480px) {
+  .notifications-toolbar {
+    padding: 10px 12px;         /* Tightens toolbar on small phones. */
+  }
+
+  .notifications-filter-tabs {
+    width: 100%;                /* Lets filters share mobile toolbar width. */
+  }
+
+  .notifications-filter-tab {
+    flex: 1;                    /* Gives All and Unread equal-width mobile targets. */
+    justify-content: center;    /* Centers filter labels. */
+  }
+}

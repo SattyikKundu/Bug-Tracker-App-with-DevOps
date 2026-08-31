@@ -1,27 +1,28 @@
 // src/Store/projectSlice.js
 
 import {
-  createAsyncThunk, // Creates Redux actions for asynchronous API requests.
-  createSlice       // Creates the project's state, actions, and reducer.
+  createAsyncThunk, // creates redux actions for asynchronous API requests.
+  createSlice       // creates the project's state, actions, and reducer.
 } from "@reduxjs/toolkit";
 
-import api from "../api/axios.js"; // Uses the shared Axios instance with cookies enabled.
+import api from "../api/axios.js"; // uses the shared Axios instance with cookies enabled.
 
 
 /* Fetch all projects logged-in user can access:
- * The backend returns both active and archived projects.
- * The dashboard will separate those projects client-side.
+ * the backend returns both active and archived projects.
+ * the dashboard will separate those projects client-side.
  */
 export const fetchProjects = createAsyncThunk(
-  "projects/fetchProjects", // Unique Redux action name.
+  "projects/fetchProjects", // unique Redux action name.
 
-  async (_, thunkAPI) => { // No function argument is currently required.
+  async (_, thunkAPI) => { // no function argument is currently required.
     try {
-      const response = await api.get("/projects"); // Request accessible projects.
-      return response.data.projects ?? [];         // Return the array, or an empty array.
+      const response = await api.get("/projects"); // request accessible projects.
+      return response.data.projects ?? [];         // return the array, or an empty array.
     }
     catch (error) {
-      // Prefer gettign the backend's specific error message when one exists.
+
+      // Prefer getting backend's specific error message when one exists.
       // Otherwise, return a readable fallback message.
       return thunkAPI.rejectWithValue( error.response?.data?.error || "Unable to load your projects." );
     }
@@ -34,14 +35,14 @@ export const fetchProjects = createAsyncThunk(
  * to successfully call POST /projects/:id/restore.
  */
 export const restoreProject = createAsyncThunk(
-  "projects/restoreProject", // Unique Redux action name.
+  "projects/restoreProject", // unique Redux action name.
 
-  async (projectId, thunkAPI) => { // Receives the project MongoDB ID.
+  async (projectId, thunkAPI) => { // receives the project MongoDB ID.
     try {
-      const response = await api.post(`/projects/${projectId}/restore` ); // Backend archived project restore endpoint.
-      return response.data.project; // Return the newly restored project object.
+      const response = await api.post(`/projects/${projectId}/restore` ); // backend archived project restore endpoint.
+      return response.data.project; // return the newly restored project object.
     }
-    catch (error) { // Show backend permission/state errors.
+    catch (error) { // show backend permission/state errors.
       return thunkAPI.rejectWithValue(error.response?.data?.error ||  "Unable to restore this project.");
     }
   }
@@ -116,8 +117,7 @@ export const updateProjectMembers = createAsyncThunk(
 
       /*
        * The membership endpoint currently returns updated project.
-       * We later re-fetch full project because endpoint's response
-       * is not populated with full member names.
+       * We later re-fetch full project because endpoint's response is not populated with full member names.
        */
       await thunkAPI.dispatch(fetchProjectById(projectId));
       return response.data.project;
@@ -154,8 +154,7 @@ export const deleteProject = createAsyncThunk(
   async (projectId, thunkAPI) => {
     try {
       await api.delete(`/projects/${projectId}`);
-      return projectId; // Redux removes the deleted project locally
-
+      return projectId; // redux removes the deleted project locally
     }
     catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to delete project.");
@@ -167,42 +166,42 @@ export const deleteProject = createAsyncThunk(
 
 // Starting state for project-dashboard data.
 const initialState = {
-  projects: [],             // Every active + archived project returned by backend.
+  projects: [],             // every active + archived project returned by backend.
   status: "idle",           // idle | loading | succeeded | failed.
   error: null,              // GET /projects API error failure message.
 
-  restoreStatus: "idle",    // Tracks restore requests separately from initial loading.
-  restoreError: null,       // Stores restore-specific errors.
-  restoringProjectId: null, // Identifies which card currently shows "Restoring...".
+  restoreStatus: "idle",    // tracks restore requests separately from initial loading.
+  restoreError: null,       // stores restore-specific errors.
+  restoringProjectId: null, // identifies which card currently shows "Restoring...".
 
-  currentProject: null,       // Full currently opened project with populated users
+  currentProject: null,         // full currently opened project with populated users
   currentProjectStatus: "idle", // Tracks GET /projects/:id
-  currentProjectError: null,  // Error loading one project
+  currentProjectError: null,    // Error loading one project
 
-  mutationStatus: "idle",     // Tracks create/edit/member/archive/delete operations
-  mutationError: null         // Stores project-management mutation errors
+  mutationStatus: "idle",     // tracks create/edit/member/archive/delete operations
+  mutationError: null         // stores project-management mutation errors
 };
 
 
 const projectSlice = createSlice({
   name: "projects", // Redux state will be available as state.projects.
 
-  initialState: initialState, // Explicit initial state for the reducer.
+  initialState: initialState, // explicit initial state for the reducer.
 
   reducers: {
-    clearProjectError: (state) => { //Clears a previous API error. Maybe useful later for retry buttons or navigation.
+    clearProjectError: (state) => { // clears a previous API error. Maybe useful later for retry buttons or navigation.
       state.error = null;
     },
-    clearRestoreError: (state) => { //Clear archive/restore-specific API errors.
+    clearRestoreError: (state) => { // clear archive/restore-specific API errors.
       state.restoreError = null; 
     },
     clearProjectMutationError: (state) => {
-      state.mutationError = null; // Clears project-management API errors
+      state.mutationError = null; // clears project-management API errors
     },
     clearCurrentProject: (state) => {
-      state.currentProject = null;        // Removes project left from previous route
-      state.currentProjectStatus = "idle"; // Allows next project to fetch normally
-      state.currentProjectError = null;   // Clears previous project-load error
+      state.currentProject = null;         // removes project left from previous route
+      state.currentProjectStatus = "idle"; // allows next project to fetch normally
+      state.currentProjectError = null;    // clears previous project-load error
     }
   },
   
@@ -212,18 +211,18 @@ const projectSlice = createSlice({
       // #1 - Fetch accessible projects
       // =====================================================================
 
-      .addCase(fetchProjects.pending, (state) => { // Runs immediately after fetchProjects() is dispatched.
-        state.status = "loading";                  // Enables a dashboard loading state.
-        state.error = null;                        // Removes an older error before retrying.
+      .addCase(fetchProjects.pending, (state) => { // runs immediately after fetchProjects() is dispatched.
+        state.status = "loading";                  // enables a dashboard loading state.
+        state.error = null;                        // removes an older error before retrying.
       })
-      .addCase(fetchProjects.fulfilled, (state, action) => {  // Runs when GET /projects succeeds.    
-        state.status = "succeeded";                           // Marks the request as complete.
-        state.projects = action.payload;                      // Stores the returned projects.
-        state.error = null;                                   // Ensures old errors are no longer displayed.
+      .addCase(fetchProjects.fulfilled, (state, action) => {  // runs when GET /projects succeeds.    
+        state.status = "succeeded";                           // marks the request as complete.
+        state.projects = action.payload;                      // stores the returned projects.
+        state.error = null;                                   // ensures old errors are no longer displayed.
       })
-      .addCase(fetchProjects.rejected, (state, action) => {              // Runs when GET /projects fails.
-        state.status = "failed";                                         // Enables the dashboard error state.
-        state.error = action.payload || "Unable to load your projects."; // Usually contains the backend error message.
+      .addCase(fetchProjects.rejected, (state, action) => {              // runs when GET /projects fails.
+        state.status = "failed";                                         // enables the dashboard error state.
+        state.error = action.payload || "Unable to load your projects."; // usually contains the backend error message.
       })
 
       // =====================================================================
@@ -231,14 +230,14 @@ const projectSlice = createSlice({
       // =====================================================================
 
       .addCase(restoreProject.pending, (state, action) => {
-        state.restoreStatus = "loading";            // Restore request is ongoing.
-        state.restoringProjectId = action.meta.arg; // Save ID supplied to restoreProject(projectId).
-        state.restoreError = null;                  // Clear older restore errors.
+        state.restoreStatus = "loading";            // restore request is ongoing.
+        state.restoringProjectId = action.meta.arg; // save ID supplied to restoreProject(projectId).
+        state.restoreError = null;                  // clear older restore errors.
       })
       .addCase(restoreProject.fulfilled, (state, action) => {
-        state.restoreStatus = "succeeded";  // Restore completed/succeeded.
-        state.restoringProjectId = null;    // No project is currently restoring.
-        state.restoreError = null;          // Remove previous failure message.
+        state.restoreStatus = "succeeded";  // restore completed/succeeded.
+        state.restoringProjectId = null;    // no project is currently restoring.
+        state.restoreError = null;          // remove previous failure message.
 
         /* Replace "archived" project object with "restored" project returned by backend.
          *
@@ -257,25 +256,25 @@ const projectSlice = createSlice({
         }
       })
       .addCase(restoreProject.rejected, (state, action) => {
-        state.restoreStatus = "failed";  // Restore attempt failed.
-        state.restoringProjectId = null; // Re-enable the affected card button.
-        state.restoreError = action.payload || "Unable to restore this project.";  // Prefer backend error message (or move to backup)
+        state.restoreStatus = "failed";  // restore attempt failed.
+        state.restoringProjectId = null; // re-enable the affected card button.
+        state.restoreError = action.payload || "Unable to restore this project.";  // rrefer backend error message (or move to backup)
       })
       
       // =====================================================================
       // #3 - Create project
       // =====================================================================
       .addCase(createProject.pending, (state) => {
-        state.mutationStatus = "loading"; // Project creation has started
-        state.mutationError = null;       // Clear previous project-management error
+        state.mutationStatus = "loading"; // project creation has started
+        state.mutationError = null;       // clear previous project-management error
       })
       .addCase(createProject.fulfilled, (state, action) => {
-        state.mutationStatus = "succeeded";      // Creation completed successfully
-        state.mutationError = null;              // Clear error state
-        state.projects.unshift(action.payload);  // Add newly created project to project browser
+        state.mutationStatus = "succeeded";      // creation completed successfully
+        state.mutationError = null;              // clear error state
+        state.projects.unshift(action.payload);  // add newly created project to project browser
       })
       .addCase(createProject.rejected, (state, action) => {
-        state.mutationStatus = "failed"; // Creation failed
+        state.mutationStatus = "failed"; // creation failed
         state.mutationError = action.payload || "Unable to create project.";
       })
 
@@ -283,16 +282,16 @@ const projectSlice = createSlice({
       // #4 - Load one project
       // =====================================================================
       .addCase(fetchProjectById.pending, (state) => {
-        state.currentProjectStatus = "loading";  // Current project is loading
-        state.currentProjectError  = null;       // Remove old load errors
+        state.currentProjectStatus = "loading";  // current project is loading
+        state.currentProjectError  = null;       // remove old load errors
       })
       .addCase(fetchProjectById.fulfilled, (state, action) => {
-        state.currentProjectStatus = "succeeded";    // Project loaded
-        state.currentProject       = action.payload; // Store populated project
-        state.currentProjectError  = null;           // Clear previous errors
+        state.currentProjectStatus = "succeeded";    // project loaded
+        state.currentProject       = action.payload; // store populated project
+        state.currentProjectError  = null;           // clear previous errors
       })
       .addCase(fetchProjectById.rejected, (state, action) => {
-        state.currentProjectStatus = "failed"; // Project retrieval failed
+        state.currentProjectStatus = "failed";      // project retrieval failed
         state.currentProjectError = action.payload || "Unable to load project.";
       })
 
@@ -300,12 +299,12 @@ const projectSlice = createSlice({
       // #5 - Update project details / leadership
       // =====================================================================
       .addCase(updateProject.pending, (state) => {
-        state.mutationStatus = "loading"; // Project update underway
-        state.mutationError = null;       // Clear previous mutation error
+        state.mutationStatus = "loading"; // project update underway
+        state.mutationError = null;       // clear previous mutation error
       })
       .addCase(updateProject.fulfilled, (state, action) => {
-        state.mutationStatus = "succeeded";    // Update completed
-        state.currentProject = action.payload; // Refresh open project immediately
+        state.mutationStatus = "succeeded";    // update completed
+        state.currentProject = action.payload; // refresh open project immediately
         state.mutationError = null;
         const projectIndex =
           state.projects.findIndex(
@@ -315,7 +314,7 @@ const projectSlice = createSlice({
           );
         if (projectIndex !== -1) {
           state.projects[projectIndex] =
-            action.payload; // Update project browser's copy too
+            action.payload; // update project browser's copy too
         }
       })
       .addCase(updateProject.rejected, (state, action) => {
@@ -327,12 +326,12 @@ const projectSlice = createSlice({
       // #6 - Add/remove members
       // =====================================================================
       .addCase(updateProjectMembers.pending, (state) => {
-        state.mutationStatus = "loading"; // Membership update underway
-        state.mutationError = null;       // Clear previous error
+        state.mutationStatus = "loading"; // membership update underway
+        state.mutationError = null;       // clear previous error
       })
       .addCase(updateProjectMembers.fulfilled, (state) => {
-        state.mutationStatus = "succeeded";  // Membership request succeeded
-        state.mutationError = null;          // Full project is refreshed by thunk
+        state.mutationStatus = "succeeded";  // membership request succeeded
+        state.mutationError = null;          // full project is refreshed by thunk
       })
       .addCase(updateProjectMembers.rejected, (state, action) => {
         state.mutationStatus = "failed";
@@ -343,12 +342,12 @@ const projectSlice = createSlice({
       // #7 - Archive project
       // =====================================================================
       .addCase(archiveProject.pending, (state) => {
-        state.mutationStatus = "loading"; // Archive request underway
-        state.mutationError = null;       // Clear previous errors
+        state.mutationStatus = "loading"; // archive request underway
+        state.mutationError = null;       // clear previous errors
       })
       .addCase(archiveProject.fulfilled, (state, action) => {
         state.mutationStatus = "succeeded";
-        state.currentProject = action.payload; // Current page immediately becomes archived/read-only
+        state.currentProject = action.payload; // current page immediately becomes archived/read-only
         state.mutationError = null;
         const projectIndex =
           state.projects.findIndex(
@@ -357,7 +356,7 @@ const projectSlice = createSlice({
               String(action.payload._id)
           );
         if (projectIndex !== -1) {
-          state.projects[projectIndex] = action.payload; // Moves card into Archived tab automatically
+          state.projects[projectIndex] = action.payload; // moves card into Archived tab automatically
         }
       })
       .addCase(archiveProject.rejected, (state, action) => {
@@ -369,16 +368,17 @@ const projectSlice = createSlice({
       // #8 - Permanently delete project (Global admin only)
       // =====================================================================
       .addCase(deleteProject.pending, (state) => {
-        state.mutationStatus = "loading"; // Delete request underway
-        state.mutationError = null;       // Clear previous error
+        state.mutationStatus = "loading"; // delete request underway
+        state.mutationError = null;       // clear previous error
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.mutationStatus = "succeeded";
         state.projects =
           state.projects.filter(
             (project) => String(project._id) !== String(action.payload)
-          ); // Remove deleted project from project browser
-        state.currentProject = null; // Deleted project can no longer remain open
+          ); // removes deleted project from project browser
+
+        state.currentProject = null; // deleted project can no longer remain open
         state.mutationError = null;
       })
       .addCase(deleteProject.rejected, (state, action) => {
@@ -390,10 +390,10 @@ const projectSlice = createSlice({
 
 
 export const { 
-  clearProjectError,         // Existing project-load error cleaner.
-  clearRestoreError,         // New restore-error cleaner.
-  clearProjectMutationError, // Remove stored project mutation (editing/deleting/etc.) from state
-  clearCurrentProject        // Clear current project details from state
-} = projectSlice.actions; // Exporting slice actions
+  clearProjectError,         // existing project-load error cleaner.
+  clearRestoreError,         // new restore-error cleaner.
+  clearProjectMutationError, // remove stored project mutation (editing/deleting/etc.) from state
+  clearCurrentProject        // clear current project details from state
+} = projectSlice.actions;    // exporting slice actions
 
-export default projectSlice.reducer; // Used by configureStore().
+export default projectSlice.reducer; // used by configureStore().

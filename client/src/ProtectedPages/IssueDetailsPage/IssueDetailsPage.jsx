@@ -31,13 +31,13 @@ import {
 
 import { STATUS_LABELS } from "../../utils/issueWorkflow.jsx"; // converts internal workflow status into readable UI text
 
-import IssueComments from "../../PageComponents/IssueComments/IssueComments.jsx"; // Threaded Activity/comments section
+import IssueComments from "../../PageComponents/IssueComments/IssueComments.jsx"; // threaded Activity/comments section
 
-import "./IssueDetailsPage.css"; // Full Issue Details page styling
+import "./IssueDetailsPage.css"; // full Issue Details page styling
 
 
 
-// Converts a stored date into a readable issue-tracker timestamp (Example: Aug 19, 2026, 8:42 PM).
+// converts stored date into a readable issue-tracker timestamp (Example: Aug 19, 2026, 8:42 PM).
 const formatIssueDate = (dateValue) => {
 
   if (!dateValue) {
@@ -84,14 +84,13 @@ const formatEnumLabel = (value) => {
 const IssueDetailsPage = () => {
 
   const {
-    projectId, // Parent project from URL
-    issueId    // Selected issue from URL
+    projectId, // parent project from URL
+    issueId    // selected issue from URL
   } = useParams();
 
+  const dispatch = useDispatch(); // redux dispatcher
 
-  const dispatch = useDispatch(); // Redux dispatcher
-
-  const { user } = useSelector((state) => state.auth); // Current logged-in user used for edit/watch permissions
+  const { user } = useSelector((state) => state.auth); // current logged-in user used for edit/watch permissions
 
   const {
     currentProject: project,
@@ -115,20 +114,17 @@ const IssueDetailsPage = () => {
    * + archived/read-only behavior.
    */
   useEffect(() => {
-
     dispatch(fetchProjectById(projectId));
-
     dispatch(fetchIssueById(issueId));
-
     return () => {
       dispatch(clearCurrentIssue());
     };
   }, [ dispatch, projectId, issueId ]);
 
   
-  const currentUserId = user?._id || user?.id; // Normalize logged-in user ID.
+  const currentUserId = user?._id || user?.id; // normalize logged-in user ID.
 
-  // Normalize populated/plain project lead ID.
+  // normalize populated/plain project lead ID.
   const projectLeadId = 
     (typeof project?.leadUserId === "object") ? project.leadUserId?._id : project?.leadUserId;
 
@@ -139,8 +135,7 @@ const IssueDetailsPage = () => {
   /* Build a reusable user lookup from populated project information.
    *
    * This lets reporter, assignee, and status-history entries show names
-   * rather than raw MongoDB ObjectIds whenever user is still part of
-   * the project.
+   * rather than raw MongoDB ObjectIds whenever user is still part of the project.
    */
   const projectUsersById =
     useMemo(() => {
@@ -182,8 +177,7 @@ const IssueDetailsPage = () => {
           );
 
     /* A reporter/status-history actor might later leave the project.
-     * In that case we deliberately avoid pretending we still know
-     * their current profile information.
+     * In that case we deliberately avoid pretending we still know their current profile information.
      */
     if (!referencedUser) {
       return "Former / unavailable project user";
@@ -202,14 +196,11 @@ const IssueDetailsPage = () => {
     return fullName || "Project user";
   };
 
-
-  // Normalize reporter ID for permission checks.
+  // normalize reporter ID for permission checks.
   const reporterId = (typeof issue?.reporterId === "object") ? issue.reporterId?._id : issue?.reporterId;
 
-
-  // Normalize assignee ID for permission checks.
+  // normalize assignee ID for permission checks.
   const assigneeId = (typeof issue?.assigneeId === "object") ? issue.assigneeId?._id : issue?.assigneeId;
-
 
   /* Mirrors the backend's issue-edit policy:
    * + global admin; OR
@@ -228,13 +219,13 @@ const IssueDetailsPage = () => {
     );
 
 
-  // Check whether the current user already exists in issue.watchers[].
+  // check whether the current user already exists in issue.watchers[].
   const isWatching =
     Array.isArray(issue?.watchers) &&
     issue.watchers.some(
       (watcher) => {
         const watcherId = (typeof watcher === "object") ? watcher?._id : watcher;
-
+        
         return ((String(watcherId) === String(currentUserId)));
       }
     );

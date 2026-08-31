@@ -195,7 +195,6 @@
   cursor: pointer;                  /* Communicates interaction. */
 }
 
-
 .issue-comments-load-more:hover:not(:disabled) {
   background: #f1f2f4;      /* Gives pagination button familiar hover feedback. */
 }
@@ -227,6 +226,6 @@
   }
 
   .issue-comments-composer-footer button {
-    width: 100%;    /* Gives phone users a large top-level Comment action. */
+    width: 100%;                /* Gives phone users a large top-level Comment action. */
   }
 }

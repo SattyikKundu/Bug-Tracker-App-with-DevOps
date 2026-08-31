@@ -1,12 +1,12 @@
-import { BrowserRouter as Router,  // provides routing functionality via browser's history API
-         Routes,    // wrapper component used to group defined routes
-         Route,     // component used to define a route via specifying url path and component to render when path matches
-         Navigate   // used to handle redirection between routes
+import { BrowserRouter as Router, // provides routing functionality via browser's history API
+         Routes,                  // wrapper component used to group defined routes
+         Route,                   // component used to define a route via specifying url path and component to render when path matches
+         Navigate                 // used to handle redirection between routes
         } from 'react-router'; // router library for creating and managing routes
 
-import BasePageLayout      from '../AppPageLayouts/BasePageLayout/BasePageLayout.jsx'; // Base Page Layout with common features for ALL pages
-import PublicPageLayout    from '../AppPageLayouts/PublicPageLayout.jsx';              // page layout for public pages
-import ProtectedPageLayout from '../AppPageLayouts/ProtectedPageLayout.jsx';           // page layout for protected pages
+import BasePageLayout      from '../AppPageLayouts/BasePageLayout/BasePageLayout.jsx';            // base page layout with common features for ALL pages
+import PublicPageLayout    from '../AppPageLayouts/PublicPageLayout/PublicPageLayout.jsx';        // page layout for public pages
+import ProtectedPageLayout from '../AppPageLayouts/ProtectedPageLayout/ProtectedPageLayout.jsx';  // page layout for protected pages
 
 // All Public pages
 import LoginPage           from '../PublicPages/LoginPage/LoginPage.jsx';           // login page for users to access protected pages
@@ -19,9 +19,10 @@ import ProfilePage         from "../ProtectedPages/ProfilePage/ProfilePage.jsx";
 import ProjectsListPage    from "../ProtectedPages/ProjectsListPage/ProjectsListPage.jsx";     // active/archived project browser
 import CreateProjectPage   from "../ProtectedPages/CreateProjectPage/CreateProjectPage.jsx";   // new-project creation form
 import CurrentProjectPage  from "../ProtectedPages/CurrentProjectPage/CurrentProjectPage.jsx"; // current project management page
-import IssueFormPage       from "../ProtectedPages/IssueFormPage/IssueFormPage.jsx";           // Shared create/edit issue form
-import IssueBoardPage      from "../ProtectedPages/IssueBoardPage/IssueBoardPage.jsx";         // Four-column issues workflow board for ONE project
-import IssueDetailsPage    from "../ProtectedPages/IssueDetailsPage/IssueDetailsPage.jsx"; // Read-first full issue page
+import IssueFormPage       from "../ProtectedPages/IssueFormPage/IssueFormPage.jsx";           // shared create/edit issue form
+import IssueBoardPage      from "../ProtectedPages/IssueBoardPage/IssueBoardPage.jsx";         // four-column issues workflow board for ONE project
+import IssueDetailsPage    from "../ProtectedPages/IssueDetailsPage/IssueDetailsPage.jsx";     // read-first full issue page
+import NotificationsPage   from "../ProtectedPages/NotificationsPage/NotificationsPage.jsx";   // user's full notification inbox/history
 
 const App = () => {
 
@@ -34,27 +35,28 @@ const App = () => {
         {/* All routes that are part of Public Page Layout */}
         <Route element={<PublicPageLayout/>}>
 
-          {/* Route for "About" page, which explains the MERN-Bug-Tracker site's features and services */}
-          {/* <Route path='/about' element={<AboutPage />} /> */}
-
-          {/* Dedicated User Login page */}
+         
           <Route index element={<Navigate to="/login" replace/>} />
 
+          
+            {/* Dedicated User account Login page */}
             <Route path="login" element={<LoginPage />}/>
-            <Route path="register" element={<RegisterPage />} />
-
-             {/*  Dedicated User account Login page */}
             <Route path="auth/login" element={<Navigate to="/login" replace/>} />
 
             {/* Dedicated User account Registration page */}
+            <Route path="register" element={<RegisterPage />} />
             <Route path="auth/register" element={<Navigate to="/register" replace />}/>
           </Route>
 
         {/* Protected Routes Layout */}
         <Route element={<ProtectedPageLayout />}>
+        
           {/* Page shows user's profile information AND allows user to edit his/her profile information */}
           <Route path="profile"       element={<ProfilePage />}   />
           <Route path="dashboard"     element={<DashboardPage />} />
+
+          {/* Full paginated notification inbox/history. */}
+          <Route path="notifications" element={<NotificationsPage />} />
 
           <Route path="projects"      element={<ProjectsListPage />}/>
           <Route path="projects/new"  element={<CreateProjectPage />}/>

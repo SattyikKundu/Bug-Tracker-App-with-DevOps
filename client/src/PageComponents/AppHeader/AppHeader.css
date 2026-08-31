@@ -65,18 +65,6 @@
   background: #f1f2f4; /* Highlights hamburger on hover. */
 }
 
-.app-header-notification-placeholder {
-  display: grid;            /* Allows bell to be centered. */
-  width: 38px;              /* Sets compact control width. */
-  height: 38px;             /* Matches control height. */
-  place-items: center;      /* Centers bell icon. */
-  border: 0;                /* Removes browser border. */
-  border-radius: 50%;       /* Gives notification button circular shape. */
-  background: transparent;  /* Keeps placeholder understated. */
-  opacity: 0.45;            /* Communicates feature is not active yet. */
-}
-
-
 /*****************************************************/
 /************** Mobile design stylings ***************/
 /*****************************************************/

@@ -1,8 +1,8 @@
 // src/ProtectedPages/CurrentProjectPage/CurrentProjectPage.jsx
 
 import {
-  useEffect, // Loads project and performs debounced member searches
-  useMemo,   // Saves the result of calculation between component re-renders
+  useEffect, // loads project and performs debounced member searches
+  useMemo,   // saves the result of calculation between component re-renders
   useState   // used to store/edit states 
 } from "react";
 
@@ -13,14 +13,14 @@ import {
 } from "react-router";
 
 import {
-  useDispatch, // Sends Redux project actions
-  useSelector  // Used to read and extract data from global redux store state
+  useDispatch, // sends Redux project actions
+  useSelector  // used to read and extract data from global redux store state
 } from "react-redux";
 
-import toast from "react-hot-toast";
+
 import { ErrorMessageToast, SuccessMessageToast, NeutralMessageToast } from "../../utils/utilityFunctions.jsx"
 
-import api from "../../api/axios.js"; // Used for api requests to backend
+import api from "../../api/axios.js"; // used for api requests to backend
 
 import {
   archiveProject,               // archiving an active project
@@ -32,29 +32,29 @@ import {
   updateProjectMembers          // update project's members 
 } from "../../Store/projectSlice.jsx";
 
-import "./CurrentProjectPage.css"; // Project-management styling
+import "./CurrentProjectPage.css"; // project-management styling
 
 
 const CurrentProjectPage = () => {
 
-  const {id:projectId} = useParams();       // Current project's MongoDB ObjectId from URL
-  const dispatch       = useDispatch();     // Redux dispatcher
-  const navigate       = useNavigate();     // Router navigation helper
-  const {user}         = useSelector((state) => state.auth); // Current logged-in user determines project permissions
+  const {id:projectId} = useParams();       // current project's MongoDB ObjectId from URL
+  const dispatch       = useDispatch();     // redux dispatcher
+  const navigate       = useNavigate();     // router navigation helper
+  const {user}         = useSelector((state) => state.auth); // current logged-in user determines project permissions
 
 
   const {
-    currentProject: project,      // Populated selected project
-    currentProjectStatus,         // Tracks project retrieval
-    currentProjectError,          // Project-load error
-    mutationStatus,               // Tracks edit/member/archive/delete operations
-    mutationError                 // Mutation-specific API failure
+    currentProject: project,      // populated selected project
+    currentProjectStatus,         // tracks project retrieval
+    currentProjectError,          // project-load error
+    mutationStatus,               // tracks edit/member/archive/delete operations
+    mutationError                 // mutation-specific API failure
   } = useSelector((state) => state.projects);
 
 
  /* Convert shared Redux project-management errors into toast notifications.
   *
-  * Once toast.error() receives the message, immediately clear Redux so the
+  * Once toast.error() receives the message, immediately clear Redux so
   * same failure cannot follow the user to another project or route.
   */
   useEffect(() => {
@@ -66,36 +66,36 @@ const CurrentProjectPage = () => {
   }, [mutationError, dispatch]);
 
 
-  // Local editable project information form.
+  // local editable project information form.
   const [projectForm, setProjectForm] = useState({ name: "", description: ""});
 
-  // Holds selected member ID for leadership transfer.
+  // holds selected member ID for leadership transfer.
   const [newLeadId, setNewLeadId] = useState("");
 
-  // Member-search textbox value.
+  // member-search textbox value.
   const [memberSearchText, setMemberSearchText] = useState("");
 
-  // Search results from /api/projects/:id/member-search.
+  // search results from /api/projects/:id/member-search.
   const [memberSearchResults, setMemberSearchResults] = useState([]);
 
-  // Indicates whether more search results exist.
+  // indicates whether more search results exist.
   const [memberSearchPagination, setMemberSearchPagination] = useState({ page: 1, hasMore: false, nextPage: null });
 
   
   const [memberSearchStatus, setMemberSearchStatus] = useState("idle"); // idle | loading | succeeded | failed
-  const [memberSearchError,  setMemberSearchError]  = useState("");     // Search-specific error message
+  const [memberSearchError,  setMemberSearchError]  = useState("");     // search-specific error message
 
 
-  // Load the complete selected project whenever :id changes.
+  // load the complete selected project whenever :id changes.
   useEffect(() => {
     dispatch(fetchProjectById(projectId));
     return () => {
-      dispatch(clearCurrentProject()); // Prevent old project from flashing when navigating to another project
+      dispatch(clearCurrentProject()); // prevent old project from flashing when navigating to another project
     };
   }, [dispatch, projectId]);
 
 
-  // Populate edit form whenever project data is refreshed.
+  // populate edit form whenever project data is refreshed.
   useEffect(() => {
     if (!project) {
       return;
@@ -105,29 +105,28 @@ const CurrentProjectPage = () => {
   }, [project]);
 
 
-  // Normalize logged-in user's MongoDB ID.
+  // normalize logged-in user's MongoDB ID.
   const currentUserId = user?._id || user?.id;
 
-  // Normalize populated or plain leadUserId.
+  // normalize populated or plain leadUserId.
   const leadUserId = (typeof project?.leadUserId === "object") ? project.leadUserId?._id : project?.leadUserId;
 
-  // Determine whether logged-in user is the current project lead.
+  // determine whether logged-in user is the current project lead.
   const isProjectLead = (String(leadUserId) === String(currentUserId));
 
-  // Global admins receive management controls allowed by backend RBAC.
+  // global admins receive management controls allowed by backend RBAC.
   const isGlobalAdmin = (user?.role === "admin");
 
-  // Lead or global admin may edit project details/member list.
+  // lead or global admin may edit project details/member list.
   const canManageProject = (isProjectLead || isGlobalAdmin) && project?.archived !== true;
 
   // ONLY the project's stored lead may archive it.
   const canArchiveProject = isProjectLead && project?.archived !== true;
 
-  // Only global admins may permanently delete projects.
+  // only global admins may permanently delete projects.
   const canDeleteProject = isGlobalAdmin;
 
-
-  // Extract populated members safely.
+  // extract populated members safely.
   const members = useMemo(() => (Array.isArray(project?.members) ? project.members : []), [project]);
 
 
@@ -167,7 +166,7 @@ const CurrentProjectPage = () => {
             setMemberSearchError(error.response?.data?.error || "Unable to search registered users.");
           }
         },
-        350 // Debounce delay in milliseconds
+        350 // debounce delay in milliseconds
       );
 
     return () => { window.clearTimeout(timer); };
@@ -176,7 +175,7 @@ const CurrentProjectPage = () => {
 
 
 
-  const handleProjectFormChange = (event) => {   // Update editable project form.
+  const handleProjectFormChange = (event) => {   // update editable project form.
 
     const { name, value } = event.target;
     setProjectForm((current) => ({ ...current, [name]: value }));
@@ -188,7 +187,7 @@ const CurrentProjectPage = () => {
 
 
 
-  const handleProjectUpdate = async (event) => {   // Send only fields that actually changed.
+  const handleProjectUpdate = async (event) => {  // send only fields that actually changed.
 
     event.preventDefault();
     const projectUpdates = {};
@@ -203,7 +202,7 @@ const CurrentProjectPage = () => {
 
     if (Object.keys(projectUpdates).length === 0) {
       //setSuccessMessage("No project changes to save.");
-      NeutralMessageToast("No project changes to save."); // Informational rather than success/failure
+      NeutralMessageToast("No project changes to save."); // informational rather than success/failure
       return;
     }
 
@@ -216,7 +215,7 @@ const CurrentProjectPage = () => {
   };
 
 
-  const handleAddMember = async (userId) => { // Add one registered user as a project member.
+  const handleAddMember = async (userId) => { // add one registered user as a project member.
 
     const resultAction = await dispatch(updateProjectMembers({ projectId, add: [userId], remove: []}));
 
@@ -224,8 +223,7 @@ const CurrentProjectPage = () => {
 
       SuccessMessageToast("Project member added successfully.");
       
-      // Refresh search so newly-added user becomes greyed out
-      // marked as an existing member.
+      // refresh search so newly-added user becomes greyed out marked as an existing member.
       setMemberSearchText((current) => `${current} `);
 
       window.setTimeout(() => setMemberSearchText((current) => current.trim()), 0);
@@ -233,7 +231,7 @@ const CurrentProjectPage = () => {
   };
 
 
-  const handleRemoveMember = async (memberId) => { // Remove one existing member from project.
+  const handleRemoveMember = async (memberId) => { // remove one existing member from project.
     const confirmed = window.confirm("Remove this member from the project?");
 
     if (!confirmed) {
@@ -248,8 +246,7 @@ const CurrentProjectPage = () => {
   };
 
 
-  const handleTransferLeadership = async (event) => {   // Transfer leadership to an existing member.
-
+  const handleTransferLeadership = async (event) => {   // transfer leadership to an existing member.
     event.preventDefault();
 
     if (!newLeadId) {
@@ -279,7 +276,7 @@ const CurrentProjectPage = () => {
   };
 
 
-  // Archive active project after explicit confirmation.
+  // archive active project after explicit confirmation.
   const handleArchiveProject = async () => {
 
     const confirmed = window.confirm("Archive this project? It will become read-only until restored.");
@@ -291,12 +288,12 @@ const CurrentProjectPage = () => {
     if (archiveProject.fulfilled.match(resultAction)) {
       SuccessMessageToast("Project archived successfully.");
 
-      navigate("/projects"); // Archived project will now appear under Archived tab
+      navigate("/projects"); // archived project will now appear under Archived tab
     }
   };
 
 
-  const handleDeleteProject = async () => { // Permanently delete project for global admins only.
+  const handleDeleteProject = async () => { // permanently delete project for global admins only.
 
     const confirmed = window.confirm("Permanently delete this project? This action cannot be undone.");
 
@@ -348,18 +345,6 @@ const CurrentProjectPage = () => {
         </div>
       )}
 
-      {/* <header className="current-project-heading">
-        <div>
-          <div className="current-project-title-row">
-            <span className="current-project-key">{project.key}</span>
-            {isProjectLead && (
-              <span className="current-project-role-badge">Project Lead</span>
-            )}
-          </div>
-          <h1>{project.name}</h1>
-          <p>{project.description || "No project description has been added yet."}</p>
-        </div>
-      </header> */}
       <header className="current-project-heading">
         <div>
           <div className="current-project-title-row">
@@ -398,9 +383,9 @@ const CurrentProjectPage = () => {
                 <textarea name="description" rows="5" value={projectForm.description} onChange={handleProjectFormChange}/>
               </label>
               <button
-                type="submit"
-                className="current-project-primary-button"
-                disabled={ mutationStatus === "loading" }
+                type      = "submit"
+                className = "current-project-primary-button"
+                disabled  = { mutationStatus === "loading" }
               >
                 Save Project Details
               </button>
@@ -521,9 +506,9 @@ const CurrentProjectPage = () => {
                       </div>
 
                       <button
-                        type="button"
-                        disabled={searchUser.isProjectMember || mutationStatus === "loading"}
-                        onClick={() => handleAddMember(searchUser._id)}
+                        type     = "button"
+                        disabled = {searchUser.isProjectMember || mutationStatus === "loading"}
+                        onClick  = {() => handleAddMember(searchUser._id)}
                       >
                         {searchUser.isProjectMember
                           ? ((searchUser.projectRole === "lead") ? "Project Lead" : "Already Added")
@@ -554,8 +539,8 @@ const CurrentProjectPage = () => {
 
           <form className="current-project-transfer-form" onSubmit={handleTransferLeadership}>
             <select
-              value={newLeadId}
-              onChange={(event) => setNewLeadId(event.target.value)}
+              value    = {newLeadId}
+              onChange = {(event) => setNewLeadId(event.target.value)}
               required
             >
               <option value="">Select new project lead</option>
@@ -574,9 +559,9 @@ const CurrentProjectPage = () => {
             </select>
 
             <button
-              type="submit"
-              className="current-project-secondary-action-button"
-              disabled={!newLeadId || mutationStatus === "loading"}
+              type      = "submit"
+              className = "current-project-secondary-action-button"
+              disabled  = {!newLeadId || mutationStatus === "loading"}
             >
               Transfer Leadership
             </button>
@@ -599,12 +584,10 @@ const CurrentProjectPage = () => {
               </div>
 
               <button
-                type="button"
-                className="current-project-archive-button"
-                onClick={handleArchiveProject}
-                disabled={
-                  mutationStatus === "loading"
-                }
+                type      = "button"
+                className = "current-project-archive-button"
+                onClick   = {handleArchiveProject}
+                disabled  = {mutationStatus === "loading"}
               >
                 Archive Project
               </button>
@@ -622,10 +605,10 @@ const CurrentProjectPage = () => {
               </div>
 
               <button
-                type="button"
-                className="current-project-delete-button"
-                onClick={handleDeleteProject}
-                disabled={mutationStatus === "loading"}
+                type      = "button"
+                className = "current-project-delete-button"
+                onClick   = {handleDeleteProject}
+                disabled  = {mutationStatus === "loading"}
               >
                 Delete Project
               </button>

@@ -12,8 +12,8 @@ import {
 } from "react-router";
 
 import {
-  useDispatch, // Redux dispatch function. Used to send actions to your store, which triggers your reducers to update state. 
-  useSelector  // Hook extracts data from Redux store state. It takes a selector function and automatically 
+  useDispatch, // redux dispatch function. Used to send actions to your store, which triggers your reducers to update state. 
+  useSelector  // hook extracts data from Redux store state. It takes a selector function and automatically 
                // subscribes your component to changes, forcing a re-render if that specific data updates.
 } from "react-redux";
 
@@ -37,7 +37,7 @@ const LoginPage = () => {
 
 
     useEffect(() => { // Toast Message showing registration success! 
-                    // Remove the registration message after a few seconds.
+                      // removes registration message after a few seconds.
     if (!successToast) {
       return undefined;
     }
@@ -47,7 +47,7 @@ const LoginPage = () => {
   }, [successToast]);
 
 
-  useEffect(() => { // Clears route state so refreshing doesn't show toast again.
+  useEffect(() => { // clears route state so refreshing doesn't show toast again.
     if (location.state?.registrationSuccess) {
       window.history.replaceState(
         {},
@@ -110,8 +110,8 @@ const LoginPage = () => {
           </span>
           <span>{successToast}</span>
           <button
-            type="button"
-            aria-label="Close registration message"
+            type        = "button"
+            aria-label  = "Close registration message"
             onClick={() => setSuccessToast("")}
           >
             ×
@@ -147,24 +147,24 @@ const LoginPage = () => {
             <div className="login-field">
               <label htmlFor="username">Username</label>
               <input
-                id="username"
-                name="username"
-                type="text"
-                value={credentials.username}
-                onChange={handleInputChange}
-                autoComplete="username"
+                id           = "username"
+                name         = "username"
+                type         = "text"
+                value        = {credentials.username}
+                onChange     = {handleInputChange}
+                autoComplete = "username"
                 required
               />
             </div>
             <div className="login-field">
               <label htmlFor="password">Password</label>
               <input
-                id="password"
-                name="password"
-                type="password"
-                value={credentials.password}
-                onChange={handleInputChange}
-                autoComplete="current-password"
+                id           = "password"
+                name         = "password"
+                type         = "password"
+                value        = {credentials.password}
+                onChange     = {handleInputChange}
+                autoComplete = "current-password"
                 required
               />
             </div>
@@ -184,9 +184,9 @@ const LoginPage = () => {
           </div>
 
           <button
-            className="google-login-button"
-            type="button"
-            onClick={handleGoogleLogin}
+            className = "google-login-button"
+            type      = "button"
+            onClick   = {handleGoogleLogin}
           >
             <span className="google-letter">
               G

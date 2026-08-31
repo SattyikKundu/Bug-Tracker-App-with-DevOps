@@ -23,15 +23,15 @@ import "./UserMenu.css"; // styling for user dropdown
 
 const UserMenu = () => {
 
-  const dispatch = useDispatch(); // Redux dispatcher
-  const navigate = useNavigate(); // Router navigation helper
-  const menuRef = useRef(null);   // Reference used for outside-click detection
+  const dispatch = useDispatch(); // redux dispatcher
+  const navigate = useNavigate(); // router navigation helper
+  const menuRef = useRef(null);   // reference used for outside-click detection
 
   const [menuOpen, setMenuOpen] = useState(false); // state controls dropdown visibility
 
   const {
-    user,         // Current authenticated user
-    logoutStatus  // Allows Logout button loading state
+    user,         // current authenticated user
+    logoutStatus  // allows Logout button loading state
   } = useSelector((state) => state.auth);
 
 
@@ -42,7 +42,7 @@ const UserMenu = () => {
   ).toUpperCase() || "?";
 
 
-  useEffect(() => {  // Closes account menu if user clicks anywhere outside of it.
+  useEffect(() => {  // closes account menu if user clicks anywhere outside of it.
     const handleOutsideClick = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
@@ -57,7 +57,7 @@ const UserMenu = () => {
 
 
  
-  const handleLogout = async () => {  // Logs user out through existing Redux/auth backend flow.
+  const handleLogout = async () => {  // logs user out through existing Redux/auth backend flow.
     const resultAction = await dispatch(logoutUser());
 
     if (logoutUser.fulfilled.match(resultAction)) {
@@ -69,17 +69,15 @@ const UserMenu = () => {
   return (
     <div className="user-menu" ref={menuRef}>
       <button
-        className="user-menu-trigger"
-        type="button"
-        onClick={() =>
-          setMenuOpen((current) => !current)
-        }
-        aria-expanded={menuOpen}
-        aria-haspopup="menu"
+        className     = "user-menu-trigger"
+        type          = "button"
+        onClick       = {() => setMenuOpen((current) => !current)}
+        aria-expanded = {menuOpen}
+        aria-haspopup = "menu"
       >
-        <span className="user-menu-avatar">{userInitials}</span>
-        <span className="user-menu-trigger-text">{user?.username || "Account"}</span>
-        <span className="user-menu-chevron" aria-hidden="true">▾</span>
+        <span className = "user-menu-avatar">{userInitials}</span>
+        <span className = "user-menu-trigger-text">{user?.username || "Account"}</span>
+        <span className = "user-menu-chevron" aria-hidden="true">▾</span>
       </button>
 
       {menuOpen && (
@@ -96,23 +94,22 @@ const UserMenu = () => {
           <div className="user-menu-divider" />
 
           <Link
-            className="user-menu-link"
-            to="/profile"
-            role="menuitem"
-            onClick={() => setMenuOpen(false)}
+            className = "user-menu-link"
+            to        = "/profile"
+            role      = "menuitem"
+            onClick   = {() => setMenuOpen(false)}
           >
             Profile & Account Settings
           </Link>
 
           <div className="user-menu-divider" />
 
-
           <button
-            className="user-menu-logout"
-            type="button"
-            role="menuitem"
-            onClick={handleLogout}
-            disabled={logoutStatus === "loading"}
+            className = "user-menu-logout"
+            type      = "button"
+            role      = "menuitem"
+            onClick   = {handleLogout}
+            disabled  = {logoutStatus === "loading"}
           >
             {logoutStatus === "loading" ? "Logging out..." : "Log out"}
           </button>
@@ -121,6 +118,5 @@ const UserMenu = () => {
     </div>
   );
 };
-
 
 export default UserMenu;

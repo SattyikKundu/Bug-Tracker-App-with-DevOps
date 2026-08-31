@@ -1,0 +1,53 @@
+/* src/PageComponents/NotificationBell/NotificationBell.css */
+
+.notification-bell-wrapper {
+  position: relative;                             /* Provides positioning anchor for notification drawer. */
+}
+
+.notification-bell-button {
+  position: relative;       /* Anchors unread badge to bell control. */
+  display: grid;            /* Centers bell icon. */
+  width: 38px;              /* Matches existing header account controls. */
+  height: 38px;             /* Keeps bell square/circular. */
+  place-items: center;      /* Centers bell glyph. */
+  border: 0;                /* Removes browser default border. */
+  border-radius: 50%;       /* Gives bell circular hover surface. */
+  background: transparent;  /* Keeps header visually clean. */
+  color: #42526e;         /* Uses existing header secondary colour. */
+  cursor: pointer;          /* Communicates bell is interactive. */
+  transition: background 0.15s ease;  /* Softens hover/open state. */
+}
+
+.notification-bell-button:hover,
+.notification-bell-button:focus-visible,
+.notification-bell-button--open {
+  background: #f1f2f4;      /* Matches existing header hover surfaces. */
+  outline: none;              /* Uses background plus focus ring below. */
+}
+
+.notification-bell-button:focus-visible {
+  box-shadow: 0 0 0 2px #b3d4ff;    /* Adds visible keyboard focus treatment. */
+}
+
+.notification-bell-icon {
+  font-size: 1.04rem;   /* Keeps emoji/icon proportional to header. */
+  line-height: 1;       /* Prevents extra vertical icon spacing. */
+}
+
+.notification-bell-badge {
+  position: absolute;             /* Places count at bell upper-right corner. */
+  top: -3px;                      /* Slightly overlaps button edge. */
+  right: -4px;                    /* Slightly overlaps button edge. */
+  display: grid;                  /* Centers count text. */
+  min-width: 18px;                /* Keeps single-digit badge circular enough. */
+  height: 18px;                   /* Establishes compact badge height. */
+  place-items: center;            /* Centers count. */
+  padding: 0 4px;                 /* Allows 9+ without squeezing. */
+  border: 2px solid #ffffff;    /* Separates badge from header surface. */
+  border-radius: 999px;           /* Creates pill badge for 9+. */
+  background: #de350b;          /* Uses strong Jira-like attention red. */
+  color: #ffffff;               /* Provides high contrast count text. */
+  font-size: 0.62rem;             /* Fits compact badge. */
+  font-weight: 800;               /* Keeps small count legible. */
+  line-height: 1;                 /* Prevents vertical text drift. */
+}

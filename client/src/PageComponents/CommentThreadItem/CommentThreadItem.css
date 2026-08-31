@@ -3,10 +3,9 @@
 /* ========================================================================== */
 /* Recursive thread wrapper                                                   */
 /* ========================================================================== */
-
 .comment-thread-item {
-  margin-left: calc(var(--comment-indent-steps, 0) * 24px); /* Adds one visual indent per logical reply until depth 4. */
-  scroll-margin-top: calc(var(--app-header-height) + 18px); /* Places scrolled comment safely below fixed header plus gap. */
+  margin-left: calc(var(--comment-indent-steps, 0) * 24px);  /* Adds one visual indent per logical reply until depth 4. */
+  scroll-margin-top: calc(var(--app-header-height) + 18px);  /* Places scrolled comment safely below fixed header plus gap. */
 }
 
 .comment-thread-children {
@@ -18,7 +17,6 @@
 /* ========================================================================== */
 /* Main comment card                                                          */
 /* ========================================================================== */
-
 .comment-thread-card {
   padding: 15px 16px;                              /* Gives each comment comfortable internal spacing. */
   border: 1px solid #dfe3e8;                     /* Defines individual comments within Activity panel. */
@@ -35,7 +33,6 @@
 /* ========================================================================== */
 /* Author heading                                                             */
 /* ========================================================================== */
-
 .comment-thread-heading {
   display: flex;                     /* Places author identity and timestamp on one row. */
   align-items: flex-start;           /* Keeps both groups aligned near their top edge. */
@@ -78,7 +75,6 @@
 /* ========================================================================== */
 /* Replying-to parent reference                                               */
 /* ========================================================================== */
-
 .comment-thread-reply-context {
   display: grid;                        /* Stacks parent identity and short body preview. */
   width: 100%;                          /* Gives deep-thread parent reference an easy click target. */
@@ -119,7 +115,6 @@
 /* ========================================================================== */
 /* Comment body                                                               */
 /* ========================================================================== */
-
 .comment-thread-body {
   margin-top: 12px;             /* Separates body text from metadata/reply context. */
   color: #344563;             /* Uses readable discussion body text. */
@@ -138,7 +133,6 @@
 /* ========================================================================== */
 /* Reply / Edit / Delete controls                                             */
 /* ========================================================================== */
-
 .comment-thread-actions {
   display: flex;        /* Places lightweight comment actions on one row. */
   flex-wrap: wrap;      /* Allows actions to wrap on smaller comment widths. */
@@ -174,7 +168,6 @@
 /* ========================================================================== */
 /* Inline Reply / Edit forms                                                  */
 /* ========================================================================== */
-
 .comment-thread-reply-form,
 .comment-thread-edit-form {
   display: grid;            /* Stacks label, textarea, and actions. */
@@ -245,7 +238,6 @@
 /* ========================================================================== */
 /* Reply-loading controls                                                     */
 /* ========================================================================== */
-
 .comment-thread-load-replies {
   margin-top: 10px;             /* Separates reply-loading action from other controls. */
   padding: 4px 7px;             /* Keeps thread expansion control compact. */
@@ -276,7 +268,6 @@
 /* ========================================================================== */
 /* Thread expansion / collapse controls                                       */
 /* ========================================================================== */
-
 .comment-thread-expansion-actions {
   display: flex;        /* Groups one-level and whole-thread controls together. */
   flex-wrap: wrap;      /* Allows controls to wrap inside deeply indented comments. */
@@ -320,11 +311,9 @@
 }
 
 
-
 /* ========================================================================== */
 /* Scroll-to-parent glow                                                      */
 /* ========================================================================== */
-
 .comment-thread-item--highlighted > .comment-thread-card {
   animation: comment-parent-highlight 1.45s ease-out;   /* Briefly identifies exact referenced parent comment. */
 }
@@ -353,18 +342,14 @@
 /* ========================================================================== */
 /* Responsive indentation                                                     */
 /* ========================================================================== */
-
 @media (max-width: 650px) {
-
   .comment-thread-item {
     margin-left: calc(var(--comment-indent-steps, 0) * 14px);/* Reduces cumulative indentation on narrow phone screens. */
   }
-
   .comment-thread-heading {
     flex-direction: column;     /* Prevents author/timestamp crowding on narrow replies. */
     gap: 4px;                   /* Keeps stacked metadata compact. */
   }
-
   .comment-thread-time {
     flex-shrink: 1;             /* Lets timestamp wrap naturally on mobile. */
   }

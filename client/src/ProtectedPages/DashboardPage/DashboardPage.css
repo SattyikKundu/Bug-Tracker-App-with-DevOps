@@ -157,7 +157,6 @@
   background: #f8fafc; /* Provides restrained hover feedback. */
 }
 
-
 .dashboard-recent-project-key {
   display: inline-grid;   /* Allows easy horizontal/vertical centering. */
   min-width: 46px;        /* Keeps different project-key widths visually aligned. */
@@ -201,7 +200,9 @@
 }
 
 
-/* Empty recent-project state. */
+/*****************************************************************************************/
+/*    Empty recent-project state.                                                        */
+/*****************************************************************************************/
 .dashboard-inline-empty-state {
   display: grid;            /* Stacks message and action vertically. */
   justify-items: center;    /* Horizontally centers empty-state elements. */
@@ -232,17 +233,18 @@
   text-decoration: none;  /* Removes browser link underline. */
 }
 
-
 .dashboard-primary-link:hover {
   background: #195888; /* Darkens action on hover. */
 }
 
 
-/* Future dashboard information areas. */
+/*****************************************************************************************/
+/*         Future dashboard information areas.                                            */
+/*****************************************************************************************/
 .dashboard-placeholder-grid {
-  display: grid;            /* Places placeholder cards side-by-side on desktop. */
+  display: grid;                                    /* Places placeholder cards side-by-side on desktop. */
   grid-template-columns: repeat(2, minmax(0, 1fr)); /* Uses equal two-column layout. */
-  gap: 20px;                /* Adds spacing between future feature areas. */
+  gap: 20px;                                        /* Adds spacing between future feature areas. */
 }
 
 
@@ -260,13 +262,11 @@
   text-align: center;           /* Centers state text. */
 }
 
-
 .dashboard-state-card h2 {
   margin: 16px 0 0;     /* Separates heading from indicator. */
   color: #172b4d;     /* Uses primary heading color. */
   font-size: 1.25rem;   /* Gives state heading visible hierarchy. */
 }
-
 
 .dashboard-state-card p {
   max-width: 470px;   /* Prevents long error/loading lines. */
@@ -275,12 +275,10 @@
   line-height: 1.6;   /* Improves readability. */
 }
 
-
 .dashboard-state-card--error {
   border-color: #ffbdad;  /* Gives failure state muted red outline. */
   background: #fff8f6;    /* Adds subtle red-tinted error background. */
 }
-
 
 .dashboard-loading-indicator {
   width: 34px;                    /* Sets loading spinner width. */

@@ -5,17 +5,17 @@ import {
   useMemo,   // an optimization hook used to cache (memoize) the result of an expensive calculation
 } from "react";
 
-import { Link } from "react-router"; // Provides on-click URL navigation 
-//import { useNavigate } from "react-router"; // for programmatic navigation
+import { Link } from "react-router"; // provides on-click URL navigation 
 
 import {
-    useDispatch,// Hook returns a reference to Redux dispatch function. Used to send actions to your 
+    useDispatch,// hook returns a reference to Redux dispatch function. Used to send actions to your 
                 // store, which triggers your reducers to update the state.
-    useSelector // Hook extracts data from Redux store state. It takes a selector function and automatically 
+
+    useSelector // hook extracts data from Redux store state. It takes a selector function and automatically 
                 // subscribes your component to changes, forcing a re-render if that specific data updates.
 } from "react-redux";
 
-import { fetchProjects } from "../../Store/projectSlice.jsx"; // Loads accessible projects so dashboard can project summaries
+import { fetchProjects } from "../../Store/projectSlice.jsx"; // loads accessible projects so dashboard can project summaries
 
 import "./DashboardPage.css"; // for styling
 
@@ -23,19 +23,19 @@ import "./DashboardPage.css"; // for styling
 
 const DashboardPage = () => {
 
-  const dispatch = useDispatch(); // Redux dispatcher used to request projects
+  const dispatch = useDispatch(); // redux dispatcher used to request projects
 
-  const {user} = useSelector((state) => state.auth); // Tracks/updates current authenticated user (used for welcome message)
+  const {user} = useSelector((state) => state.auth); // tracks/updates current authenticated user (used for welcome message)
 
   const {
-    projects, // All accessible active + archived projects
+    projects, // all accessible active + archived projects
     status,   // idle | loading | succeeded | failed
-    error     // Project-loading failure message
+    error     // project-loading failure message
   } = useSelector((state) => state.projects);
 
 
   /* Loads projects if they haven't been fetched:
-   * Visiting /projects first may mean data already exists,
+   * visiting /projects first may mean data already exists,
    * so status="succeeded" avoids another unnecessary API call.
    */
   useEffect(() => {
@@ -45,14 +45,14 @@ const DashboardPage = () => {
   }, [dispatch, status]);
 
 
-  // Separate active projects for Dashboard summary counts.
+  // separate active projects for Dashboard summary counts.
   const activeProjects = useMemo(() =>
       projects.filter((project) => project.archived !== true),
     [projects]
   );
 
 
-  // Separate archived projects for Dashboard summary count.
+  // separate archived projects for Dashboard summary count.
   const archivedProjects = useMemo(() =>
       projects.filter((project) => project.archived === true),
     [projects]
@@ -60,22 +60,22 @@ const DashboardPage = () => {
 
 
   
-  // Show only the three most recently updated ACTIVE projects.
-  // The full project collection now belongs on /projects.
+  // Show only THREE most recently updated ACTIVE projects.
+  // the full project collection now belongs on /projects.
   const recentProjects = useMemo(() => {
 
-    return [ ...activeProjects ]  // Copy array so Redux state is never mutated by sort()
+    return [ ...activeProjects ]  // copy array so Redux state is never mutated by sort()
       .sort(
         (projectA, projectB) =>
           new Date(projectB.updatedAt ?? 0) -
           new Date(projectA.updatedAt ?? 0)
       )
-      .slice(0, 3 ); // Dashboard intentionally shows only a small project preview
+      .slice(0, 3 ); // dashboard intentionally shows only a small project preview
 
   }, [activeProjects]);
 
 
-  // Provide a friendly display name when firstName is available.
+  // provide a friendly display name when firstName is available.
   const welcomeName = user?.firstName || user?.username || "there";
 
   return (
@@ -98,8 +98,8 @@ const DashboardPage = () => {
         )}
         {status === "failed" && (
           <section
-            className="dashboard-state-card dashboard-state-card--error"
-            role="alert"
+            className = "dashboard-state-card dashboard-state-card--error"
+            role      = "alert"
           >
             <h2>Dashboard could not be loaded</h2>
             <p>{error}</p>
@@ -109,8 +109,8 @@ const DashboardPage = () => {
           <>
             {/* Quick numerical project overview. */}
             <section
-              className="dashboard-summary-grid"
-              aria-label="Project summary"
+              className  = "dashboard-summary-grid"
+              aria-label = "Project summary"
             >
               <article className="dashboard-summary-card">
                 <span className="dashboard-summary-label">Active Projects</span>
@@ -131,8 +131,8 @@ const DashboardPage = () => {
 
 
             {/* Only a small recent-project preview remains on Dashboard. */}
-            <section className="dashboard-overview-panel">
-              <div className="dashboard-panel-heading">
+            <section className = "dashboard-overview-panel">
+              <div className   = "dashboard-panel-heading">
                 <div>
                   <h2>Recently Updated Projects</h2>
                   <p>Your three most recently updated active projects.</p>
@@ -152,9 +152,9 @@ const DashboardPage = () => {
                 <div className="dashboard-recent-project-list">
                   {recentProjects.map((project) => (
                     <Link
-                      key={project._id}
-                      className="dashboard-recent-project"
-                      to={`/projects/${project._id}`}
+                      key       = {project._id}
+                      className = "dashboard-recent-project"
+                      to        = {`/projects/${project._id}`}
                     >
                       <span className="dashboard-recent-project-key">{project.key}</span>
                       <div className="dashboard-recent-project-info">
@@ -200,6 +200,5 @@ const DashboardPage = () => {
     </main>
   );
 };
-
 
 export default DashboardPage;

@@ -10,20 +10,20 @@
 }
 
 .draggable-issue-card {
-  cursor: pointer;  /* Normal card hover communicates that issue can be opened. */
+  cursor: pointer;          /* Normal card hover communicates that issue can be opened. */
 }
 
 .draggable-issue-card .issue-board-card {
-  cursor: grab;   /* Mouse movement still communicates drag capability. */
+  cursor: grab;             /* Mouse movement still communicates drag capability. */
 }
 
 .draggable-issue-card--dragging {
-  z-index: 150;     /* Keeps dragged issue above neighboring board elements. */
-  opacity: 0.94;    /* Slightly separates active card visually from the lane. */
+  z-index: 150;           /* Keeps dragged issue above neighboring board elements. */
+  opacity: 0.94;          /* Slightly separates active card visually from the lane. */
 }
 
 .draggable-issue-card--dragging {
-  user-select: none;  /* Prevents text highlighting during active card movement.  */
+  user-select: none;      /* Prevents text highlighting during active card movement.  */
 }
 
 .draggable-issue-card--dragging .issue-board-card {
@@ -43,6 +43,6 @@
 /* ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   .draggable-issue-card {
-    transition: none;   /* Removes additional wrapper transition motion.  */
+    transition: none;             /* Removes additional wrapper transition motion.  */
   }
 }

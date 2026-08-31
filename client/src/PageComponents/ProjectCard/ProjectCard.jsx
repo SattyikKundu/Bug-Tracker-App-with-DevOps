@@ -1,17 +1,17 @@
 // src/PageComponents/ProjectCard/ProjectCard.jsx
 
-import { useNavigate } from "react-router"; // Allows card to navigate to project-specific URLs.
-import "./ProjectCard.css";                 // Styles reusable component.
+import { useNavigate } from "react-router"; // allows card to navigate to project-specific URLs.
+import "./ProjectCard.css";                 // styles reusable component.
 
 
 const ProjectCard = ({
-  project,              // Project object returned via GET /projects.
-  currentUserId,        // Logged-in user ID used to identify role fallback.
-  onRestoreProject,     // Dashboard callback for restoring a project.
-  isRestoring = false   // Controls the button's temporary loading state.
+  project,              // project object returned via GET /projects.
+  currentUserId,        // logged-in user ID used to identify role fallback.
+  onRestoreProject,     // dashboard callback for restoring a project.
+  isRestoring = false   // controls the button's temporary loading state.
 }) => {
 
-  const navigate = useNavigate(); // React Router navigation helper.
+  const navigate = useNavigate(); // react router navigation helper.
 
   /* Determine whether leadUserId is:
    * - a plain MongoDB ObjectId string; OR
@@ -44,49 +44,45 @@ const ProjectCard = ({
     );
 
 
-  // Convert stored role into clean label for project card.
+  // convert stored role into clean label for project card.
   const roleLabel =
     projectRole === "lead"
       ? "Project Lead"
       : "Member";
 
 
-  // Navigate to a future project-details page.
-  // Full destination page will be implemented in later branch.
+  // navigate to a future project-details page.
+  // full destination page will be implemented in later branch.
   const openProject = () => {
     navigate(`/projects/${project._id}`);
-    // console.log("Selected project:", project._id); // Temporary branch-only behavior.
   };
 
 
 
-  // Allows keyboard users to open the project card with Enter or Space.
+  // allows keyboard users to open the project card with Enter or Space.
   const handleCardKeyDown = (event) => {
     if ( event.key === "Enter" || event.key === " ") {
-      event.preventDefault(); // Prevent space from scrolling the document.
-      openProject();          // Perform the same behavior as a mouse click.
+      event.preventDefault(); // prevent space from scrolling the document.
+      openProject();          // perform the same behavior as a mouse click.
     }
   };
 
 
-
-  //Restore an archived project without triggering parent card's click handler.
+  // restores an archived project without triggering parent card's click handler.
   const handleRestoreClick = (event) => {
-    event.stopPropagation();         // Prevent ProjectCard from navigating.
-    onRestoreProject?.(project._id); // Request restore from the dashboard.
+    event.stopPropagation();         // prevent ProjectCard from navigating.
+    onRestoreProject?.(project._id); // request restore from the dashboard.
   };
-
 
 
   return (
     <article
-      className={
-        project.archived ? "project-card project-card--archived" : "project-card" }
-      role="button"
-      tabIndex="0"
-      onClick={openProject}
-      onKeyDown={handleCardKeyDown}
-      aria-label={`Open project ${project.name}`}
+      className  = { project.archived ? "project-card project-card--archived" : "project-card" }
+      role       = "button"
+      tabIndex   = "0"
+      onClick    = {openProject}
+      onKeyDown  = {handleCardKeyDown}
+      aria-label = {`Open project ${project.name}`}
     >
       <div className="project-card-top-row">
         <div className="project-card-badge-group">
@@ -135,10 +131,10 @@ const ProjectCard = ({
         <div className="project-card-footer-actions">
           {project.archived && isProjectLead && (
             <button
-              className="project-restore-button"
-              type="button"
-              onClick={handleRestoreClick}
-              disabled={isRestoring}
+              className = "project-restore-button"
+              type      = "button"
+              onClick   = {handleRestoreClick}
+              disabled  = {isRestoring}
             >
               {isRestoring ? "Restoring..." : "Restore Project"}
             </button>
@@ -152,6 +148,5 @@ const ProjectCard = ({
     </article>
   );
 };
-
 
 export default ProjectCard;

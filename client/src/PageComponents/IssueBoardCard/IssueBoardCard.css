@@ -1,6 +1,5 @@
 /* src/PageComponents/IssueBoardCard/IssueBoardCard.css */
 
-
 /* ========================================================================== */
 /* Main issue card                                                            */
 /* ========================================================================== */
@@ -36,12 +35,11 @@
   gap: 10px;                        /* Prevents metadata from touching. */
 }
 
-
 .issue-board-card-key {
-  color: #2368a2;           /* Uses application blue for issue identifiers. */
-  font-size: 0.74rem;         /* Keeps key compact relative to issue title. */
-  font-weight: 850;           /* Makes human issue key easy to locate. */
-  letter-spacing: 0.035em;    /* Improves readability of short issue keys. */
+  color: #2368a2;             /* Uses application blue for issue identifiers. */
+  font-size: 0.74rem;           /* Keeps key compact relative to issue title. */
+  font-weight: 850;             /* Makes human issue key easy to locate. */
+  letter-spacing: 0.035em;      /* Improves readability of short issue keys. */
 }
 
 .issue-board-card-type {
@@ -57,18 +55,18 @@
 }
 
 .issue-board-card-type--bug {
-  background: #ffebe6;      /* Gives bugs a restrained red-tinted badge. */
-  color: #ae2a19;           /* Uses readable bug text color. */
+  background: #ffebe6;        /* Gives bugs a restrained red-tinted badge. */
+  color: #ae2a19;             /* Uses readable bug text color. */
 }
 
 .issue-board-card-type--task {
-  background: #e9f2ff;      /* Gives tasks a calm blue badge. */
-  color: #0c66e4;           /* Uses blue task text. */
+  background: #e9f2ff;        /* Gives tasks a calm blue badge. */
+  color: #0c66e4;             /* Uses blue task text. */
 }
 
 .issue-board-card-type--story {
-  background: #e9f8ef;      /* Gives stories a subtle green badge. */
-  color: #21643d;           /* Uses readable story text. */
+  background: #e9f8ef;        /* Gives stories a subtle green badge. */
+  color: #21643d;             /* Uses readable story text. */
 }
 
 
@@ -91,9 +89,9 @@
 /* Labels                                                                     */
 /* ========================================================================== */
 .issue-board-card-labels {
-  display: flex;        /* Places compact labels beside one another. */
-  flex-wrap: wrap;      /* Allows labels to wrap when necessary. */
-  gap: 5px;             /* Creates spacing between label chips. */
+  display: flex;          /* Places compact labels beside one another. */
+  flex-wrap: wrap;        /* Allows labels to wrap when necessary. */
+  gap: 5px;               /* Creates spacing between label chips. */
 }
 
 .issue-board-card-label,
@@ -113,8 +111,8 @@
 }
 
 .issue-board-card-label-more {
-  background: #f4f5f7;  /* Makes hidden-label count more subtle. */
-  color: #7a869a;       /* Uses tertiary metadata color. */
+  background: #f4f5f7;    /* Makes hidden-label count more subtle. */
+  color: #7a869a;         /* Uses tertiary metadata color. */
 }
 
 
@@ -140,25 +138,25 @@
 
 
 .issue-board-card-priority--low {
-  background: #f1f2f4;  /* Gives low priority a neutral background. */
-  color: #505f79;       /* Uses subdued low-priority text. */
+  background: #f1f2f4;      /* Gives low priority a neutral background. */
+  color: #505f79;           /* Uses subdued low-priority text. */
 }
 
 
 .issue-board-card-priority--medium {
-  background: #fff7d6;  /* Uses restrained yellow for medium priority. */
-  color: #7f5f01;       /* Provides readable medium-priority contrast. */
+  background: #fff7d6;      /* Uses restrained yellow for medium priority. */
+  color: #7f5f01;           /* Provides readable medium-priority contrast. */
 }
 
 
 .issue-board-card-priority--high {
-  background: #ffebe6;  /* Highlights high priority with soft red. */
-  color: #ae2a19;       /* Uses readable high-priority text.  */
+  background: #ffebe6;      /* Highlights high priority with soft red. */
+  color: #ae2a19;           /* Uses readable high-priority text.  */
 }
 
 .issue-board-card-priority--critical {
-  background: #ae2a19;     /* Gives critical priority strongest emphasis. */
-  color: #ffffff;           /* Provides strong contrast. */
+  background: #ae2a19;        /* Gives critical priority strongest emphasis. */
+  color: #ffffff;             /* Provides strong contrast. */
 }
 
 .issue-board-card-assignee {

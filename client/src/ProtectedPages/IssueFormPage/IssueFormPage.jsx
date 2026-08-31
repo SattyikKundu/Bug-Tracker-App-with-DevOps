@@ -1,9 +1,9 @@
 // src/ProtectedPages/IssueFormPage/IssueFormPage.jsx
 
 import {
-  useEffect, // Executes code outside normal program flow based on conditions/triggers
-  useMemo,   // Calculates and store results wtihout unnecessary recalculation
-  useState   // Used to store issue-form input values and local validation messages
+  useEffect, // executes code outside normal program flow based on conditions/triggers
+  useMemo,   // calculates and store results wtihout unnecessary recalculation
+  useState   // used to store issue-form input values and local validation messages
 } from "react";
 
 import {
@@ -13,31 +13,30 @@ import {
 } from "react-router";
 
 import {
-  useDispatch, // Used to dispatch Redux issue/project thunks
-  useSelector  // Used to read/edit slice state information
+  useDispatch, // used to dispatch Redux issue/project thunks
+  useSelector  // used to read/edit slice state information
 } from "react-redux";
 
-import { fetchProjectById } from "../../Store/projectSlice.jsx"; // Loads project lead/member/archive information
+import { fetchProjectById } from "../../Store/projectSlice.jsx"; // loads project lead/member/archive information
 
 import {
-  clearCurrentIssue,     // Prevents old issue data from leaking into another edit page
-  createIssue,           // From backend: (POST /projects/:projectId/issues)
-  fetchIssueById,        // From backend: (GET /issues/:issueId)
-  updateIssue            // From backend: (PATCH /issues/:issueId)
+  clearCurrentIssue,     // prevents old issue data from leaking into another edit page
+  createIssue,           // from backend: (POST /projects/:projectId/issues)
+  fetchIssueById,        // from backend: (GET /issues/:issueId)
+  updateIssue            // from backend: (PATCH /issues/:issueId)
 } from "../../Store/issueSlice.jsx";
 
-import api from "../../api/axios.js"; // Used for the project-specific assignable-user dropdown
+import api from "../../api/axios.js"; // used for the project-specific assignable-user dropdown
 
 import {
-  ErrorMessageToast,   // Used to show backend failure toasts
-  SuccessMessageToast  // Displays successful issue create/edit results
+  ErrorMessageToast,   // used to show backend failure toasts
+  SuccessMessageToast  // displays successful issue create/edit results
 } from "../../utils/utilityFunctions.jsx";
 
-import "./IssueFormPage.css"; // Shared create/edit issue form styling
+import "./IssueFormPage.css"; // shared create/edit issue form styling
 
 
-// Values exactly match the backend issue-model enums.
-const ISSUE_TYPES = [
+const ISSUE_TYPES = [   // values exactly match the backend issue-model enums.
   { value: "bug",   label: "Bug"   },
   { value: "task",  label: "Task"  },
   { value: "story", label: "Story" }
@@ -60,12 +59,12 @@ const ISSUE_SEVERITIES = [
 const IssueFormPage = () => {
 
   const {
-    projectId, // Parent project where the issue lives
-    issueId    // Present only when editing an existing issue
+    projectId, // parent project where the issue lives
+    issueId    // present only when editing an existing issue
   } = useParams();
 
-  const dispatch = useDispatch(); // Redux dispatcher
-  const navigate = useNavigate(); // Programmatic route navigation
+  const dispatch = useDispatch(); // redux dispatcher
+  const navigate = useNavigate(); // programmatic route navigation
 
   /* issueId exists:
    * → edit mode
@@ -107,11 +106,13 @@ const IssueFormPage = () => {
       labelsText: ""
     });
 
-  // Users returned by GET /projects/:id/assignable-users.
+
+  // users returned by GET /projects/:id/assignable-users.
   const [assignableUsers,   setAssignableUsers] = useState([]);
   const [assignableStatus, setAssignableStatus] = useState("idle"); // idle | loading | succeeded | failed
-  const [assignableError,   setAssignableError] = useState("");     // Error shown beside assignee control
-  const [validationError,   setValidationError] = useState("");     // Browser-side form validation message
+  const [assignableError,   setAssignableError] = useState("");     // error shown beside assignee control
+  const [validationError,   setValidationError] = useState("");     // browser-side form validation message
+
 
   /* Load the selected project.
    *
@@ -126,7 +127,7 @@ const IssueFormPage = () => {
   }, [ dispatch, projectId]);
 
   
-  // Edit mode additionally loads the existing issue.
+  // edit mode additionally loads the existing issue.
   useEffect(() => {
     if (!isEditMode) {
       dispatch(clearCurrentIssue());
@@ -142,9 +143,7 @@ const IssueFormPage = () => {
 
 
   /* Load the ONLY users who may be assigned issues in this project.
-   *
-   * This uses the backend endpoint you already created specifically
-   * for issue-assignee dropdowns.
+   * This uses the backend endpoint you already created specifically for issue-assignee dropdowns.
    */
   useEffect(() => {
     let requestStillActive = true;
@@ -157,13 +156,11 @@ const IssueFormPage = () => {
           setAssignableError("");
 
           const response = await api.get(`/projects/${projectId}/assignable-users`);
-
           if (!requestStillActive) {
             return;
           }
 
           setAssignableUsers(response.data.users ?? []);
-
           setAssignableStatus("succeeded");
         }
         catch (error) {
@@ -183,8 +180,8 @@ const IssueFormPage = () => {
   }, [projectId]);
 
 
-  // Populate edit mode after GET /issues/:issueId succeeds.
-  useEffect(() => {
+
+  useEffect(() => {   // populate edit mode after GET /issues/:issueId succeeds.
     if (!isEditMode || !currentIssue) {
       return;
     }
@@ -202,7 +199,7 @@ const IssueFormPage = () => {
       severity:       currentIssue.severity ?? "major",
       assigneeId:     currentAssigneeId ? String(currentAssigneeId) : "",
 
-      // Convert stored label array back into an editable comma-separated text field.
+      // convert stored label array back into an editable comma-separated text field.
       labelsText:
         Array.isArray(currentIssue.labels)
           ? currentIssue.labels.join(", ")
@@ -210,21 +207,15 @@ const IssueFormPage = () => {
     });
   }, [ isEditMode, currentIssue ]);
 
+  const currentUserId = user?._id || user?.id;   // normalize authenticated user's MongoDB ID.
 
-  // Normalize authenticated user's MongoDB ID.
-  const currentUserId = user?._id || user?.id;
-
-
-  // Normalize populated/plain project lead ID.
-  const leadUserId =
+  const leadUserId = // normalize populated/plain project lead ID.
     typeof project?.leadUserId === "object"
       ? project.leadUserId?._id
       : project?.leadUserId;
 
-
   const isProjectLead = (String(leadUserId) === String(currentUserId));
   const isGlobalAdmin = user?.role === "admin";
-
 
   /* IMPORTANT permission distinction:
    *
@@ -234,8 +225,7 @@ const IssueFormPage = () => {
    */
   const canManageAssignee = !isEditMode || isProjectLead || isGlobalAdmin;
 
-  /* Convert comma-separated labels into the normalized array expected
-   * by the backend.
+  /* Convert comma-separated labels into the normalized array expected by the backend.
    *
    * Example: "Frontend, Login, frontend"
    *
@@ -260,9 +250,7 @@ const IssueFormPage = () => {
 
 
   /* Resolve the currently selected assignee into readable text.
-   *
-   * Useful for regular members in Edit mode where assignee changing
-   * is intentionally disabled.
+   * useful for regular members in Edit mode where assignee changing is intentionally disabled.
    */
   const selectedAssignee =
     useMemo(() => {
@@ -272,23 +260,19 @@ const IssueFormPage = () => {
           String(assignableUser._id) ===
           String(formData.assigneeId)
       );
-
     }, [ assignableUsers, formData.assigneeId]);
-
 
   const selectedAssigneeName =
     selectedAssignee
       ? `${selectedAssignee.firstName ?? ""} ${selectedAssignee.lastName ?? ""}`.trim()
       : "";
 
-
-  // Update one normal form field.
+  // update one normal form field.
   const handleInputChange = (event) => {
     const {name, value} = event.target;
     setFormData((current) => ({...current, [name]: value}));
     setValidationError("");
   };
-
 
   const handleSubmit =
     async (event) => {
@@ -308,18 +292,11 @@ const IssueFormPage = () => {
       }
 
 
-      // These values come from <select> elements, but validating them
-      // again prevents unexpected browser/dev-tools input.
-      if (
-        !ISSUE_TYPES.some(
-          (option) =>
-            option.value === formData.type
-        )
-      ) {
+      // these values come from <select> elements, but validating them again prevents unexpected browser/dev-tools input.
+      if (!ISSUE_TYPES.some((option) => option.value === formData.type)) {
         setValidationError("Select a valid issue type.");
         return;
       }
-
 
       if (
         !ISSUE_PRIORITIES.some((option) =>
@@ -329,7 +306,6 @@ const IssueFormPage = () => {
         setValidationError("Select a valid priority.");
         return;
       }
-
 
       if (!ISSUE_SEVERITIES.some((option) => option.value === formData.severity)) {
         setValidationError("Select a valid severity.");
@@ -348,38 +324,26 @@ const IssueFormPage = () => {
         const resultAction =
           await dispatch(
             createIssue({
-
               projectId,
-
               issueData: {
-                title:
-                  formData.title.trim(),
-                description:
-                  formData.description.trim(),
-                type:
-                  formData.type,
-                priority:
-                  formData.priority,
-                severity:
-                  formData.severity,
-                assigneeId:
-                  normalizedAssigneeId,
-                labels:
-                  normalizedLabels
+                title:        formData.title.trim(),
+                description:  formData.description.trim(),
+                type:         formData.type,
+                priority:     formData.priority,
+                severity:     formData.severity,
+                assigneeId:   normalizedAssigneeId,
+                labels:       normalizedLabels
               }
             })
           );
 
         if (createIssue.fulfilled.match(resultAction)) {
-
           SuccessMessageToast(`${resultAction.payload.key} created successfully.`);
-
           navigate(`/projects/${projectId}/board`);
           return;
         }
 
         ErrorMessageToast(resultAction.payload || "Unable to create issue.");
-
         return;
       }
 
@@ -465,20 +429,20 @@ const IssueFormPage = () => {
       if (updateIssue.fulfilled.match(resultAction)) {
         SuccessMessageToast(`${resultAction.payload.key} updated successfully.`);
 
-        navigate(`/projects/${projectId}/issues/${issueId}`); // Return to issue's normal read-first Details page after editing
+        navigate(`/projects/${projectId}/issues/${issueId}`); // return to issue's normal read-first Details page after editing
         return;
       }
 
       ErrorMessageToast(resultAction.payload || "Unable to update issue.");
     };
 
-  // Loading project information is mandatory in both modes. 
+  // loading project information is mandatory in both modes. 
   const projectLoading =
     currentProjectStatus === "idle" ||
     currentProjectStatus === "loading";
 
 
-  // Existing issue additionally needs to load in Edit mode.
+  // existing issue additionally needs to load in Edit mode.
   const issueLoading =
     isEditMode && (
       currentIssueStatus === "idle" ||
@@ -501,8 +465,8 @@ const IssueFormPage = () => {
     return (
       <main className="issue-form-page">
         <section
-          className="issue-form-state-card issue-form-state-card--error"
-          role="alert"
+          className = "issue-form-state-card issue-form-state-card--error"
+          role      = "alert"
         >
           <h2>Issue form could not be loaded</h2>
           <p>{currentProjectError || currentIssueError}</p>
@@ -513,7 +477,7 @@ const IssueFormPage = () => {
   }
 
 
-  // Archived projects may still be viewed, but should never expose create/edit mutation forms.
+  // archived projects may still be viewed, but should never expose create/edit mutation forms.
   if (project?.archived === true) {
     return (
       <main className="issue-form-page">
@@ -537,11 +501,9 @@ const IssueFormPage = () => {
   return (
     <main className="issue-form-page">
 
-      {/* Breadcrumb keeps the form connected to its project board. */}
+      {/* Breadcrumb keeps form connected to its project board. */}
       <div className="issue-form-breadcrumb">
-        <Link
-          to={`/projects/${projectId}/board`}
-        >
+        <Link to={`/projects/${projectId}/board`}>
           ← {project?.key} Issue Board
         </Link>
       </div>
@@ -566,7 +528,6 @@ const IssueFormPage = () => {
 
       <section className="issue-form-card">
         <form className="issue-form" onSubmit={handleSubmit}>
-
           {/* ------------------------------------------------------------ */}
           {/* Title                                                        */}
           {/* ------------------------------------------------------------ */}
@@ -579,20 +540,19 @@ const IssueFormPage = () => {
             </label>
 
             <input
-              id="issueTitle"
-              name="title"
-              type="text"
-              value={formData.title}
-              onChange={handleInputChange}
-              maxLength="200"
-              placeholder="Example: Login button becomes unresponsive"
+              id          = "issueTitle"
+              name        = "title"
+              type        = "text"
+              value       = {formData.title}
+              onChange    = {handleInputChange}
+              maxLength   = "200"
+              placeholder = "Example: Login button becomes unresponsive"
               required
             />
             <small>
               Short description shown directly on the issue board card.
             </small>
           </div>
-
 
           {/* ------------------------------------------------------------ */}
           {/* Description                                                  */}
@@ -602,12 +562,12 @@ const IssueFormPage = () => {
               Description
             </label>
             <textarea
-              id="issueDescription"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              rows="7"
-              placeholder="Describe the problem, expected behavior, reproduction steps, or implementation details..."
+              id          = "issueDescription"
+              name        = "description"
+              value       = {formData.description}
+              onChange    = {handleInputChange}
+              rows        = "7"
+              placeholder = "Describe the problem, expected behavior, reproduction steps, or implementation details..."
             />
           </div>
 
@@ -620,10 +580,10 @@ const IssueFormPage = () => {
                 Type
               </label>
               <select
-                id="issueType"
-                name="type"
-                value={formData.type}
-                onChange={handleInputChange}
+                id       = "issueType"
+                name     = "type"
+                value    = {formData.type}
+                onChange = {handleInputChange}
               >
                 {ISSUE_TYPES.map(
                   (option) => (
@@ -637,12 +597,11 @@ const IssueFormPage = () => {
 
             <div className="issue-form-field">
               <label htmlFor="issuePriority">Priority</label>
-
               <select
-                id="issuePriority"
-                name="priority"
-                value={formData.priority}
-                onChange={handleInputChange}
+                id       = "issuePriority"
+                name     = "priority"
+                value    = {formData.priority}
+                onChange = {handleInputChange}
               >
                 {ISSUE_PRIORITIES.map(
                   (option) => (
@@ -654,19 +613,16 @@ const IssueFormPage = () => {
               </select>
             </div>
 
-
             <div className="issue-form-field">
-
               <label htmlFor="issueSeverity">
                 Severity
               </label>
 
-
               <select
-                id="issueSeverity"
-                name="severity"
-                value={formData.severity}
-                onChange={handleInputChange}
+                id       = "issueSeverity"
+                name     = "severity"
+                value    = {formData.severity}
+                onChange = {handleInputChange}
               >
 
                 {ISSUE_SEVERITIES.map(
@@ -684,18 +640,15 @@ const IssueFormPage = () => {
           {/* ------------------------------------------------------------ */}
           {/* Assignee                                                     */}
           {/* ------------------------------------------------------------ */}
-
           <div className="issue-form-field">
             <label htmlFor="issueAssignee">Assignee</label>
-
             {canManageAssignee ? (
-
               <select
-                id="issueAssignee"
-                name="assigneeId"
-                value={formData.assigneeId}
-                onChange={handleInputChange}
-                disabled={assignableStatus === "loading"}
+                id       = "issueAssignee"
+                name     = "assigneeId"
+                value    = {formData.assigneeId}
+                onChange = {handleInputChange}
+                disabled = {assignableStatus === "loading"}
               >
 
                 <option value="">Unassigned</option>
@@ -759,19 +712,18 @@ const IssueFormPage = () => {
               )}
           </div>
 
-
           {/* ------------------------------------------------------------ */}
           {/* Labels                                                       */}
           {/* ------------------------------------------------------------ */}
           <div className="issue-form-field">
             <label htmlFor="issueLabels">Labels</label>
             <input
-              id="issueLabels"
-              name="labelsText"
-              type="text"
-              value={formData.labelsText}
-              onChange={handleInputChange}
-              placeholder="frontend, login, authentication"
+              id          = "issueLabels"
+              name        = "labelsText"
+              type        = "text"
+              value       = {formData.labelsText}
+              onChange    = {handleInputChange}
+              placeholder = "frontend, login, authentication"
             />
 
             <small>
@@ -794,7 +746,10 @@ const IssueFormPage = () => {
           {/* Client-side validation                                       */}
           {/* ------------------------------------------------------------ */}
           {validationError && (
-            <div className="issue-form-validation-error" role="alert">
+            <div 
+              className = "issue-form-validation-error" 
+              role      = "alert"
+            >
               {validationError}
             </div>
           )}
@@ -804,14 +759,17 @@ const IssueFormPage = () => {
           {/* Form actions                                                  */}
           {/* ------------------------------------------------------------ */}
           <div className="issue-form-actions">
-            <Link className="issue-form-cancel-button" to={`/projects/${projectId}/board`}>
+            <Link 
+              className = "issue-form-cancel-button" 
+              to        = {`/projects/${projectId}/board`}
+            >
               Cancel
             </Link>
 
             <button
-              className="issue-form-save-button"
-              type="submit"
-              disabled={saveStatus === "loading"}
+              className = "issue-form-save-button"
+              type      = "submit"
+              disabled  = {saveStatus === "loading"}
             >
               {saveStatus === "loading" 
                 ? (isEditMode ? "Saving..." : "Creating...")

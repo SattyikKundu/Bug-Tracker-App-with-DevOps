@@ -11,7 +11,7 @@ import {
 } from "react-router";
 
 import {
-  useDispatch, // References to Redux dispatch function. Used to send actions to store, 
+  useDispatch, // references to Redux dispatch function. Used to send actions to store, 
                // which triggers your reducers to update state.
   useSelector  // extracts data from Redux store state so a selector function can track/update 
                // component to changes, forcing a re-render if that specific data updates. 
@@ -27,8 +27,8 @@ import "./RegisterPage.css"; // import css styling
 
 
 const RegisterPage = () => {
-  const dispatch = useDispatch(); //
-  const navigate = useNavigate(); // Used to dispatch navigation
+  const dispatch = useDispatch(); 
+  const navigate = useNavigate(); // used to dispatch navigation
 
   const { registerStatus, error } = useSelector((state) => state.auth); // variable states to track and update from auth reducer store
 
@@ -45,7 +45,7 @@ const RegisterPage = () => {
   const [validationError, setValidationError] = useState(""); // stores validation error
 
 
-  useEffect(() => {  // Clear old Redux registration state when the page opens.
+  useEffect(() => {  // clear old Redux registration state when the page opens.
     dispatch(clearAuthError());
     dispatch(resetRegisterStatus());
   }, [dispatch]);
@@ -87,29 +87,23 @@ const RegisterPage = () => {
       !email.trim() ||
       !password
     ) {
-      setValidationError(
-        "Please complete all required fields."
-      );
-
+      setValidationError("Please complete all required fields.");
       return;
     }
 
 
     if (password !== confirmPassword) {
-      setValidationError(
-        "Passwords do not match."
-      );
-
+      setValidationError("Passwords do not match.");
       return;
     }
 
 
     const resultAction = await dispatch(
       registerUser({
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        username: username.trim(),
-        email: email.trim(),
+        firstName:  firstName.trim(),
+        lastName:   lastName.trim(),
+        username:   username.trim(),
+        email:      email.trim(),
         password
       })
     );
@@ -121,35 +115,31 @@ const RegisterPage = () => {
         {
           replace: true,
           state: {
-            registrationSuccess:
-              "Registration successful. Please log in to continue."
+            registrationSuccess: "Registration successful. Please log in to continue."
           }
         }
       );
     }
   };
 
-
-  const displayedError =
-    validationError || error;
-
+  const displayedError = validationError || error;
 
   return (
     <main className="register-page">
       <section className="register-brand-panel">
         <Link
-          className="register-brand"
-          to="/login"
+          className = "register-brand"
+          to = "/login"
         >
-          <span className="register-brand-mark">
+          <span className = "register-brand-mark">
             BT
           </span>
 
           <span>BugTrack Workspace</span>
         </Link>
 
-        <div className="register-brand-content">
-          <p className="register-eyebrow">
+        <div className = "register-brand-content">
+          <p className = "register-eyebrow">
             Create your workspace account
           </p>
 
@@ -164,7 +154,6 @@ const RegisterPage = () => {
         </div>
       </section>
 
-
       <section className="register-form-panel">
         <div className="register-card">
           <header className="register-card-header">
@@ -174,7 +163,6 @@ const RegisterPage = () => {
               Enter your information to register.
             </p>
           </header>
-
 
           <form
             className="register-form"
@@ -188,17 +176,16 @@ const RegisterPage = () => {
                 </label>
 
                 <input
-                  id="firstName"
-                  name="firstName"
-                  type="text"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  autoComplete="given-name"
-                  maxLength="50"
+                  id           = "firstName"
+                  name         = "firstName"
+                  type         = "text"
+                  value        = {formData.firstName}
+                  onChange     = {handleInputChange}
+                  autoComplete = "given-name"
+                  maxLength    = "50"
                   required
                 />
               </div>
-
 
               <div className="register-field">
                 <label htmlFor="lastName">
@@ -206,18 +193,17 @@ const RegisterPage = () => {
                 </label>
 
                 <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  autoComplete="family-name"
-                  maxLength="50"
+                  id           = "lastName"
+                  name         = "lastName"
+                  type         = "text"
+                  value        = {formData.lastName}
+                  onChange     = {handleInputChange}
+                  autoComplete = "family-name"
+                  maxLength    = "50"
                   required
                 />
               </div>
             </div>
-
 
             <div className="register-field">
               <label htmlFor="username">
@@ -225,18 +211,17 @@ const RegisterPage = () => {
               </label>
 
               <input
-                id="username"
-                name="username"
-                type="text"
-                value={formData.username}
-                onChange={handleInputChange}
-                autoComplete="username"
-                minLength="3"
-                maxLength="30"
+                id           = "username"
+                name         = "username"
+                type         = "text"
+                value        = {formData.username}
+                onChange     = {handleInputChange}
+                autoComplete = "username"
+                minLength    = "3"
+                maxLength    = "30"
                 required
               />
             </div>
-
 
             <div className="register-field">
               <label htmlFor="email">
@@ -244,16 +229,15 @@ const RegisterPage = () => {
               </label>
 
               <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                autoComplete="email"
+                id           = "email" 
+                name         = "email"
+                type         = "email"
+                value        = {formData.email}
+                onChange     = {handleInputChange}
+                autoComplete = "email"
                 required
               />
             </div>
-
 
             <div className="register-field">
               <label htmlFor="password">
@@ -261,16 +245,15 @@ const RegisterPage = () => {
               </label>
 
               <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                autoComplete="new-password"
+                id           = "password"
+                name         = "password"
+                type         = "password"
+                value        = {formData.password}
+                onChange     = {handleInputChange}
+                autoComplete = "new-password"
                 required
               />
             </div>
-
 
             <div className="register-field">
               <label htmlFor="confirmPassword">
@@ -278,31 +261,29 @@ const RegisterPage = () => {
               </label>
 
               <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                autoComplete="new-password"
+                id           = "confirmPassword"
+                name         = "confirmPassword"
+                type         = "password"
+                value        = {formData.confirmPassword}
+                onChange     = {handleInputChange}
+                autoComplete = "new-password"
                 required
               />
             </div>
 
-
             {displayedError && (
               <div
-                className="register-error"
-                role="alert"
+                className = "register-error"
+                role      = "alert"
               >
                 {displayedError}
               </div>
             )}
 
-
             <button
-              className="register-submit-button"
-              type="submit"
-              disabled={registerStatus === "loading"}
+              className = "register-submit-button"
+              type      = "submit"
+              disabled  = {registerStatus === "loading"}
             >
               {registerStatus === "loading"
                 ? "Creating account..."
@@ -310,10 +291,8 @@ const RegisterPage = () => {
             </button>
           </form>
 
-
           <p className="register-login-link">
             Already registered?{" "}
-
             <Link to="/login">
               Log in
             </Link>

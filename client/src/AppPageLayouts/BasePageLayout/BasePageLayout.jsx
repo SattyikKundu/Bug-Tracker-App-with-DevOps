@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"; // import React library
 import { Outlet } from "react-router";
 
 import './BasePageLayout.css';

@@ -1,69 +1,54 @@
 // src/PageComponents/IssueBoardCard/IssueBoardCard.jsx
 
-import "./IssueBoardCard.css"; // Styling for one compact board issue card
+import "./IssueBoardCard.css"; // styling for one compact board issue card
 
 import {
-  ALLOWED_TRANSITIONS, // Determines which arrow-button transitions are available
-  STATUS_LABELS        // Converts internal status values into readable labels
+  ALLOWED_TRANSITIONS, // determines which arrow-button transitions are available
+  STATUS_LABELS        // converts internal status values into readable labels
 } from "../../utils/issueWorkflow.jsx";
 
 
 
-// More descriptive button text for certain workflow movements.
-const TRANSITION_LABELS = {
-  "open->in_progress":
-    "Start Work →",
-
-  "in_progress->open":
-    "← Reopen",
-
-  "in_progress->ready_for_review":
-    "Send to Review →",
-
-  "ready_for_review->in_progress":
-    "← Return to Work",
-
-  "ready_for_review->closed":
-    "Close Issue →",
-
-  "closed->ready_for_review":
-  "← Return to Review",
-
-  "closed->open":
-    "Reopen Issue"
+const TRANSITION_LABELS = { // more descriptive button text for certain workflow movements.
+  "open->in_progress"             :   "Start Work →"      ,
+  "in_progress->open"             :   "← Reopen"          ,
+  "in_progress->ready_for_review" :   "Send to Review →"  ,
+  "ready_for_review->in_progress" :   "← Return to Work"  ,
+  "ready_for_review->closed"      :   "Close Issue →"     ,
+  "closed->ready_for_review"      :   "← Return to Review",
+  "closed->open"                  :   "Reopen Issue"
 };
 
 
 const IssueBoardCard = ({
-  issue,                // Individual issue document
-  assigneeName,         // Human-readable assignee identity
-  canTransition,        // Whether current user can modify this issue's status (via arrow-buttons)
-  projectArchived,      // Archived projects remain read-only
-  isTransitioning,      // Shows temporary loading/disabled state
-  onTransition          // Callback supplied by IssueBoardPage
+  issue,                // individual issue document
+  assigneeName,         // human-readable assignee identity
+  canTransition,        // whether current user can modify this issue's status (via arrow-buttons)
+  projectArchived,      // archived projects remain read-only
+  isTransitioning,      // shows temporary loading/disabled state
+  onTransition          // callback supplied by IssueBoardPage
 }) => {
 
 
   /* Normalize priority before displaying it.
    *
-   * trim() also makes client tolerant of accidental surrounding
-   * whitespace in existing database/schema values.
+   * trim() also makes client tolerant of accidental surrounding whitespace in existing database/schema values.
    */
   const normalizedPriority = String(issue.priority || "medium").trim().toLowerCase();
 
-  // Normalize issue type for display/CSS.
+  // normalize issue type for display/CSS.
   const normalizedType = String(issue.type || "bug").trim().toLowerCase();
 
 
-  // Determine which transitions are available from the current status.
+  // determine which transitions are available from the current status.
   const availableTransitions = ALLOWED_TRANSITIONS[issue.status] ?? [];
 
-  // Keep cards visually compact by showing at most two label chips.
+  // keep cards visually compact by showing at most two label chips.
   const visibleLabels = Array.isArray(issue.labels) ? issue.labels.slice(0, 2) : [];
 
 
-  // Count labels hidden from the compact board card.
-  const hiddenLabelCount =
+
+  const hiddenLabelCount =  // count labels hidden from the compact board card.
     Array.isArray(issue.labels)
       ? Math.max(issue.labels.length - visibleLabels.length, 0)
       : 0;
@@ -127,12 +112,12 @@ const IssueBoardCard = ({
                 const transitionKey = `${issue.status}->${targetStatus}`;
                 return (
                   <button
-                    key={targetStatus}
-                    type="button"
-                    className="issue-board-card-transition-button"
-                    disabled={isTransitioning}
-                    onClick={(event) => {
-                      event.stopPropagation(); // Prevents status-button click from opening Issue Details
+                    key       = {targetStatus}
+                    type      = "button"
+                    className = "issue-board-card-transition-button"
+                    disabled  = {isTransitioning}
+                    onClick   = {(event) => {
+                      event.stopPropagation(); // prevents status-button click from opening Issue Details
                       onTransition(issue, targetStatus);
                     }}
                   >

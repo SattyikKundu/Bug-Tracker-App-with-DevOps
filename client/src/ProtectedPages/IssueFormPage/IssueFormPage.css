@@ -4,7 +4,6 @@
 /* ========================================================================== */
 /* Page                                                                       */
 /* ========================================================================== */
-
 .issue-form-page {
   width: min(1000px, 100%); /* Keeps long forms readable on large desktop screens. */
   min-height: 100%;         /* Allows page to fill protected workspace height. */
@@ -15,7 +14,6 @@
 /* ========================================================================== */
 /* Breadcrumb                                                                 */
 /* ========================================================================== */
-
 .issue-form-breadcrumb {
   margin-bottom: 22px;  /* Separates return navigation from page heading. */
 }
@@ -34,7 +32,6 @@
 /* ========================================================================== */
 /* Heading                                                                    */
 /* ========================================================================== */
-
 .issue-form-heading {
   max-width: 780px;     /* Prevents introductory copy becoming excessively wide. */
 }
@@ -65,7 +62,6 @@
 /* ========================================================================== */
 /* Main form card                                                             */
 /* ========================================================================== */
-
 .issue-form-card {
   margin-top: 32px;               /* Separates editable form from page heading. */
   padding: 30px;                  /* Gives form comfortable internal whitespace. */
@@ -84,7 +80,6 @@
 /* ========================================================================== */
 /* Form fields                                                                */
 /* ========================================================================== */
-
 .issue-form-field {
   display: grid;    /* Stacks label, control, helper text, and preview. */
   gap: 7px;         /* Gives each field's elements consistent spacing. */
@@ -149,18 +144,16 @@
 /* ========================================================================== */
 /* Type / Priority / Severity row                                             */
 /* ========================================================================== */
-
 .issue-form-three-column-grid {
-  display: grid;                                      /* Places three enum controls on one desktop row.           */
-  grid-template-columns: repeat(3, minmax(0, 1fr));    /* Gives Type/Priority/Severity equal widths.               */
-  gap: 16px;                                          /* Adds clear separation between metadata controls.         */
+  display: grid;                                     /* Places three enum controls on one desktop row.           */
+  grid-template-columns: repeat(3, minmax(0, 1fr));  /* Gives Type/Priority/Severity equal widths.               */
+  gap: 16px;                                         /* Adds clear separation between metadata controls.         */
 }
 
 
 /* ========================================================================== */
 /* Read-only assignee                                                        */
 /* ========================================================================== */
-
 .issue-form-readonly-value {
   display: flex;            /* Makes read-only identity align like a normal control. */
   min-height: 43px;         /* Matches neighboring select/input height. */
@@ -177,14 +170,12 @@
 /* ========================================================================== */
 /* Label preview                                                              */
 /* ========================================================================== */
-
 .issue-form-label-preview {
   display: flex;        /* Displays normalized labels as compact chips. */
   flex-wrap: wrap;      /* Allows longer label collections to wrap naturally. */
   gap: 6px;             /* Creates consistent spacing between label chips. */
   padding-top: 3px;     /* Separates preview slightly from helper copy. */
 }
-
 
 .issue-form-label-chip {
   display: inline-flex;     /* Sizes each chip according to its label content. */
@@ -201,7 +192,6 @@
 /* ========================================================================== */
 /* Validation                                                                 */
 /* ========================================================================== */
-
 .issue-form-validation-error {
   padding: 11px 13px;               /* Gives validation message comfortable spacing. */
   border: 1px solid #ffbdad;      /* Clearly identifies invalid local form data. */
@@ -216,7 +206,6 @@
 /* ========================================================================== */
 /* Form actions                                                               */
 /* ========================================================================== */
-
 .issue-form-actions {
   display: flex;                /* Places Cancel and Save/Create actions beside each other. */
   justify-content: flex-end;    /* Aligns primary form actions to right side. */
@@ -268,7 +257,6 @@
 /* ========================================================================== */
 /* Loading / Error state                                                      */
 /* ========================================================================== */
-
 .issue-form-state-card {
   display: grid;                        /* Stacks loading/error content vertically. */
   width: min(650px, calc(100% - 32px)); /* Keeps state message comfortably narrow. */
@@ -325,26 +313,20 @@
 /* ========================================================================== */
 /* Responsive layout                                                          */
 /* ========================================================================== */
-
 @media (max-width: 700px) {
-
   .issue-form-page {
-    padding: 34px 16px 60px;    /* Reduces page margins on smaller screens. */
+    padding: 34px 16px 60px;  /* Reduces page margins on smaller screens. */
   }
-
   .issue-form-card {
-    padding: 22px 17px; /* Reduces form-card padding on mobile. */
+    padding: 22px 17px;       /* Reduces form-card padding on mobile. */
   }
-
   .issue-form-three-column-grid {
-    grid-template-columns: 1fr;   /* Stacks Type/Priority/Severity vertically on phones. */
+    grid-template-columns: 1fr;        /* Stacks Type/Priority/Severity vertically on phones. */
   }
-
   .issue-form-actions {
-    flex-direction: column-reverse;     /* Keeps primary create/save action visually first. */
+    flex-direction: column-reverse;   /* Keeps primary create/save action visually first. */
   }
-
   .issue-form-cancel-button, .issue-form-save-button {
-    width: 100%;        /* Provides full-width mobile action targets. */
+    width: 100%;                      /* Provides full-width mobile action targets. */
   }
 }
