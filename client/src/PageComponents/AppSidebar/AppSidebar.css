@@ -77,8 +77,82 @@
 }
 
 
+
 /*****************************************************/
-/************** Mobile design stylings ***************/
+/**               Notification navigation           **/
+/*****************************************************/
+
+.app-sidebar-link-label {
+  min-width: 0;       /* Allows notification label to shrink before badge. */
+  flex: 1;            /* Pushes unread badge to far-right side of link. */
+}
+
+.app-sidebar-notification-badge {
+  display: inline-grid;      /* Centers unread number inside badge. */
+  min-width: 21px;           /* Keeps one-digit badge circular. */
+  height: 21px;              /* Matches badge minimum width. */
+  flex: 0 0 auto;            /* Prevents badge shrinking beside long text. */
+  place-items: center;       /* Centers unread number horizontally/vertically. */
+  padding: 0 5px;            /* Allows wider "9+" value. */
+
+  border-radius: 999px;      /* Creates circle/pill shape. */
+  background: #de350b;     /* Uses strong attention red. */
+  color: #ffffff;          /* Gives badge high contrast. */
+
+  font-size: 0.67rem;        /* Keeps badge compact. */
+  font-weight: 850;          /* Makes number easy to read. */
+  line-height: 1;
+}
+
+
+/*****************************************************/
+/**           Current-project navigation            **/
+/*****************************************************/
+
+.app-sidebar-current-project {
+  display: grid;                       /* Stacks project identity and workspace links. */
+  gap: 3px;                            /* Keeps project destinations tightly grouped. */
+  margin: 2px 0 9px;                   /* Separates selected project from global links. */
+  padding: 8px;                        /* Creates a subtle project workspace container. */
+
+  border: 1px solid #e3e7ed;         /* Distinguishes current project area. */
+  border-radius: 9px;                  /* Matches existing sidebar geometry. */
+  background: #fafbfc;               /* Slightly separates project context from sidebar. */
+}
+
+.app-sidebar-current-project-heading {
+  display: grid;        /* Stacks project key over project name. */
+  gap: 4px;             /* Adds compact separation. */
+  min-width: 0;         /* Allows long project names to truncate. */
+  padding: 6px 8px 8px; /* Creates spacing above contextual links. */
+}
+
+.app-sidebar-current-project-heading strong {
+  overflow: hidden;         /* Prevents long names widening sidebar. */
+  color: #253858;         /* Uses strong project-name text. */
+  font-size: 0.84rem;       /* Keeps project identity compact. */
+  text-overflow: ellipsis;  /* Displays ... for long names. */
+  white-space: nowrap;      /* Keeps project name to one line. */
+}
+
+.app-sidebar-current-project-key {
+  color: #2368a2;         /* Uses established project accent blue. */
+  font-size: 0.67rem;       /* Keeps short project key secondary. */
+  font-weight: 850;         /* Makes uppercase project key readable. */
+  letter-spacing: 0.08em;   /* Improves abbreviated-key readability. */
+  text-transform: uppercase;
+}
+
+.app-sidebar-project-link {
+  min-height: 37px;       /* Keeps nested project links slightly more compact. */
+  margin-left: 6px;       /* Visually nests destinations under project identity. */
+  width: calc(100% - 6px);
+  font-size: 0.8rem;      /* Gives contextual links secondary hierarchy. */
+}
+
+
+/*****************************************************/
+/**              Mobile design stylings             **/
 /*****************************************************/
 @media (max-width: 760px) {
   .app-sidebar {

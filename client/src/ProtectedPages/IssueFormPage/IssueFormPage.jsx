@@ -33,6 +33,11 @@ import {
   SuccessMessageToast  // displays successful issue create/edit results
 } from "../../utils/utilityFunctions.jsx";
 
+
+// shows "overview" and "issues board" links for current project
+import ProjectWorkspaceNav from "../../PageComponents/ProjectWorkspaceNav/ProjectWorkspaceNav.jsx"; 
+
+
 import "./IssueFormPage.css"; // shared create/edit issue form styling
 
 
@@ -142,7 +147,7 @@ const IssueFormPage = () => {
   }, [dispatch, isEditMode, issueId]);
 
 
-  /* Load the ONLY users who may be assigned issues in this project.
+  /* Load ONLY the users who may be assigned issues in this project.
    * This uses the backend endpoint you already created specifically for issue-assignee dropdowns.
    */
   useEffect(() => {
@@ -507,6 +512,9 @@ const IssueFormPage = () => {
           ← {project?.key} Issue Board
         </Link>
       </div>
+
+      {/* Project Workspace (current project with 'Overview' and 'Issues Board' links) */}
+      <ProjectWorkspaceNav projectId={projectId} />
 
       <header className="issue-form-heading">
 

@@ -42,6 +42,8 @@ import {
 
 import DraggableIssueCard   from "../../PageComponents/DraggableIssueCard/DraggableIssueCard.jsx";
 import IssueDropColumn      from "../../PageComponents/IssueDropColumn/IssueDropColumn.jsx";
+import ProjectWorkspaceNav  from "../../PageComponents/ProjectWorkspaceNav/ProjectWorkspaceNav.jsx";
+
 import "./IssueBoardPage.css";  // Four-column board styling
 
 import {
@@ -140,7 +142,7 @@ const issueBoardSensors = (defaultSensors) => [
       }
 
       // Mouse and pen:
-      // A simple click causes virtually zero travel and therefore does NOT start dragging.
+      // a simple click causes virtually zero travel and therefore does NOT start dragging.
       return [
         new PointerActivationConstraints.Distance({value: 8})  // Pointer must travel at least 8 pixels
       ];
@@ -555,18 +557,18 @@ const IssueBoardPage = () => {
   };
 
   const filtersAreActive =          // determine whether any filter is currently active.
-    searchText.trim() !== "" ||
-    priorityFilter !== "all" ||
-    typeFilter !== "all" ||
-    assigneeFilter !== "all";
+    searchText.trim() !== ""    ||
+    priorityFilter    !== "all" ||
+    typeFilter        !== "all" ||
+    assigneeFilter    !== "all";
 
 
   // loading project and issues together prevents board from showing incomplete header/permission information.
   if (
-    currentProjectStatus === "idle" ||
-    currentProjectStatus === "loading" ||
-    issueStatus === "idle" ||
-    issueStatus === "loading"
+    currentProjectStatus  === "idle"    ||
+    currentProjectStatus  === "loading" ||
+    issueStatus           === "idle"    ||
+    issueStatus           === "loading"
   ) {
     return (
       <main className="issue-board-page">
@@ -612,6 +614,7 @@ const IssueBoardPage = () => {
           ← {project?.key} Project
         </Link>
       </div>
+      <ProjectWorkspaceNav projectId={projectId} />
 
       {/* Project/board heading. */}
       <header className="issue-board-heading">
@@ -719,7 +722,7 @@ const IssueBoardPage = () => {
       {/* horizontal Kanban-style workflow board. */}
       <DragDropProvider
         sensors   = {issueBoardSensors} // adds click-vs-drag activation thresholds
-        onDragEnd = {handleDragEnd}   // persists or reverts the completed movement
+        onDragEnd = {handleDragEnd}     // persists or reverts the completed movement
       >
         <section
           className  = "issue-board-scroll-container"

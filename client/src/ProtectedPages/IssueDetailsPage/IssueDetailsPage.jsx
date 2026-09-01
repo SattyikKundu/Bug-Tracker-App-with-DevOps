@@ -29,6 +29,9 @@ import {
   SuccessMessageToast  // Toast for successful Watch/Unwatch API results
 } from "../../utils/utilityFunctions.jsx";
 
+// shows "overview" and "issues board" links for current project
+import ProjectWorkspaceNav from "../../PageComponents/ProjectWorkspaceNav/ProjectWorkspaceNav.jsx"; 
+
 import { STATUS_LABELS } from "../../utils/issueWorkflow.jsx"; // converts internal workflow status into readable UI text
 
 import IssueComments from "../../PageComponents/IssueComments/IssueComments.jsx"; // threaded Activity/comments section
@@ -53,14 +56,13 @@ const formatIssueDate = (dateValue) => {
   return parsedDate.toLocaleString(
     "en-US",
     {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
+      year:   "numeric",
+      month:  "short",
+      day:    "numeric",
+      hour:   "numeric",
       minute: "2-digit"
     }
   );
-
 };
 
 
@@ -267,12 +269,10 @@ const IssueDetailsPage = () => {
 
 
   const pageIsLoading =
-
-    currentProjectStatus === "idle" ||
-    currentProjectStatus === "loading" ||
-
-    currentIssueStatus === "idle" ||
-    currentIssueStatus === "loading";
+    currentProjectStatus  === "idle"    ||
+    currentProjectStatus  === "loading" ||
+    currentIssueStatus    === "idle"    ||
+    currentIssueStatus    === "loading";
 
 
   if (pageIsLoading) {
@@ -322,6 +322,8 @@ const IssueDetailsPage = () => {
         <span>{issue?.key}</span>
       </nav>
 
+      {/* Project Workspace (current project with 'Overview' and 'Issues Board' links) */}
+      <ProjectWorkspaceNav projectId={projectId} />
 
       {/* Archived project explanation remains prominent. */}
       {project?.archived && (

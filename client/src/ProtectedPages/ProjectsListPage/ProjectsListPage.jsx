@@ -197,9 +197,9 @@ const ProjectListPage = () => {
         <div className="projects-heading-row">
           <div className="projects-heading">
             <p className="projects-eyebrow">Project workspace</p>
-            <h1>Projects</h1>
+            <h1>Your Projects</h1>
             <p>
-              Browse your active and archived projects, sort your workspace,
+              Review your active and archived projects, sort your workspace,
               and open a project to manage its details, members, and issues.
             </p>
           </div>

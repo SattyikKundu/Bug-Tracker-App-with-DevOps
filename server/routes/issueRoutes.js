@@ -15,6 +15,7 @@ import { loadIssue } from "../middleware/issueLoader.js";// Issue loader helper 
 import { 
     createIssue,      // create issue for a project
     listIssues,       // lists existing issues for a project
+    getMyWork,        // dashboard's authenticated cross-project assigned work
     getIssue,         // fetch issue for a parent project
     updateIssue,      // update an existing project's issue
     addIssueLabel,    // adding label to an issue
@@ -140,6 +141,42 @@ router.get(
     listIssues
 );
 
+
+
+/**
+ * @swagger
+ * /issues/my-work:
+ *   get:
+ *     summary: Get the authenticated user's active assigned work
+ *     description: >
+ *       Returns up to five recently updated active issues assigned to the
+ *       authenticated user together with Open, In Progress, and Ready for
+ *       Review counts across projects the user can access.
+ *     tags: [Issues]
+ *     responses:
+ *       200: { description: Assigned issue summary and recent active work }
+ *       401: { description: Unauthorized }
+ */
+router.get(
+    "/issues/my-work",
+    verifyJWT,
+    loadCurrentUser,
+    getMyWork
+);
+
+/* Self-NOTE:
+ * "/issues/my-work" must be declared BEFORE GET "/issues/:id".
+ *
+ * Express evaluates matching routes from top to bottom. 
+ * If "/issues/:id" comes first, "/issues/my-work" is interpreted as:
+ *
+ * req.params.id = "my-work"
+ *
+ * which causes loadIssue to reject it as an invalid MongoDB ObjectId.
+ */
+
+
+
 // Get a single issue
 /**
  * @swagger
@@ -168,6 +205,8 @@ router.get(
     requireProjectMemberOrAdmin, 
     getIssue
 );
+
+
 
 // Update an issue
 /**

@@ -1,0 +1,67 @@
+/* src/PageComponents/ProjectWorkspaceNav/ProjectWorkspaceNav.css */
+
+
+/*********************************************************/
+/*               Current-project navigation              */
+/*********************************************************/
+
+.project-workspace-nav {
+  display: flex;                        /* Places project destinations beside each other. */
+  flex-wrap: wrap;                      /* Allows links to wrap safely on narrow layouts. */
+  gap: 6px;                             /* Keeps the two project destinations visually grouped. */
+  margin: 0 0 24px;                     /* Separates workspace navigation from page content. */
+  padding: 5px;                         /* Creates a compact tab-container surface. */
+  border: 1px solid #dfe3e8;          /* Defines project navigation from surrounding content. */
+  border-radius: 9px;                   /* Matches existing application controls/cards. */
+  background: #ffffff;                /* Keeps navigation clear against workspace background. */
+}
+
+.project-workspace-nav-link {
+  display: inline-flex;                 /* Creates button-like navigation links. */
+  min-height: 38px;                     /* Provides a comfortable click/touch target. */
+  align-items: center;                  /* Vertically centers the link label. */
+  justify-content: center;              /* Horizontally centers the label. */
+  padding: 8px 14px;                    /* Adds compact project-tab spacing. */
+  border-radius: 6px;                   /* Gives each navigation destination soft corners. */
+  color: #42526e;                     /* Uses secondary navigation text when inactive. */
+  font-size: 0.82rem;                   /* Keeps project-level navigation compact. */
+  font-weight: 750;                     /* Makes destinations easy to scan. */
+  text-decoration: none;                /* Removes default Link underline. */
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;                   /* Smooths hover/active feedback. */
+}
+
+.project-workspace-nav-link:hover {
+  background: #f1f2f4;                /* Gives inactive links clear hover feedback. */
+  color: #172b4d;                     /* Strengthens hovered navigation text. */
+}
+
+.project-workspace-nav-link:focus-visible {
+  outline: 3px solid rgba(35, 104, 162, 0.2); /* Provides visible keyboard focus. */
+  outline-offset: 1px;                        /* Separates focus ring from link edge. */
+}
+
+.project-workspace-nav-link--active {
+  background: #e8f1fa;                /* Highlights the current project destination. */
+  color: #174d7a;                     /* Uses established application active-link blue. */
+  font-weight: 850;                     /* Gives the selected destination stronger emphasis. */
+}
+
+
+/*********************************************************/
+/*                    Mobile layout                      */
+/*********************************************************/
+
+@media (max-width: 560px) {
+
+  .project-workspace-nav {
+    display: grid;                      /* Lets both destinations use equal mobile width. */
+    grid-template-columns: 1fr 1fr;     /* Keeps Overview and Issue Board balanced. */
+  }
+
+  .project-workspace-nav-link {
+    width: 100%;                        /* Fills each mobile navigation column. */
+  }
+
+}

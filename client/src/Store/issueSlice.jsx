@@ -31,6 +31,25 @@ export const fetchProjectIssues = createAsyncThunk(
 );
 
 
+/* GET /issues/my-work
+ *
+ * Retrieves the logged-in user's active assigned work across
+ * every project they are still permitted to access.
+ */
+export const fetchMyWork = createAsyncThunk(
+  "issues/fetchMyWork",
+  async (_, thunkAPI) => {
+    try {
+      const response = await api.get("/issues/my-work");
+      return response.data;
+    }
+    catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.error || "Unable to load your assigned work.");
+    }
+  }
+);
+
+
 /* POST /issues/:id/transition
  *
  * Performs one explicit workflow transition.
@@ -162,6 +181,17 @@ const initialState = {
   issues: [],                  // all issues belonging to currently opened project
   status: "idle",              // idle | loading | succeeded | failed
   error: null,                 // full-board loading error
+
+  myWork: [],                  // five most recently updated active assigned issues
+  myWorkSummary: {
+    total: 0,                  // all active issues assigned to logged-in user
+    open: 0,
+    inProgress: 0,
+    readyForReview: 0
+  },
+  myWorkStatus: "idle",        // idle | loading | succeeded | failed
+  myWorkError: null,           // dashboard-specific assigned-work load failure
+
   transitioningIssueId: null,  // tracks which issue currently shows transition loading state
   currentIssue: null,          // existing issue currently opened for editing
   currentIssueStatus: "idle",  // idle | loading | succeeded | failed
@@ -246,6 +276,30 @@ const issueSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+      // =====================================================================
+      // Dashboard My Work
+      // =====================================================================
+      .addCase(fetchMyWork.pending, (state) => {
+        state.myWorkStatus = "loading";
+        state.myWorkError  = null;
+      })
+      .addCase(fetchMyWork.fulfilled, (state, action) => {
+        state.myWorkStatus  = "succeeded";
+        state.myWork        = action.payload.issues ?? [];
+        state.myWorkSummary =
+          action.payload.summary ?? {
+            total: 0,
+            open: 0,
+            inProgress: 0,
+            readyForReview: 0
+          };
+        state.myWorkError  = null;
+      })
+      .addCase(fetchMyWork.rejected, (state, action) => {
+        state.myWorkStatus = "failed";
+        state.myWorkError = action.payload || "Unable to load your assigned work.";
+      })
+
       // =====================================================================
       // Fetch project issues
       // =====================================================================

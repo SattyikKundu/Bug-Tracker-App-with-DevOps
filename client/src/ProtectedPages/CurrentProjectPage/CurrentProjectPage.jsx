@@ -17,8 +17,9 @@ import {
   useSelector  // used to read and extract data from global redux store state
 } from "react-redux";
 
-
 import { ErrorMessageToast, SuccessMessageToast, NeutralMessageToast } from "../../utils/utilityFunctions.jsx"
+
+import ProjectWorkspaceNav from "../../PageComponents/ProjectWorkspaceNav/ProjectWorkspaceNav.jsx";
 
 import api from "../../api/axios.js"; // used for api requests to backend
 
@@ -338,6 +339,9 @@ const CurrentProjectPage = () => {
       <div className="current-project-breadcrumb">
         <Link to="/projects">← Projects</Link>
       </div>
+
+     <ProjectWorkspaceNav projectId={projectId} />
+
       {project.archived && (
         <div className="current-project-archive-banner" role="status">
           <strong>Archived Project</strong>
@@ -356,11 +360,6 @@ const CurrentProjectPage = () => {
           <h1>{project.name}</h1>
           <p>{project.description || "No project description has been added yet."}</p>
         </div>
-
-        {/* Every project member may open and VIEW the project's issue board. */}
-        <Link className="current-project-board-button" to={`/projects/${projectId}/board`}>
-          View Issue Board →
-        </Link>
       </header>
 
       <section className="current-project-grid">

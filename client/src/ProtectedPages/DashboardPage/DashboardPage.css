@@ -1,5 +1,9 @@
 /* src/ProtectedPages/DashboardPage/DashboardPage.css */
 
+
+/*********************************************************************************************/
+/*             Dashboard container stylings                                                  */
+/*********************************************************************************************/
 .dashboard-page {
   min-height: 100%;       /* Allows dashboard to fill protected content area. */
   background: #f4f5f7;  /* Preserves existing light-grey workspace background. */
@@ -40,7 +44,9 @@
 }
 
 
-/* Three numerical cards across the Dashboard. */
+/*********************************************************************************************/
+/*            Three numerical cards across the Dashboard.                                    */
+/*********************************************************************************************/
 .dashboard-summary-grid {
   display: grid;      /* Creates responsive dashboard-statistic columns. */
   grid-template-columns: repeat(3, minmax(0, 1fr)); /* Shows three equal desktop cards. */
@@ -57,7 +63,6 @@
   background: #ffffff;        /* Uses clean white information surface. */
   box-shadow: 0 5px 16px rgba(9, 30, 66, 0.05); /* Adds subtle existing-style depth. */
 }
-
 
 .dashboard-summary-label {
   color: #5e6c84;           /* Keeps metric label secondary to its numeric value. */
@@ -80,7 +85,10 @@
   line-height: 1.55;  /* Improves small-text readability. */
 }
 
-/* Shared white Dashboard information panel. */
+
+/*********************************************************************************************/
+/*            Shared white Dashboard information panel.                                      */
+/*********************************************************************************************/
 .dashboard-overview-panel {
   margin-top: 26px;             /* Adds separation from preceding dashboard section. */
   padding: 26px;                /* Gives panel comfortable internal spacing. */
@@ -103,7 +111,10 @@
   line-height: 1.6;   /* Improves wrapped text readability. */
 }
 
-/* Heading row inside Recent Projects panel. */
+
+/*********************************************************************************************/
+/*            Heading row inside Recent Projects panel.                                      */
+/*********************************************************************************************/
 .dashboard-panel-heading {
   display: flex;                      /* Places heading text and View All link beside each other. */
   align-items: flex-start;            /* Aligns both sections at their top edge. */
@@ -131,13 +142,17 @@
   text-decoration: underline; /* Provides familiar link hover feedback. */
 }
 
-/* Vertical collection of recent project rows. */
+
+/*********************************************************************************************/
+/*            Vertical collection of recent project rows.                                    */
+/*********************************************************************************************/
 .dashboard-recent-project-list {
   display: grid; /* Stacks recent projects vertically. */
 }
 
-
-/* One recently updated project. */
+/*********************************************************************************************/
+/*            One recently updated project.                                                  */
+/*********************************************************************************************/
 .dashboard-recent-project {
   display: grid;          /* Creates key/info/arrow project-row layout. */
   grid-template-columns: auto minmax(0, 1fr) auto; /* Keeps information flexible between fixed key/arrow. */
@@ -150,11 +165,11 @@
 }
 
 .dashboard-recent-project:last-child {
-  border-bottom: 0; /* Removes unnecessary divider below final project row. */
+  border-bottom: 0;       /* Removes unnecessary divider below final project row. */
 }
 
 .dashboard-recent-project:hover {
-  background: #f8fafc; /* Provides restrained hover feedback. */
+  background: #f8fafc;  /* Provides restrained hover feedback. */
 }
 
 .dashboard-recent-project-key {
@@ -171,9 +186,9 @@
 }
 
 .dashboard-recent-project-info {
-  display: grid;  /* Stacks project name over last-updated date. */
-  gap: 4px;       /* Adds compact separation between information lines. */
-  min-width: 0;   /* Allows long project names to truncate correctly. */
+  display: grid;          /* Stacks project name over last-updated date. */
+  gap: 4px;               /* Adds compact separation between information lines. */
+  min-width: 0;           /* Allows long project names to truncate correctly. */
 }
 
 .dashboard-recent-project-info strong {
@@ -185,13 +200,13 @@
 }
 
 .dashboard-recent-project-info span {
-  color: #7a869a;   /* Uses tertiary color for update metadata. */
-  font-size: 0.76rem; /* Makes date information visually secondary. */
+  color: #7a869a;         /* Uses tertiary color for update metadata. */
+  font-size: 0.76rem;       /* Makes date information visually secondary. */
 }
 
 .dashboard-recent-project-arrow {
-  color: #2368a2;     /* Uses action blue to indicate navigation. */
-  font-size: 1rem;      /* Makes directional arrow visible but restrained. */
+  color: #2368a2;         /* Uses action blue to indicate navigation. */
+  font-size: 1rem;          /* Makes directional arrow visible but restrained. */
   transition: transform 150ms ease; /* Smooths hover movement. */
 }
 
@@ -239,16 +254,150 @@
 
 
 /*****************************************************************************************/
-/*         Future dashboard information areas.                                            */
+/*         Future dashboard information areas.                                           */
 /*****************************************************************************************/
-.dashboard-placeholder-grid {
-  display: grid;                                    /* Places placeholder cards side-by-side on desktop. */
-  grid-template-columns: repeat(2, minmax(0, 1fr)); /* Uses equal two-column layout. */
-  gap: 20px;                                        /* Adds spacing between future feature areas. */
+.dashboard-work-grid {
+  display: grid;                                    /* Places "My Work" and "Recent Activity" side-by-side. */
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* Gives both dashboard widgets equal width. */
+  gap: 20px;                                        /* Separates two dashboard widgets. */
 }
 
 
-/* Shared API/loading state card retained from previous Dashboard style. */
+
+/*****************************************************************************************/
+/*             Dashboard widget states                                                   */
+/*****************************************************************************************/
+.dashboard-widget-state,
+.dashboard-widget-empty {
+  padding: 30px 12px;       /* Gives compact widget states comfortable spacing. */
+  color: #6b778c;         /* Uses secondary explanatory text. */
+  font-size: 0.86rem;       /* Keeps state copy subordinate to panel heading. */
+  line-height: 1.5;         /* Improves wrapped-message readability. */
+  text-align: center;       /* Centers widget state messages. */
+}
+
+.dashboard-widget-state--error {
+  color: #ae2a19;           /* Uses application error color. */
+}
+
+.dashboard-widget-empty {
+  display: grid;             /* Stacks empty-state heading and explanation. */
+  gap: 6px;                  /* Keeps empty-state text compact. */
+}
+
+.dashboard-widget-empty strong {
+  color: #253858;           /* Gives empty-state heading stronger emphasis. */
+}
+
+.dashboard-widget-empty p {
+  margin: 0;                 /* Removes default paragraph spacing. */
+}
+
+
+/*****************************************************/
+/*                     My Work                       */
+/*****************************************************/
+.dashboard-my-work-summary {
+  display: grid;                      /* Creates four compact issue-stat cells. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;                           /* Separates status summary cells. */
+  padding: 18px 0;                    /* Separates summary from surrounding content. */
+  border-bottom: 1px solid #ebecf0; /* Separates stats from issue list. */
+}
+
+.dashboard-my-work-summary > div {
+  display: grid;          /* Stacks number over workflow label. */
+  justify-items: center;  /* Centers contents inside each status cell. */
+  gap: 4px;               /* Separates count and label. */
+  text-align: center;
+}
+
+.dashboard-my-work-summary strong {
+  color: #172b4d;        /* Uses primary dashboard number color. */
+  font-size: 1.35rem;      /* Makes assigned-work counts easy to scan. */
+}
+
+.dashboard-my-work-summary span {
+  color: #6b778c;        /* Uses secondary status-label text. */
+  font-size: 0.7rem;       /* Keeps workflow labels compact. */
+  font-weight: 750;
+}
+
+.dashboard-my-work-list {
+  display: grid;           /* Stacks assigned issue rows vertically. */
+}
+
+.dashboard-my-work-item {
+  display: grid;                         /* Stacks issue metadata/title/project. */
+  gap: 5px;                              /* Keeps issue information grouped. */
+  padding: 14px 3px;                     /* Creates comfortable clickable rows. */
+  border-bottom: 1px solid #ebecf0;     /* Separates neighboring issues. */
+  color: inherit;                        /* Keeps application text colors. */
+  text-decoration: none;                 /* Removes Link underline. */
+}
+
+.dashboard-my-work-item:last-child {
+  border-bottom: 0;                      /* Removes divider after final issue. */
+}
+
+.dashboard-my-work-item:hover {
+  background: #f8fafc;                  /* Gives issue row visible hover feedback. */
+}
+
+.dashboard-my-work-item-heading {
+  display: flex;                         /* Places issue key and status on one row. */
+  flex-wrap: wrap;                       /* Allows safe wrapping on narrow layouts. */
+  align-items: center;                   /* Vertically aligns metadata. */
+  justify-content: space-between;        /* Pushes workflow status right. */
+  gap: 8px;
+}
+
+.dashboard-my-work-item-heading > span {
+  color: #2368a2;                       /* Uses familiar issue/project blue. */
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.dashboard-my-work-item-heading small {
+  color: #6b778c;                       /* Keeps workflow status secondary. */
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.dashboard-my-work-item > strong {
+  overflow: hidden;                      /* Protects layout from very long issue titles. */
+  color: #253858;
+  font-size: 0.88rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-my-work-project {
+  color: #7a869a;                       /* Keeps parent-project name tertiary. */
+  font-size: 0.73rem;
+}
+
+
+/*****************************************************/
+/*                 Recent Activity                   */
+/*****************************************************/
+
+.dashboard-recent-activity-list {
+  overflow: hidden;               /* Keeps notification hover backgrounds inside rounded area. */
+  margin-top: 4px;
+  border: 1px solid #ebecf0;    /* Defines compact activity collection. */
+  border-radius: 8px;
+}
+
+.dashboard-recent-activity-list .notification-item + .notification-item {
+  border-top: 1px solid #ebecf0;        /* Separates adjacent activity rows. */
+}
+
+
+
+/*********************************************************************************************/
+/*    Shared API/loading state card retained form previous Dashboard style.                  */
+/*********************************************************************************************/
 .dashboard-state-card {
   display: grid;                /* Stacks state indicator and text vertically. */
   width: min(100%, 680px);      /* Prevents state message becoming too wide. */
@@ -295,9 +444,13 @@
 }
 
 
+
+/*********************************************************************************************/
+/*            Tablet and Mobile stylings.                                                    */
+/*********************************************************************************************/
 @media (max-width: 900px) {
-  .dashboard-summary-grid { grid-template-columns: 1fr;  } /* Stacks summary cards on smaller layouts. */
-  .dashboard-placeholder-grid { grid-template-columns: 1fr;  } /* Stacks future panels vertically. */
+  .dashboard-summary-grid { grid-template-columns: 1fr; }  /* Stacks summary cards on smaller layouts. */
+  .dashboard-work-grid    { grid-template-columns: 1fr; }  /* Stacks My Work and Recent Activity on smaller layouts. */
 }
 
 
@@ -312,5 +465,8 @@
   }
   .dashboard-recent-project {
     grid-template-columns: auto minmax(0, 1fr) auto; /* Keeps compact mobile project row. */
+  }
+  .dashboard-my-work-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Prevents four status cells becoming cramped. */
   }
 }

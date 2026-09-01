@@ -16,6 +16,11 @@ import {
 } from "react-redux";
 
 import { fetchProjects } from "../../Store/projectSlice.jsx"; // loads accessible projects so dashboard can project summaries
+import { fetchMyWork }   from "../../Store/issueSlice.jsx";   // loads current project (and total issues/stories/etc. active)
+
+import { fetchRecentNotifications } from "../../Store/notificationSlice.jsx"; // return recent notifications for user 
+import NotificationItem             from "../../PageComponents/NotificationItem/NotificationItem.jsx"; // component for notification item
+import { STATUS_LABELS }            from "../../utils/issueWorkflow.jsx";     // status labels for issues in Issues Board table
 
 import "./DashboardPage.css"; // for styling
 
@@ -33,6 +38,18 @@ const DashboardPage = () => {
     error     // project-loading failure message
   } = useSelector((state) => state.projects);
 
+    const {
+    myWork,          // five most recently updated active assigned issues
+    myWorkSummary,   // all active issues assigned to logged-in user
+    myWorkStatus,    // idle | loading | succeeded | failed
+    myWorkError      // dashboard-specific assigned-work load failure
+  } = useSelector((state) => state.issues);
+
+  const {
+    recentNotifications,  // latest 10 items shown in header notifications drawer
+    recentStatus,         // drawer requests status
+    recentError           // error if issue/failure of loading notification(s)
+  } = useSelector((state) => state.notifications);
 
   /* Loads projects if they haven't been fetched:
    * visiting /projects first may mean data already exists,
@@ -43,6 +60,31 @@ const DashboardPage = () => {
       dispatch(fetchProjects());
     }
   }, [dispatch, status]);
+
+
+  /* Refresh personal Dashboard data whenever Dashboard mounts.
+   * Unlike project collection, these values can change frequently
+   * whilst the user works elsewhere in application.
+   */
+  useEffect(() => {
+
+    dispatch(fetchMyWork());
+    dispatch(fetchRecentNotifications());
+
+    const refreshDashboardWhenVisible = () => {
+      if (document.visibilityState !== "visible") {
+        return;
+      }
+      dispatch(fetchMyWork());
+      dispatch(fetchRecentNotifications());
+    };
+
+    document.addEventListener("visibilitychange", refreshDashboardWhenVisible);
+
+    return () => {
+      document.removeEventListener("visibilitychange", refreshDashboardWhenVisible);
+    };
+  }, [dispatch]);
 
 
   // separate active projects for Dashboard summary counts.
@@ -173,27 +215,154 @@ const DashboardPage = () => {
               )}
             </section>
 
-            {/*
-             * These placeholders retain the final Dashboard layout structure.
-             * Real issue/activity data will replace them in later branches.
-             */}
-            <section className="dashboard-placeholder-grid">
-              <article className="dashboard-overview-panel">
-                <h2>My Work</h2>
-                <p>
-                  Assigned issue statistics will appear here once
-                  the issue-board client is connected.
-                </p>
-              </article>
 
-              <article className="dashboard-overview-panel">
-                <h2>Recent Activity</h2>
-                <p>
-                  Project and issue activity will appear here as the
-                  activity and notification features are implemented.
-                </p>
-              </article>
-            </section>
+            <section className="dashboard-work-grid">
+            {/* ================================================================ */}
+            {/* My Work                                                          */}
+            {/* ================================================================ */}
+            <article className="dashboard-overview-panel">
+              <div className="dashboard-panel-heading">
+                <div>
+                  <h2>My Work</h2>
+                  <p>Active issues currently assigned to you.</p>
+                </div>
+              </div>
+
+              {myWorkStatus === "loading" && (
+                <div className="dashboard-widget-state">
+                  Loading assigned work...
+                </div>
+              )}
+
+              {myWorkStatus === "failed" && (
+                <div
+                  className = "dashboard-widget-state dashboard-widget-state--error"
+                  role      = "alert"
+                >
+                  {myWorkError}
+                </div>
+              )}
+
+              {myWorkStatus === "succeeded" && (
+                <>
+                  <div
+                    className   = "dashboard-my-work-summary"
+                    aria-label  = "Assigned issue summary"
+                  >
+                    <div>
+                      <strong>{myWorkSummary.total}</strong>
+                      <span>Active</span>
+                    </div>
+                    <div>
+                      <strong>{myWorkSummary.open}</strong>
+                      <span>Open</span>
+                    </div>
+                    <div>
+                      <strong>{myWorkSummary.inProgress}</strong>
+                      <span>In Progress</span>
+                    </div>
+                    <div>
+                      <strong>{myWorkSummary.readyForReview}</strong>
+                      <span>Ready for Review</span>
+                    </div>
+                  </div>
+
+                  {myWork.length === 0 ? (
+                    <div className="dashboard-widget-empty">
+                      <strong>You're all caught up</strong>
+                      <p>You currently have no active issues assigned to you.</p>
+                    </div>
+                  ) : (
+                    <div className="dashboard-my-work-list">
+                      {myWork.map((issue) => {
+                        const issueProject =
+                          (typeof issue.projectId === "object")
+                            ? issue.projectId
+                            : null;
+                        const issueProjectId = issueProject?._id ?? issue.projectId;
+                        return (
+                          <Link
+                            key       = {issue._id}
+                            className = "dashboard-my-work-item"
+                            to        = {`/projects/${issueProjectId}/issues/${issue._id}`}
+                          >
+                            <div className="dashboard-my-work-item-heading">
+                              <span>
+                                {issue.key}
+                              </span>
+                              <small>
+                                {STATUS_LABELS[issue.status] || issue.status}
+                                </small>
+                            </div>
+
+                            <strong>
+                              {issue.title}
+                            </strong>
+
+                            {issueProject?.name && (
+                              <span className="dashboard-my-work-project">
+                                {issueProject.name}
+                              </span>
+                            )}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
+            </article>
+
+
+            {/* ================================================================ */}
+            {/* Recent Activity                                                  */}
+            {/* ================================================================ */}
+            <article className="dashboard-overview-panel">
+              <div className="dashboard-panel-heading">
+                <div>
+                  <h2>Recent Activity</h2>
+                  <p>Your latest relevant project and issue updates.</p>
+                </div>
+                <Link className="dashboard-view-all-link" to="/notifications">
+                  View All →
+                </Link>
+              </div>
+
+              {recentStatus === "loading" && (
+                <div className="dashboard-widget-state">Loading recent activity...</div>
+              )}
+
+              {recentStatus === "failed" && (
+                <div className="dashboard-widget-state dashboard-widget-state--error" role="alert">
+                  {recentError}
+                </div>
+              )}
+
+              {recentStatus === "succeeded" &&
+                recentNotifications.length === 0 && (
+                  <div className="dashboard-widget-empty">
+                    <strong>No recent activity</strong>
+                    <p>New project and issue updates will appear here.</p>
+                  </div>
+                )
+              }
+
+              {recentNotifications.length > 0 && (
+                <div className="dashboard-recent-activity-list">
+                  {recentNotifications
+                    .slice(0, 5)
+                    .map((notification) => (
+                      <NotificationItem
+                        key          = {notification._id}
+                        notification = {notification}
+                        compact
+                      />
+                    ))
+                  }
+                </div>
+              )}
+            </article>
+          </section>
           </>
         )}
       </section>
