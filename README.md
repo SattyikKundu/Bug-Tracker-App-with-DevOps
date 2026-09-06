@@ -188,13 +188,12 @@ There's also a **Continue with Google** button for users who want to authenticat
 
 Users who don't have an account yet can click the **Register** link near the bottom of the login card. After successfully logging in, protected
 pages such as the Dashboard, Projects, Issue Board, Notifications, and Profile become available.
-
-\["image of Login page"\]
+<img width="874" height="465" alt="1-Login-Page" src="https://github.com/user-attachments/assets/088ee85b-7647-49de-b110-655dd672c78d" />
 
 The ***Register*** page is where new users can create an account before accessing the protected workspace. Registration collects the account information needed by BugTrack, 
 after which the user can return to the Login page and sign into the application.
+<img width="874" height="465" alt="2-Registration-Page" src="https://github.com/user-attachments/assets/e4b7f245-c136-4b7c-b0d3-368bccfda5f9" />
 
-\["image of Register page"\]
 
 ------------------------------------------------------------------------
 
@@ -205,27 +204,25 @@ search through every project/issue.
 
 At the top, the Dashboard gives the logged-in user a welcome message and summarizes the projects currently available to their account. It also shows up 
 to **three recently updated active projects**, making it easier to jump back into work that was recently changed.
+<img width="874" height="439" alt="3-Dashboard-Page" src="https://github.com/user-attachments/assets/253a8138-841b-4257-a707-070123dbdfa0" />
 
-\["image of full Dashboard page"\]
 
 #### 2.1 My Work
 
-Near the bottom-left of the Dashboard is the **My Work** widget. This is a personal issue summary for the logged-in user rather than a summary for one specific project.
+Near the <ins>*bottom-left*</ins> of the Dashboard is the **My Work** widget (*see next image downwards*). This is a personal issue summary for the logged-in user rather than a summary for one specific project.
 
 The counters show the user's total currently-active assigned issues separated into **Open**, **In Progress**, and **Ready for Review** statuses. Under the counters, 
 BugTrack lists up to the **five most recently updated active issues assigned to the user**. Clicking one of these issues takes the user directly to that issue's details page.
 
-\["image of Dashboard My Work widget"\]
-
 #### 2.2 Recent Activity
 
-On the bottom-right is the **Recent Activity** widget. Instead of creating a completely separate activity system just for the Dashboard, this widget reuses BugTrack's 
+On the <ins>*bottom-right*</ins> is the **Recent Activity** widget. Instead of creating a completely separate activity system just for the Dashboard, this widget reuses BugTrack's 
 notification system and shows up to the **five latest notification items**.
 
 This makes the Dashboard useful for quickly seeing recent assignments, project changes, comment activity, and other relevant updates. The **View All** link takes the user 
 to the full Notifications inbox if they need to browse further back.
+<img width="874" height="408" alt="4-My-Work-and-Recent-Activity" src="https://github.com/user-attachments/assets/f1505f62-898c-4395-8be5-e16360a470c7" />
 
-\["image of Dashboard Recent Activity widget"\]
 
 ------------------------------------------------------------------------
 
@@ -234,17 +231,14 @@ to the full Notifications inbox if they need to browse further back.
 After login, BugTrack's protected pages share a common header/sidebar layout. The left sidebar provides quick links to **Dashboard**, **Profile**, **Notifications**, 
 **Your Projects**, and **Create Project**.
 
-When a user opens a specific project, the sidebar also shows that project's own contextual navigation with **Overview** and **Issue Board** links. 
-This helps the user stay oriented inside the selected project without having to return to the main project list every time.
+When a user opens a specific project, the sidebar also shows that project's own contextual navigation with **Overview** and **Issue Board** links (*see in left sidebar in bottom image*). This helps the user stay oriented inside the selected project without having to return to the main project list every time.
 
 The **Notifications** sidebar link also displays the same unread-count badge used by the notification system, making unread activity visible even when the notification drawer is closed.
-
-\["image of expanded application sidebar with selected project"\]
+<img width="874" height="404" alt="5-Expanded-sidebar-with-selected-project" src="https://github.com/user-attachments/assets/5f58acd5-1042-45d3-973f-1a589862e7ef" />
 
 The top header also contains a notification bell. Clicking the bell opens a smaller notification drawer containing up to the **10 most recent notifications** for 
-a quick activity check without leaving the current page.
-
-\["image of header notification bell and opened notification drawer"\]
+a quick activity check without leaving the current page (*Btw, below image only shows 2 since this is a test account*).
+<img width="554" height="425" alt="6-Notification-Bell-and-opened-Notification-Drawer" src="https://github.com/user-attachments/assets/570fdd5b-5acf-479a-900e-d8ea82d489cd" />
 
 ------------------------------------------------------------------------
 
@@ -253,13 +247,12 @@ a quick activity check without leaving the current page.
 The ***Your Projects*** page is the main place for browsing all projects available to the logged-in account. Projects are separated into **Active** and **Archived** tabs, 
 and each tab displays the number of projects inside it.
 
-Users can also sort the project cards to make larger project collections easier to browse. Selecting a project card opens that project's Overview page.
+Users can also sort the project cards to make larger project collections easier to browse. Selecting a project card opens that project's Overview page, as shown below.<br> 
+<img width="874" height="410" alt="7-Your-Projects-Active-Projects-tab" src="https://github.com/user-attachments/assets/6ca6fc82-0807-4afb-b3e4-538cb82458c3" />
+<br><br>
+Archived projects are intentionally kept in a separate tab rather than permanently disappearing. This allows project history to remain available even after active work on the project has ended. It's possible for an Archived project's lead to later "un-archive" a project and make it active again.<br>
 
-Archived projects are intentionally kept separate rather than permanently disappearing. This allows project history to remain available even after active work on the project has ended.
-
-\["image of Your Projects page with Active projects tab"\]
-
-\["image of Your Projects page with Archived projects tab"\]
+<img width="874" height="380" alt="8-Your-Projects-Archived-Projects-tab" src="https://github.com/user-attachments/assets/eaa78f28-3102-487f-997f-93e4e4fe0435" />
 
 ------------------------------------------------------------------------
 
@@ -271,38 +264,37 @@ The Project Key is a globally unique **2-10 character** identifier that begins w
 For example, a project with the key `BT` can create issues such as `BT-1`, `BT-2`, etc.
 
 Once the project is successfully created, the creator becomes the project's initial **Project Lead** and member, 
-and BugTrack automatically takes the user to the new project's Overview page.
-
-\["image of Create Project page/form"\]
+and BugTrack automatically takes the user to the new project's Overview page.<br>
+<img width="874" alt="9-Create-Project-form" src="https://github.com/user-attachments/assets/8d49afaf-5684-42d6-9260-53a92be53a1a" />
 
 ------------------------------------------------------------------------
 
 ### 6. Project Overview & Project Management
 
 Opening a project takes the user to its ***Overview*** page. This is where users can view the project's name, description, project lead, and member list. 
-From here, the **Overview / Issue Board** navigation can be used to switch between project administration/details and the actual issue workflow.
+From here, the **Overview / Issue Board** navigation can be used to switch between project administration/details and the actual issue workflow (*see entire example image below*).<br>
 
-\["image of Project Overview page"\]
+<img width="874" alt="10-Project-Overview-page-Example" src="https://github.com/user-attachments/assets/a2daefef-fe38-4884-a653-00de9c7f9b40" />
+
 
 #### 6.1 Project Members and User Search
 
 Project leads (and users with the appropriate administrative permissions) can manage the project's member list. Instead of manually entering MongoDB IDs, 
-the **Add Members** section lets the project manager search BugTrack's registered users by information such as name, username, or email and add matching users directly to the project.
+the **Add Members** section lets the project manager search BugTrack's registered users by information such as name, username, or email and add matching users directly to the project. You have to type *at least* 2 characters to get any returns of existing users from the database.
 
 Existing members are visibly marked in the search results so they aren't accidentally added twice. Project members can also be removed, although BugTrack prevents actions 
-that would violate the project's leadership/member rules.
-
-\["image of Add Members user search results"\]
+that would violate the project's leadership/member rules.<br>
+<img width="874" alt="11-Add-Members-Users-Search-Results" src="https://github.com/user-attachments/assets/c6e1f8fd-16dc-4863-87b5-0683e3065190" />
 
 #### 6.2 Project Leadership
 
 Every project has a single **Project Lead**. The lead receives additional project-management permissions, but leadership isn't permanently tied to the person 
 who originally created the project.
 
-If a project contains multiple members, leadership can be transferred to another **existing project member**. The current lead can't simply remove themselves first; 
-leadership must be transferred so the project never ends up without a valid lead.
+If a project contains multiple members, leadership can be transferred to another **existing project member**. The current lead cannot simply remove themselves first; 
+leadership must be transferred so the project <ins>never</ins> ends up without a valid lead.<br>
+<img width="874" alt="12-Transfer-Leadership-section" src="https://github.com/user-attachments/assets/4b18ba27-90e4-42a6-aef3-1b89ba2eb518" />
 
-\["image of Transfer Leadership section"\]
 
 #### 6.3 Project Archive / Restore
 
@@ -310,9 +302,9 @@ When active work is finished, the Project Lead can **Archive** the project inste
 and existing activity, but become **read-only**.
 
 This means users can still revisit an old project's information without accidentally modifying it. The project can later be restored from the Archived projects list 
-if work needs to continue.
+if work needs to continue.<br>
+<img width="874" alt="13-Archived-Project-Section" src="https://github.com/user-attachments/assets/65e0cb68-4e82-426d-8cf7-e08e1dd27d15" />
 
-\["image of archived Project Overview/read-only banner"\]
 
 For an additional administrative safeguard, permanent project deletion is reserved for the application's global administrator role rather than being 
 the normal way project leads finish a project.
@@ -328,44 +320,41 @@ The ***Issue Board*** is one of the app's main features. Each project's issues a
 3.  **Ready for Review**
 4.  **Closed**
 
-This gives the user a visual overview of where each bug, task, or story currently sits in the project's workflow.
+This gives the user a visual overview of where each bug, task, or story currently sits in the project's workflow.<br>
+<img width="1300" alt="14-Four-Column-Issues-Board-page" src="https://github.com/user-attachments/assets/bac24e34-4985-4c0b-91df-d5a50a04aac7" />
 
-\["image of full four-column Issue Board"\]
 
 #### 7.1 Issue Board Search & Filters
 
 As a project's issue count grows, users can narrow down the board without repeatedly requesting a new issue collection from the server.
 
 The board includes a search field that can match issue **keys**, **titles**, and **labels**, together with quick filters for **Priority**, **Issue Type**, and **Assignee**. 
-For assignment filtering, users can quickly switch to issues assigned to themselves or currently unassigned issues.
-
-\["image of Issue Board with search and filters applied"\]
+For assignment filtering, users can quickly switch to issues assigned to themselves or currently unassigned issues. Btw, it's possible that no issue cards can show up if any of the issue cards in the project's issue board does not match the filter combination (*like in the image below*).<br>
+<img width="1300" alt="15-Issue-Board-with-Search-and-Filters-applied" src="https://github.com/user-attachments/assets/13d1861b-b5b8-4c66-85f9-6ac74c17fec1" />
 
 #### 7.2 Drag-and-Drop Workflow
 
-Issue cards can be moved through the workflow using **drag-and-drop**. The app uses `dnd-kit` to support mouse, pen, and touch interactions whilst 
-still keeping explicit workflow controls available.
+Issue cards can be moved through the workflow using **drag-and-drop**. The app uses `dnd-kit` package to support mouse, pen, and touch interactions whilst 
+still keeping explicit workflow controls available (*each issue card also has clickable buttons that moves the issue card to left or right*).
 
 Not every column is a valid destination from every status. BugTrack checks the requested workflow transition on the client for faster feedback and then checks 
 it again on the backend before saving the change.
 
-For a smoother UI, valid-looking drag operations are displayed optimistically. If the backend rejects a move---for example, because the user doesn't 
-have permission---the issue is restored to its original status and visually returns to its original column.
+For a *smoother UI*, valid-looking drag operations are displayed optimistically. If the backend rejects a move---for example, because the card is being dragged into an invalid column---the issue is restored to its original status and visually returns to its original column. Below is an example of an issue card being "grabbed" and dragged.<br>
+<img width="1000"  alt="16-Issue-Board-whilst-dragging-an-Issue-Card" src="https://github.com/user-attachments/assets/beae58e6-710d-4ec2-9a13-f1fdc2449af0" />
 
-\["image of Issue Board while dragging an issue card"\]
 
 ------------------------------------------------------------------------
 
 ### 8. Creating an Issue
 
-Project members can create new issues from inside a selected project. BugTrack supports three issue types: **Bug**, **Task**, and **Story**.
+Project members can create new issues from *inside* a selected project's Issue Board via clicking the **Create Issue** button near the top-right corner(*see earlier Project Issue Board for visual reference*). BugTrack supports three issue types: **Bug**, **Task**, and **Story**.
 
 The issue form stores the main information needed to track the work, including the issue's **title**, **description**, **type**, **priority**, **severity**, **assignee**, 
 and **labels**. The user who creates the issue becomes its reporter, whilst assignment determines which project member is currently responsible for the work.
 
-Each issue also receives a human-readable key based on its parent project's key---for example `BT-12`.
-
-\["image of Create Issue form"\]
+Each issue also receives a human-readable key based on its parent project's key---for example `BT-12`. Below is an example of a blank issue form that a user could fill out for a project.<br>
+<img width="900" alt="17-Create-Issue-Form" src="https://github.com/user-attachments/assets/610a5ece-eab8-415e-bc5e-f9a97cb70a24" />
 
 ------------------------------------------------------------------------
 
@@ -375,25 +364,23 @@ Clicking an issue card---or one of the assigned issues in **My Work**---opens th
 reading and discussing one specific issue.
 
 The page shows the issue's title/key, description, status, type, priority, severity, reporter, assignee, labels, and other issue information. 
-Users with the required permissions can also access the Edit Issue form.
-
-\["image of Issue Details page"\]
+Users with the required permissions can also access the Edit Issue form (*below is a complete example of a fully detailed issue page for an issue card*).<br>
+<img width="1000" alt="18-Issue-Details-page-example" src="https://github.com/user-attachments/assets/9a8e6276-cd2c-4c81-a7d8-e4dae132acb4" />
 
 #### 9.1 Issue Status History
 
 Whenever an issue moves between workflow statuses, BugTrack records the transition in its **Status History**. This makes it possible to see how the issue progressed through 
-the workflow rather than only seeing its current status.
-
-\["image of Issue Status History"\]
+the workflow (*this refers to the different issue stage columns inside the current project's Issue Board*) rather than only seeing its current status.<br>
+<img width="1101" alt="19-Issue-Status-History" src="https://github.com/user-attachments/assets/defa9bfb-48c0-4d47-933d-4fb0abe52d42" />
 
 #### 9.2 Watching an Issue
 
-Issues can also have **watchers**. Watching an issue allows a user to follow important activity associated with that issue through the notification system.
+Issues can also have **watchers**. Watching an issue <ins>allows</ins> a user to follow important activities associated with that issue through the notification system.
 
-BugTrack also automatically connects certain users to issue activity where appropriate---for example, the issue reporter and initial assignee are included 
-when the issue is created, and a newly assigned user can be added when assignment changes.
+BugTrack also automatically connects certain users to issue activity where appropriate—*for example*, the issue reporter and initial assignee are included 
+when the issue is created, and a newly assigned user can be added when assignment changes. The **Watch**/**Unwatch** button is on the top-right of the Issue Details page as shown below.<br>
+<img width="999" alt="20-Issue-Details-Watch-Unwatch-Control" src="https://github.com/user-attachments/assets/32c4620e-0b14-4e5b-9969-d5392603d3fc" />
 
-\["image of Issue Details watch/unwatch control"\]
 
 ------------------------------------------------------------------------
 
@@ -401,35 +388,32 @@ when the issue is created, and a newly assigned user can be added when assignmen
 
 The same general issue form is reused when editing an existing issue, but the available changes depend on the logged-in user's permissions and project state.
 
-This is important because not every project member should be able to modify every piece of issue data. For example, project leadership/administrative permissions 
+This is important because **NOT** every project member should be able to modify every piece of issue data. For example, only project leadership/administrative permissions 
 are used for assignment-related management, whilst the backend remains the final authority for whether an update is allowed.
 
-Archived projects also prevent issue modifications because their existing data is intentionally read-only.
+Archived projects also prevent issue modifications because their existing data is intentionally read-only.<br>
+<img width="1100" alt="21-Edit-Issue-form-example" src="https://github.com/user-attachments/assets/3d81d94a-1a33-4c21-9005-a5bbdc8f4ec6" />
 
-\["image of Edit Issue form"\]
 
 ------------------------------------------------------------------------
 
 ### 11. Issue Comments and Threaded Replies
 
 At the bottom of the Issue Details page is the ***Activity*** section. Project members can use this area to post comments such as implementation notes, questions, 
-testing results, or general updates related to the issue.
+testing results, or general updates related to the issue.<br>
+<img width="900" alt="22-Issue-Activity-Comments-section" src="https://github.com/user-attachments/assets/a2deaa6d-36b3-4da9-bda8-bd95453c58b3" />
 
-\["image of Issue Activity/comments section"\]
-
-The comment system also supports **nested replies**. A user can reply directly to a specific comment, and the UI visually indents nested replies so it's easier to follow which message belongs to which part of
-the conversation.
+The comment system also supports **nested replies**. A user can reply directly to a specific comment, and the UI visually indents nested replies so it's easier to follow which message belongs to which part of the conversation.
 
 For larger discussions, users don't have to render every reply at once. Individual branches can be opened with **Show replies**, additional replies can be loaded, 
-and an **Expand thread** option can recursively open the conversation below a selected comment. Expanded branches can also be collapsed again.
+and an **Expand thread** option can recursively open the conversation below a selected comment. Expanded branches can also be collapsed again. Below is an example of a ***MASSIVE*** comment thread for an issue and it even has clear indication on which comment replies to what.<br>
+<img width="714" height="2156" alt="23-Expanded-Nested-Comment-Threat-example" src="https://github.com/user-attachments/assets/98aa6f42-7ef4-41f5-926b-2628ef8531db" />
 
-\["image of expanded nested comment thread"\]
 
 Users can **Edit** their own comments, whilst deletion follows the app's permission rules. When a comment with existing replies is deleted, the conversation underneath isn't destroyed; 
-the deleted comment can remain as a placeholder so its replies stay connected to the thread.
-
-\["image of comment Reply/Edit/Delete controls"\]
-
+the deleted comment remains as a placeholder so its replies stay connected to the thread.<br>
+<img width="700" alt="24-Edit-Reply-Delete-comment" src="https://github.com/user-attachments/assets/17755a7f-3375-4ebf-b05b-005e19aeef1a" />
+<br><br>
 Finally, open comment discussions refresh automatically about every **30 seconds** while the browser tab is visible. This gives the issue discussion a lightweight collaborative 
 feel without requiring WebSockets or a dedicated real-time chat system.
 
@@ -437,32 +421,25 @@ feel without requiring WebSockets or a dedicated real-time chat system.
 
 ### 12. Notifications Inbox
 
-As users work across projects, BugTrack generates in-app notifications for relevant activity such as issue assignments, issue status changes,comment replies, project membership changes, project leadership changes,
-and watched-issue activity.
+As users work across projects, BugTrack generates in-app notifications for relevant activity such as issue assignments, issue status changes, comment replies, project membership changes, project leadership changes, and watched-issue activity.
 
 The full ***Notifications*** page acts as the user's activity inbox. Notifications can be filtered between **All** and **Unread**, individual notifications can be deleted, 
-and the **Mark all as read** button clears the current unread state.
-
-\["image of Notifications inbox"\]
-
-The full inbox uses pagination with up to **20 notifications per page**. Pagination controls allow the user to move between the first, previous, numbered, next, and last pages 
+and the **Mark all as read** button clears the current unread state.<br>
+<img width="1100" alt="25-Notifications-Inbox-and-Pagination" src="https://github.com/user-attachments/assets/2f1c517c-fbd5-4408-aca0-551f4b61f322" />
+<br><br>
+A full inbox uses pagination with up to **20 notifications per page**. Pagination controls allow the user to move between the first, previous, numbered, next, and last pages 
 without loading the entire notification history into the interface at once.
-
-\["image of Notifications inbox pagination"\]
 
 ------------------------------------------------------------------------
 
 ### 13. Profile & Account Settings Page
 
-The ***Profile*** page is where the logged-in user can manage their own account information. Users can update profile fields such as their **first name**, **last name**, 
-**username**, and **email**.
-
-\["image of Profile information section"\]
+The ***Profile*** page is where the logged-in user can manage their own account information. Users can see their profile field values as well as update those same profile fields, such as their **first name**, **last name**, **username**, and **email**.
 
 Users with a locally stored BugTrack password can also change their password through the **Password** section. Google-authenticated accounts are handled appropriately 
-when no local BugTrack password is stored.
+when no local BugTrack password is stored.<br>
+<img width="1100" alt="26-Profile-Information-and-Password-section" src="https://github.com/user-attachments/assets/db534d37-336c-4ae4-a3f2-4dc77ce49174" />
 
-\["image of Profile password section"\]
 
 #### 13.1 Notification Preferences
 
@@ -478,643 +455,261 @@ Current preference categories include:
 -   Watched issue activity
 
 This lets each user decide which types of project activity are important enough to appear in their own notification inbox.
-
-\["image of Profile Notification Preferences section"\]
+<img width="1100" alt="27-Profile-Page-Notifications-Settings-section" src="https://github.com/user-attachments/assets/e38046f5-4f63-433d-9b13-6df2e9a7de0c" />
 
 ------------------------------------------------------------------------
 
 ## IV. Current App Limitations
 
-```{=html}
 <details>
-```
-```{=html}
 <summary>
-```
-`<strong>`{=html}App Limitations (Click to Expand):`</strong>`{=html}
-```{=html}
+<strong>App Limitations (Click to Expand):</strong>
 </summary>
-```
-```{=html}
+<br>
 <ul>
-```
-```{=html}
 <li>
-```
-This project is intentionally a smaller, portfolio-sized interpretation
-of an issue tracker rather than a complete replacement for a large
-platform such as `<strong>`{=html}Jira`</strong>`{=html}. Features such
-as organizations, multiple project-role tiers, sprints, epics, advanced
-reporting, file-storage infrastructure, and enterprise integrations are
-outside the current scope.
-```{=html}
+This project is intentionally a smaller, portfolio-sized interpretation of an issue tracker rather than a complete replacement for a large platform such as <strong>Jira</strong>. Features such as organizations, multiple project-role tiers, sprints, epics, advanced reporting, file-storage infrastructure, and enterprise integrations are outside the current scope.
 </li>
-```
-```{=html}
 <li>
-```
-The application currently uses lightweight `<strong>`{=html}30-second
-polling`</strong>`{=html} for visible comment/notification updates
-rather than WebSockets. This keeps the architecture simpler for the
-current project whilst still allowing open pages to periodically receive
-updated activity.
-```{=html}
+The application currently uses lightweight <strong>30-second polling</strong> for visible comment/notification updates rather than WebSockets. This keeps the architecture simpler for the current project whilst still allowing open pages to periodically receive updated activity.
 </li>
-```
-```{=html}
 <li>
-```
-Archived projects are intentionally read-only. Users can continue
-viewing their existing issues/comments/history, but project
-modifications require the Project Lead to restore the project first.
-```{=html}
+Archived projects are intentionally read-only. Users can continue viewing their existing issues/comments/history, but project modifications require the Project Lead to restore the project first.
 </li>
-```
-```{=html}
 <li>
-```
-The current notification system is `<strong>`{=html}in-app
-only`</strong>`{=html}. Email, SMS, push notifications, and external
-messaging integrations are not part of the current version.
-```{=html}
+The current notification system is <strong>in-app only</strong>. Email, SMS, push notifications, and external messaging integrations are not part of the current version.
 </li>
-```
-```{=html}
 <li>
-```
-The project currently focuses on the MERN application itself. The larger
-DevOps portion of the portfolio project---including automated testing,
-CI/CD, containerization, and cloud deployment---is planned as the next
-development phase.
-```{=html}
+The project currently focuses on the MERN application itself. The larger DevOps portion of the portfolio project—including automated testing, CI/CD, containerization, and cloud deployment—is planned as part of a later development phase.
 </li>
-```
-```{=html}
 </ul>
-```
-```{=html}
 </details>
-```
 
 ------------------------------------------------------------------------
 
 ## V. Steps to Use App Locally
 
-```{=html}
 <details>
-```
-```{=html}
 <summary>
-```
-`<strong>`{=html}Steps to Setup App Locally (Click to
-Expand):`</strong>`{=html}
-```{=html}
+<strong>Steps to Setup App Locally (Click to Expand):</strong>
 </summary>
-```
-```{=html}
+<br>
 <ol>
-```
-```{=html}
 <li>
-```
-`<strong>`{=html}`<ins>`{=html}Ensure these pre-requisites are
-installed/setup first`</ins>`{=html}:`</strong>`{=html}
-```{=html}
+<strong><ins>Ensure these pre-requisites are installed/setup first</ins>:</strong>
 <ul>
-```
-```{=html}
 <li>
-```
-`<strong>`{=html}Node.js`</strong>`{=html} and
-`<strong>`{=html}npm`</strong>`{=html}.
-```{=html}
+<strong>Node.js</strong> and <strong>npm</strong>.
 </li>
-```
-```{=html}
 <li>
-```
-A running `<strong>`{=html}MongoDB`</strong>`{=html} database (local
-MongoDB or a compatible hosted MongoDB connection).
-```{=html}
+A running <strong>MongoDB</strong> database (local MongoDB or a compatible hosted MongoDB connection).
 </li>
-```
-```{=html}
 <li>
-```
-```{=html}
-<ins>
-```
-Optional
-```{=html}
-</ins>
-```
-: Have an active GitHub account if you want to fork/clone the project
-through Git.
-```{=html}
+<ins>Optional</ins>: Have an active GitHub account if you want to fork/clone the project through Git.
 </li>
-```
-```{=html}
 <li>
-```
-```{=html}
-<ins>
-```
-Optional
-```{=html}
-</ins>
-```
-: Use an IDE such as `<strong>`{=html}Visual Studio
-Code`</strong>`{=html} for editing/running the client and server code.
-```{=html}
+<ins>Optional</ins>: Use an IDE such as <strong>Visual Studio Code</strong> for editing/running the client and server code.
 </li>
-```
-```{=html}
 <li>
-```
-```{=html}
-<ins>
-```
-Optional
-```{=html}
-</ins>
-```
-: A Google Cloud OAuth application if you want to test the
-`<strong>`{=html}Continue with Google`</strong>`{=html} login flow.
-```{=html}
+<ins>Optional</ins>: A Google Cloud OAuth application if you want to test the <strong>Continue with Google</strong> registration and login flow.
 </li>
-```
-```{=html}
 </ul>
-```
-```{=html}
 </li>
-```
-```{=html}
 <li>
-```
-`<strong>`{=html}`<ins>`{=html}Clone (or download) the repository
-locally`</ins>`{=html}:`</strong>`{=html}
-```{=html}
+<strong><ins>Clone (or download) the repository locally</ins>:</strong>
 <ul>
-```
-```{=html}
 <li>
-```
-```{=html}
-<ins>
-```
-Run the Git clone command
-```{=html}
-</ins>
-```
-:
-```{=html}
-<pre><code>git clone [YOUR FINAL GITHUB REPOSITORY URL]</code></pre>
-```
-      </li>
-      <li><ins>Change into the project folder</ins>:
-        <pre><code>cd Bug-Tracker-App-with-DevOps</code></pre>
-      </li>
-    </ul>
-
-```{=html}
+<ins>Run the Git clone command</ins>:<pre><code>git clone [YOUR FINAL GITHUB REPOSITORY URL]</code></pre>
 </li>
-```
-```{=html}
 <li>
-```
-`<strong>`{=html}`<ins>`{=html}Install packages for both the Client and
-Server`</ins>`{=html}:`</strong>`{=html}
-```{=html}
+<ins>Change into the project folder</ins>:<pre><code>cd Bug-Tracker-App-with-DevOps</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<strong><ins>Install packages for both the Client and Server</ins>:</strong>
 <ul>
-```
-```{=html}
 <li>
-```
-Both `<code>`{=html}/client`</code>`{=html} and
-`<code>`{=html}/server`</code>`{=html} contain their own
-`<code>`{=html}package.json`</code>`{=html} files.
-```{=html}
+Both <code>/client</code> and <code>/server</code> contain their own <code>package.json</code> files.
 </li>
-```
-```{=html}
 <li>
-```
-```{=html}
-<ins>
-```
-Install the client packages
-```{=html}
-</ins>
-```
-:
-```{=html}
-<pre><code>cd client
-npm install</code></pre>
-```
-      </li>
-      <li><ins>Then install the server packages</ins>:
-        <pre><code>cd ../server
-
-npm install`</code>`{=html}
-```{=html}
+<ins>Install the client packages</ins>: 
+<pre>
+<code>
+cd ../client 
+npm install
+</code>
 </pre>
-```
-      </li>
-    </ul>
-
-```{=html}
 </li>
-```
-```{=html}
+<li><ins>Then install the server packages</ins>:
+<pre>
+<code>
+cd ../server
+npm install
+</code>
+</pre>
+</li>
+</ul>
+</li>
 <li>
-```
-`<strong>`{=html}`<ins>`{=html}Setup the environment-variable
-files`</ins>`{=html}:`</strong>`{=html}
-```{=html}
+<strong><ins>Setup the environment-variable files</ins>:</strong>
 <ul>
-```
-```{=html}
 <li>
-```
-The React client uses `<code>`{=html}VITE_API_URL`</code>`{=html} to
-identify the backend API URL.
-```{=html}
+The React client uses <code>VITE_API_URL</code> to identify the backend API URL.
 </li>
-```
-```{=html}
 <li>
-```
 The Express server currently reads configuration values including:
-```{=html}
 <ul>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}PORT`</code>`{=html}
-```{=html}
+<code>PORT</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}MONGO_URI`</code>`{=html}
-```{=html}
+<code>MONGO_URI</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}MONGO_DB_NAME`</code>`{=html}
-```{=html}
+<code>MONGO_DB_NAME</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}CLIENT_HOME_URL`</code>`{=html}
-```{=html}
+<code>CLIENT_HOME_URL</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}JWT_SECRET`</code>`{=html}
-```{=html}
+<code>JWT_SECRET</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}SESSION_SECRET`</code>`{=html}
-```{=html}
+<code>SESSION_SECRET</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}GOOGLE_CLIENT_ID`</code>`{=html}
-```{=html}
+<code>GOOGLE_CLIENT_ID</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}GOOGLE_CLIENT_SECRET`</code>`{=html}
-```{=html}
+<code>GOOGLE_CLIENT_SECRET</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}GOOGLE_CALLBACK_URL`</code>`{=html}
-```{=html}
+<code>GOOGLE_CALLBACK_URL</code>
 </li>
-```
-```{=html}
 <li>
-```
-`<code>`{=html}NODE_ENV`</code>`{=html}
-```{=html}
+<code>NODE_ENV</code>
 </li>
-```
-```{=html}
 </ul>
-```
-      </li>
-      <li><strong>Do NOT commit real secrets/credentials to GitHub.</strong> Keep private values inside local environment files and provide safe example values separately if an <code>.env.example</code> file is added.</li>
-    </ul>
-
-```{=html}
 </li>
-```
-```{=html}
-<li>
-```
-`<strong>`{=html}`<ins>`{=html}Ensure the client/server URLs match your
-local setup`</ins>`{=html}:`</strong>`{=html}
-```{=html}
-<ul>
-```
-```{=html}
-<li>
-```
-The current Vite development configuration uses port
-`<code>`{=html}3000`</code>`{=html} for the frontend.
-```{=html}
-</li>
-```
-```{=html}
-<li>
-```
-The Express server uses `<code>`{=html}PORT`</code>`{=html} from the
-environment, with `<code>`{=html}5000`</code>`{=html} as its fallback.
-```{=html}
-</li>
-```
-```{=html}
-<li>
-```
-The server's `<code>`{=html}CLIENT_HOME_URL`</code>`{=html} must match
-the frontend origin so credentialed CORS requests can be accepted.
-```{=html}
-</li>
-```
-```{=html}
-<li>
-```
-The client's `<code>`{=html}VITE_API_URL`</code>`{=html} must point to
-the running Express backend.
-```{=html}
-</li>
-```
-```{=html}
+<li><strong>Do NOT commit real secrets/credentials to GitHub.</strong> Keep private values inside local environment files and provide safe example values separately if an <code>.env.example</code> file is added.</li>
 </ul>
-```
-```{=html}
 </li>
-```
-```{=html}
 <li>
-```
-`<strong>`{=html}`<ins>`{=html}Run the app
-locally`</ins>`{=html}:`</strong>`{=html}
-```{=html}
+<strong><ins>Ensure the client/server URLs match your local setup</ins>:</strong>
 <ul>
-```
-```{=html}
 <li>
-```
+The current Vite development configuration uses port <code>3000</code> for the frontend.
+</li>
+<li>
+The Express server uses <code>PORT</code> from the environment, with <code>5000</code> as its fallback.
+</li>
+<li>
+The server's <code>CLIENT_HOME_URL</code> must match the frontend origin so credentialed CORS requests can be accepted.
+</li>
+<li>
+The client's <code>VITE_API_URL</code> must point to the running Express backend.
+</li>
+</ul>
+</li>
+<li>
+<strong><ins>Run the app locally</ins>:</strong>
+<ul>
+<li>
 Open two terminals (or two terminal tabs inside VS Code).
-```{=html}
 </li>
-```
-```{=html}
 <li>
-```
-```{=html}
-<ins>
-```
-Terminal 1 --- React client
-```{=html}
-</ins>
-```
-:
-```{=html}
-<pre><code>cd client
-npm start</code></pre>
-```
-      </li>
-      <li><ins>Terminal 2 — Express server</ins>:
-        <pre><code>cd server
-
-npm run dev`</code>`{=html}
-```{=html}
+<ins>Terminal 1 --- React client</ins>:
+<pre>
+<code>
+cd client
+npm start
+</code>
 </pre>
-```
-      </li>
-      <li>Once both are running, the frontend should open in the browser and communicate with the Express/MongoDB backend.</li>
-    </ul>
-
-```{=html}
 </li>
-```
-```{=html}
-<li>
-```
-`<strong>`{=html}`<ins>`{=html}Optional: Explore/test the backend API
-with Swagger`</ins>`{=html}:`</strong>`{=html}
-```{=html}
-<ul>
-```
-```{=html}
-<li>
-```
-Whilst the Express server is running, Swagger UI is mounted at
-`<code>`{=html}/api-docs`</code>`{=html} on the backend server.
-```{=html}
+<li><ins>Terminal 2 — Express server</ins>:
+<pre>
+<code>
+cd server
+npm run dev
+</code>
+</pre>
 </li>
-```
-```{=html}
-<li>
-```
-This provides a convenient way to inspect many of the REST endpoints and
-manually test backend behavior during development.
-```{=html}
-</li>
-```
-```{=html}
+<li>Once both are running, the frontend should open in the browser and communicate with the Express/MongoDB backend.</li>
 </ul>
-```
-```{=html}
 </li>
-```
-```{=html}
+<li>
+<strong><ins>Optional: Explore/test the backend API with Swagger</ins>:</strong>
+<ul>
+<li>
+Whilst the Express server is running, Swagger UI is mounted at <code>/api-docs</code> on the backend server.
+</li>
+<li>
+This provides a convenient way to inspect many of the REST endpoints and manually test backend behavior during development.
+</li>
+</ul>
+</li>
 </ol>
-```
-```{=html}
 </details>
-```
 
 ------------------------------------------------------------------------
 
 ## VI. Features / DevOps Work to be Added Later
 
-```{=html}
 <details>
-```
-```{=html}
 <summary>
-```
-`<strong>`{=html}Future Features/DevOps List (Click to
-Expand):`</strong>`{=html}
-```{=html}
+<strong>Future Features/DevOps List (Click to Expand):</strong>
 </summary>
-```
-```{=html}
+<br>
 <ul>
-```
-```{=html}
 <li>
-```
-Add automated end-to-end browser testing using
-`<strong>`{=html}Selenium`</strong>`{=html} to test important user
-workflows such as login, project creation, issue creation, workflow
-movement, and comments.
-```{=html}
+Add automated end-to-end browser testing using <strong>Selenium</strong> to test important user workflows such as login, project creation, issue creation, workflow movement, and comments.
 </li>
-```
-```{=html}
 <li>
-```
-Add a `<strong>`{=html}Jenkins`</strong>`{=html} CI/CD pipeline so
-automated checks/build steps can run when application changes are
-prepared for deployment.
-```{=html}
+Add a <strong>Jenkins</strong> CI/CD pipeline so automated checks/build steps can run when application changes are prepared for deployment.
 </li>
-```
-```{=html}
 <li>
-```
-Containerize the client/server application using
-`<strong>`{=html}Docker`</strong>`{=html} so the development/deployment
-environment can be reproduced more consistently.
-```{=html}
+Containerize the client/server application using <strong>Docker</strong> so the development/deployment environment can be reproduced more consistently.
 </li>
-```
-```{=html}
 <li>
-```
-Move the production MongoDB database to `<strong>`{=html}MongoDB
-Atlas`</strong>`{=html}.
-```{=html}
+Move the production MongoDB database to <strong>MongoDB Atlas</strong>.
 </li>
-```
-```{=html}
 <li>
-```
-Deploy the application to `<strong>`{=html}AWS`</strong>`{=html},
-beginning with a straightforward deployment approach and later
-considering services such as ECR/ECS as the project's DevOps
-architecture grows.
-```{=html}
+Deploy the application to <strong>AWS</strong>, beginning with a straightforward deployment approach and later considering services such as ECR/ECS as the project's DevOps architecture grows.
 </li>
-```
-```{=html}
 <li>
-```
-Potentially expand the issue-tracking feature set later with more
-advanced project-management concepts if they add meaningful portfolio
-value without turning this smaller Jira-inspired application into an
-unnecessarily large clone.
-```{=html}
+Potentially expand the issue-tracking feature set later with more advanced project-management concepts if they add meaningful portfolio value without turning this smaller Jira-inspired application into an unnecessarily large clone.
 </li>
-```
-```{=html}
 </ul>
-```
-```{=html}
 </details>
-```
 
 ------------------------------------------------------------------------
 
 ## VII. Additional Development Notes
 
-```{=html}
 <details>
-```
-```{=html}
 <summary>
-```
-`<strong>`{=html}Backend/API & Application Architecture Notes (Click to
-Expand):`</strong>`{=html}
-```{=html}
+<strong>Backend/API & Application Architecture Notes (Click to Expand):</strong>
 </summary>
-```
-```{=html}
+<br>
 <ul>
-```
-```{=html}
 <li>
-```
-The frontend and backend are separated into their own
-`<code>`{=html}/client`</code>`{=html} and
-`<code>`{=html}/server`</code>`{=html} folders, with separate dependency
-lists and development commands.
-```{=html}
+The frontend and backend are separated into their own <code>/client</code> and <code>/server</code> folders, with separate dependency lists and development commands.
 </li>
-```
-```{=html}
 <li>
-```
-Protected frontend routes rely on the authenticated user state, whilst
-protected backend endpoints verify the user's JWT and apply additional
-project/issue permission middleware where needed.
-```{=html}
+Protected frontend routes rely on the authenticated user state, whilst protected backend endpoints verify the user's JWT and apply additional project/issue permission middleware where needed.
 </li>
-```
-```{=html}
 <li>
-```
-The backend separates major features into models, controllers, routes,
-middleware, and utility modules for areas such as authentication,
-projects, issues, comments, user search, and notifications.
-```{=html}
+The backend separates major features into models, controllers, routes, middleware, and utility modules for areas such as authentication, projects, issues, comments, user search, and notifications.
 </li>
-```
-```{=html}
 <li>
-```
-Redux Toolkit is divided into feature slices for authentication,
-projects, issues, comments, and notifications so frequently shared
-application data can be managed centrally.
-```{=html}
+Redux Toolkit is divided into feature slices for authentication, projects, issues, comments, and notifications so frequently shared application data can be managed centrally.
 </li>
-```
-```{=html}
 <li>
-```
-Project and issue permissions are enforced on the backend even when the
-React UI also hides/disables actions. The client-side permission checks
-are mainly for user experience; the backend remains the final
-authorization layer.
-```{=html}
+Project and issue permissions are enforced on the backend even when the React UI also hides/disables actions. The client-side permission checks are mainly for user experience; the backend remains the final authorization layer.
 </li>
-```
-```{=html}
 <li>
-```
-Swagger/OpenAPI documentation is included so backend endpoints can be
-reviewed/tested independently from the React interface during
-development.
-```{=html}
+Swagger/OpenAPI documentation is included so backend endpoints can be reviewed/tested independently from the React interface during development.
 </li>
-```
-```{=html}
 </ul>
-```
-```{=html}
 </details>
-```
